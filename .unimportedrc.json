@@ -1,0 +1,31 @@
+{
+  "entry": [
+    "src/index.tsx",
+    "src/setupTests.ts",
+    "src/modules/offline/service-worker.ts"
+  ],
+  "extensions": [
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx"
+  ],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/*.tests.{js,jsx,ts,tsx}",
+    "**/*.test.{js,jsx,ts,tsx}",
+    "**/*.spec.{js,jsx,ts,tsx}",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/*.d.ts"
+  ],
+  "ignoreUnimported": [
+    "src/index.tsx",
+    "src/modules/offline/service-worker.ts",
+    "src/setupTests.ts"
+  ],
+  "ignoreUnused": [],
+  "ignoreUnresolved": [
+    "../../../types/theme"
+  ]
+}
