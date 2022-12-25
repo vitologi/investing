@@ -1,7 +1,7 @@
 {
   "name": "@vitologi/investing",
   "version": "0.1.1",
-  "homepage": "https://investing.vitologi.github.io",
+  "homepage": "https://vitologi.github.io",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
