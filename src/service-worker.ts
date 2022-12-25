@@ -23,8 +23,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 precacheAndRoute([
-  '/manifest.json',
-  '/favicon.ico',
+  process.env.PUBLIC_URL + '/manifest.json',
+  process.env.PUBLIC_URL + '/favicon.ico',
 ]);
 
 // This allows the web app to trigger skipWaiting via
