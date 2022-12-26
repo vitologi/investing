@@ -1,18 +1,25 @@
 import {StrictMode} from 'react';
 import ReactDOM from 'react-dom/client';
+import 'reflect-metadata';
 import 'reset-css';
 import './index.css';
 import {App} from './modules/app/app';
 import * as serviceWorkerRegistration from './modules/offline/service-worker-registrator';
 import reportWebVitals from './reportWebVitals';
 import {serviceWorkerConfig} from "./modules/offline/service-worker-config";
+import {DiProvider} from "./shared/components/di/di.provider";
+import {IntlProviderWrapper} from "./modules/intl";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <StrictMode>
-    <App />
+    <DiProvider>
+      <IntlProviderWrapper>
+        <App/>
+      </IntlProviderWrapper>
+    </DiProvider>
   </StrictMode>
 );
 
