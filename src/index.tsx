@@ -9,6 +9,8 @@ import reportWebVitals from './reportWebVitals';
 import {serviceWorkerConfig} from "./modules/offline/service-worker-config";
 import {DiProvider} from "./shared/components/di/di.provider";
 import {IntlProviderWrapper} from "./modules/intl";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {ThemeProviderWrapper} from "./modules/theme";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,9 +18,15 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <DiProvider>
-      <IntlProviderWrapper>
-        <App/>
-      </IntlProviderWrapper>
+      <BrowserRouter>
+        <ThemeProviderWrapper>
+          <IntlProviderWrapper>
+            <Routes>
+              <Route path="*" element={<App/>}/>
+            </Routes>
+          </IntlProviderWrapper>
+        </ThemeProviderWrapper>
+      </BrowserRouter>
     </DiProvider>
   </StrictMode>
 );
