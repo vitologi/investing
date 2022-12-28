@@ -1,4 +1,4 @@
-const {override, addBabelPlugins, addDecoratorsLegacy} = require('customize-cra');
+const {override, addBabelPlugin, addDecoratorsLegacy} = require('customize-cra');
 
 module.exports = {
   webpack: override(
@@ -6,10 +6,7 @@ module.exports = {
      * @see babel-plugin-parameter-decorator README
      */
     addDecoratorsLegacy(),
-    ...addBabelPlugins(
-      "babel-plugin-parameter-decorator",
-    ),
-
+    addBabelPlugin("babel-plugin-parameter-decorator"),
   ),
   /*
      * jest! config
