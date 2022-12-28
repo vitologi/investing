@@ -58,6 +58,7 @@
   "app.common.selectedRows": "{selected, plural, one {Выбрана} few {Выбраны} many {Выбрано} other {Выбрано}} {selected, number} {selected, plural, one {запись} few {записи} many {записей} other {записей}}",
   "app.common.anonymousMode": "(не авторизован)",
   "app.titles.main": "Investment assistant",
+  "app.titles.dictionaries": "Словари",
   "app.titles.error": "страница не найдена",
   "app.errors.404": "запрошенная страница не существует",
   "app.errors.inDevelop": "страница {pageName} в настоящее время находится в разработке",

@@ -58,6 +58,7 @@
   "app.common.selectedRows": "Selected {selected, number} {selected, plural, one {row} few {rows} many {rows} other {rows}}",
   "app.common.anonymousMode": "(anonymous mode)",
   "app.titles.main": "Investment assistant",
+  "app.titles.dictionaries": "Dictionaries",
   "app.titles.error": "page not found",
   "app.errors.404": "requested page not found",
   "app.errors.inDevelop": "page {pageName} currently in develop",
