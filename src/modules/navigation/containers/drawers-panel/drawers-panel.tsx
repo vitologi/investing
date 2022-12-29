@@ -6,7 +6,7 @@ import {
   List,
   ListSubheader,
 } from '@mui/material';
-import {  LocalHospital as LocalHospitalIcon,} from '@mui/icons-material';
+import {  Dashboard as DashboardIcon, LocalLibrary as LocalLibraryIcon} from '@mui/icons-material';
 import {observer} from 'mobx-react-lite';
 import {Link} from 'react-router-dom';
 
@@ -29,7 +29,7 @@ export const DrawersPanel = observer(() => {
         to="dashboard"
         color={getGroupColor('/dashboard')}
         size="large">
-        <LocalHospitalIcon />
+        <DashboardIcon />
       </IconButton>
 
       <IconButton
@@ -37,15 +37,7 @@ export const DrawersPanel = observer(() => {
         to="dictionaries"
         color={getGroupColor('/dictionaries')}
         size="large">
-        <LocalHospitalIcon />
-      </IconButton>
-
-      <IconButton
-        component={Link}
-        to="dashboard"
-        color={getGroupColor('/dashboard')}
-        size="large">
-        <LocalHospitalIcon />
+        <LocalLibraryIcon />
       </IconButton>
     </ListSubheader>
   );
@@ -78,10 +70,10 @@ export const DrawersPanel = observer(() => {
 
           {includeCurrentRoute('/dictionaries') && (
             <>
-              <DrawerItem url="dictionaries/asset-types" name="app.titles.error" />
-              <DrawerItem url="dictionaries/currencies" name="app.titles.error" />
-              <DrawerItem url="dictionaries/exchanges" name="app.titles.error" />
-              <DrawerItem url="dictionaries/portfolios" name="app.titles.error" />
+              <DrawerItem url="dictionaries/asset-types" name="app.titles.assetTypes" />
+              <DrawerItem url="dictionaries/currencies" name="app.titles.currencies" />
+              <DrawerItem url="dictionaries/exchanges" name="app.titles.exchanges" />
+              <DrawerItem url="dictionaries/portfolios" name="app.titles.portfolios" />
             </>
           )}
 

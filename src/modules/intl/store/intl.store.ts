@@ -4,17 +4,18 @@ import {createTheme, Theme} from '@mui/material';
 import {enUS, Localization, ruRU} from '@mui/material/locale';
 import {enUS as pickerEnUS, ru as pickerRuRu} from 'date-fns/locale';
 import {injectable} from 'inversify';
-import { computed, observable, makeObservable } from 'mobx';
+import {computed, makeObservable, observable} from 'mobx';
 import {createIntl, createIntlCache, IntlShape} from 'react-intl';
 import {DateIOFormats} from '@date-io/core/IUtils';
 
 import {IntlKey} from '../index';
 import enTranslation from '../locale/en.json';
 import ruTranslation from '../locale/ru.json';
+import {LanguageCode} from "../shared/enums/language-code";
 
 @injectable()
 export class IntlStore {
-  locale: 'en' | 'ru' = 'en';
+  locale: LanguageCode = LanguageCode.En;
 
   constructor() {
     makeObservable(this, {
@@ -84,11 +85,16 @@ export class IntlStore {
     en: pickerEnUS,
   };
 
+  setLanguage(value: LanguageCode): void {
+    this.locale = value;
+  }
+
+  // TODO: deprecated (refactor in favor to universal method)
   switchToEnglish(): void {
-    this.locale = 'en';
+    this.setLanguage(LanguageCode.En);
   }
 
   switchToRussian(): void {
-    this.locale = 'ru';
+    this.setLanguage(LanguageCode.Ru);
   }
 }
