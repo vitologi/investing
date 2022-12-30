@@ -1,12 +1,18 @@
-const {override, addBabelPlugin, addDecoratorsLegacy} = require('customize-cra');
+const {override, addBabelPresets, addBabelPlugins} = require('customize-cra');
 
 module.exports = {
   webpack: override(
     /* babel constructor decorator support
-     * @see babel-plugin-parameter-decorator README
+     * @see babel-plugin-transform-typescript-metadata README
      */
-    addDecoratorsLegacy(),
-    addBabelPlugin("babel-plugin-parameter-decorator"),
+    ...addBabelPlugins(
+      "babel-plugin-transform-typescript-metadata",
+      ["@babel/plugin-proposal-decorators", {"legacy": true}],
+      ["@babel/plugin-proposal-class-properties", {"loose": true}],
+    ),
+    ...addBabelPresets(
+      "@babel/preset-typescript"
+    ),
   ),
   /*
      * jest! config
