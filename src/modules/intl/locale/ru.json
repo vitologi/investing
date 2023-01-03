@@ -30,10 +30,6 @@
   "app.common.form.rules.min": "Поле {name} должно быть больше {min}",
   "app.common.form.rules.max": "Поле {name} должно быть меньше {max}",
   "app.common.found": "Найдено: {value}",
-  "app.common.form.labels.recipe": "Рецепт",
-  "app.common.form.labels.dryWeight": "Сухой вес (кг)",
-  "app.common.form.labels.physicalWeight": "Физический вес (кг)",
-  "app.common.form.labels.mixer": "Миксер",
   "app.common.form.labels.name": "Название",
   "app.common.form.labels.description": "Описание",
   "app.common.form.messages.createSuccess": "Запись {name} была успешно добавлена",
@@ -69,5 +65,12 @@
   "app.errors.goHomeLink": "вернуться на главную",
   "app.navigation.drawersPanel.logout": "Выйти",
   "app.navigation.drawersPanel.login": "Войти",
-  "app.navigation.navigationPanel.login": "Войти"
+  "app.navigation.navigationPanel.login": "Войти",
+  "app.assetTypes.type.EQUITY": "Акция",
+  "app.assetTypes.type.BOND": "Облигация",
+  "app.assetTypes.type.FUTURE": "Опцион",
+  "app.assetTypes.type.CURRENCY": "Валюта",
+  "app.assetTypes.type.ETF": "ETF",
+  "app.assetTypes.type.MUTUALFUND": "Фонд",
+  "app.assetTypes.form.name": "Название типа актива"
 }
