@@ -21,7 +21,7 @@ export const AssetTypeForm = () => {
   const navigate = useNavigate();
 
   const saveHandler = useCallback(async (data: IFormData) => {
-    await store.create({...data, _id: data.id});
+    await store.create({_id: data.id, name: data.name, isSystem: data.isSystem});
     navigate('..');
   }, [store, navigate]);
 
