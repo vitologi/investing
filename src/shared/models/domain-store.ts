@@ -6,7 +6,7 @@ import {IModelDto} from "../dtos/model.dto";
 
 @injectable()
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends Model<TDto, any>> {
+export abstract class DomainStore<  TDto extends IModelDto,  TDomainModel extends Model<TDto, any>> {
   isLoading = false;
 
   list: TDomainModel[] = [];
@@ -19,7 +19,8 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
     return (id) => this.indexedList.get(id.toString());
   }
 
-  constructor(protected readonly service: BaseApiService<TDto>) {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  constructor(protected readonly service: BaseApiService<TDto, any, any>) {
     makeObservable(this, {
       isLoading: observable,
       list: observable,
@@ -161,7 +162,8 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
   /**
    * Load entity hook (need for overloading)
    */
-  async loadOneFromServer(id: string): Promise<TDto | null> {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  async loadOneFromServer(id: any): Promise<TDto | null> {
     return this.service.get(id);
   }
 

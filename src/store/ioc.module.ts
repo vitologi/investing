@@ -9,16 +9,22 @@ import {DrawersPanelStore} from '../modules/navigation/store/drawers-panel.store
 import {NavigationPanelStore} from '../modules/navigation/store/navigation-panel.store';
 import {AssetTypesService} from "../modules/asset-types/shared/services/asset-types.service";
 import {AssetTypesStore} from "../modules/asset-types/store/asset-types.store";
+import {CurrenciesStore} from "../modules/currencies/store/currencies.store";
+import {CurrenciesService} from "../modules/currencies/shared/services/currencies.service";
+import {StorageService} from "../shared/services/storage.service";
 
 export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   // bind('OfflineService').to(OfflineService).inSingletonScope();
   // bind('NotificationService').to(NotificationService).inSingletonScope();
   // bind('UserService').to(UserService).inSingletonScope();
   // bind('OfflineStore').to(OfflineStore).inSingletonScope();
+  bind('StorageService').to(StorageService).inSingletonScope();
   bind('IntlStore').to(IntlStore).inSingletonScope();
   bind('ThemeStore').to(ThemeStore).inSingletonScope();
   bind('DrawersPanelStore').to(DrawersPanelStore).inSingletonScope();
   bind('NavigationPanelStore').to(NavigationPanelStore).inSingletonScope();
   bind('AssetTypesService').to(AssetTypesService).inSingletonScope();
   bind('AssetTypesStore').to(AssetTypesStore).inSingletonScope();
+  bind('CurrenciesService').to(CurrenciesService).inSingletonScope();
+  bind('CurrenciesStore').to(CurrenciesStore).inSingletonScope();
 });

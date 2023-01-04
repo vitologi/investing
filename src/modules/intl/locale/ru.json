@@ -12,6 +12,7 @@
   "app.common.actions.delete": "Удалить",
   "app.common.actions.reset": "Сбросить",
   "app.common.actions.save": "Сохранить",
+  "app.common.actions.select": "Выбрать",
   "app.common.form.placeholder": "Не задано",
   "app.common.form.placeholder.min": "От",
   "app.common.form.placeholder.max": "До",

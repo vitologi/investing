@@ -3,7 +3,7 @@ import {assetTypesCollection} from "../../offline/asset-type.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 
 export class AssetTypesService extends BaseApiService<IAssetTypeDto>{
-  list(): Promise<IAssetTypeDto[]> {
+  async list(): Promise<IAssetTypeDto[]> {
     return assetTypesCollection.find({});
   }
 

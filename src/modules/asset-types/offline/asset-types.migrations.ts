@@ -8,7 +8,6 @@ export const assetTypesMigrations: IDbMigration[] = [
       const collection = db.collection('assetTypes');
 
       for(const assetType of mocks) {
-        console.log(assetType)
         await collection.insertOne(assetType);
       }
 

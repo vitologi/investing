@@ -12,6 +12,7 @@
   "app.common.actions.delete": "Delete",
   "app.common.actions.reset": "Reset",
   "app.common.actions.save": "Save",
+  "app.common.actions.select": "Select",
   "app.common.form.placeholder": "Not defined",
   "app.common.form.placeholder.min": "From",
   "app.common.form.placeholder.max": "To",
