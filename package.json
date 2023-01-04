@@ -1,6 +1,6 @@
 {
   "name": "@vitologi/investing",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "homepage": "https://investing.vitologi.com",
   "private": true,
   "dependencies": {
