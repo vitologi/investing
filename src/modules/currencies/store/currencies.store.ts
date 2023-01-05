@@ -22,7 +22,6 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
     super(currenciesService);
     makeObservable(this, {
       enabled: observable,
-      currentLocale: computed,
       isEnabled: computed,
       enabledList: computed,
       sortedByEnablingList: computed,
@@ -37,6 +36,13 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
         this.storageService.set(ENABLED_CURRENCIES, this.enabled.slice());
       }
     );
+
+    reaction(
+      ()=>this.intlStore.locale,
+      (locale)=>{
+        this.load(locale);
+      }
+    )
   }
 
   get enabledList(): Currency[] {
@@ -46,10 +52,6 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
   get sortedByEnablingList(): Currency[] {
     const sortedList = this.list.slice().sort((a, _) => this.isEnabled(a.id) ? -1 : 1);
     return sortedList;
-  }
-
-  get currentLocale(): LanguageCode {
-    return this.intlStore.locale || LanguageCode.En;
   }
 
   get isEnabled(): (code: string) => boolean {

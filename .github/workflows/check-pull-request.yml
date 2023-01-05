@@ -23,6 +23,7 @@ jobs:
 
       - run: npm ci
       - run: npm run test
+      - run: npm build
 
       - name: 'Automated Version Bump into PR'
         uses: 'phips28/gh-action-bump-version@master'
