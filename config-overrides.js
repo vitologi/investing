@@ -1,4 +1,5 @@
 const {override, addBabelPresets, addBabelPlugins} = require('customize-cra');
+const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   webpack: override(
@@ -13,6 +14,25 @@ module.exports = {
     ...addBabelPresets(
       "@babel/preset-typescript"
     ),
+    // custom changes
+    function (config) {
+      const swPlugin = new WorkboxWebpackPlugin.InjectManifest({
+        swDest: 'service-worker.js',
+        swSrc: "./src/service-worker.ts",
+        maximumFileSizeToCacheInBytes: 50000000 // 50MB (limit of file size, need for high weight npm library like currency-list)
+      });
+
+      // clear from ws plugins
+      config.plugins = config.plugins
+        .filter((plugin) => !["InjectManifest", "GenerateSW"].includes(plugin.constructor.name));
+
+      // if it is prod mode then replace native react-app plugin
+      if (process.env.NODE_ENV === 'production' || process.env.REACT_APP_RUN_SW) {
+        config.plugins.push(swPlugin);
+      }
+
+      return config;
+    }
   ),
   /*
      * jest! config
