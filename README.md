@@ -1,5 +1,5 @@
 # Feature to implement
-- https://create-react-app.dev/docs/deployment#github-pages
+- add all exchanges and transliteration to main language (and release npm package)
 
 # Install
 ```

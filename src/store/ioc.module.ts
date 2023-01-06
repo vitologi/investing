@@ -12,6 +12,8 @@ import {AssetTypesStore} from "../modules/asset-types/store/asset-types.store";
 import {CurrenciesStore} from "../modules/currencies/store/currencies.store";
 import {CurrenciesService} from "../modules/currencies/shared/services/currencies.service";
 import {StorageService} from "../shared/services/storage.service";
+import {ExchangeStore} from "../modules/exchanges/store/exchange.store";
+import {ExchangeService} from "../modules/exchanges/shared/services/exchange.service";
 
 export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   // bind('OfflineService').to(OfflineService).inSingletonScope();
@@ -27,4 +29,6 @@ export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   bind('AssetTypesStore').to(AssetTypesStore).inSingletonScope();
   bind('CurrenciesService').to(CurrenciesService).inSingletonScope();
   bind('CurrenciesStore').to(CurrenciesStore).inSingletonScope();
+  bind('ExchangeService').to(ExchangeService).inSingletonScope();
+  bind('ExchangeStore').to(ExchangeStore).inSingletonScope();
 });
