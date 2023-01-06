@@ -16,6 +16,7 @@
   "app.common.form.placeholder": "Не задано",
   "app.common.form.placeholder.min": "От",
   "app.common.form.placeholder.max": "До",
+  "app.common.form.placeholder.description": "Краткое описание элемента",
   "app.common.actions.chooseColumns": "Выбрать столбцы",
   "app.common.warnings.unsaved.title": "Сохранение",
   "app.common.warnings.unsaved.details": "Изменения  не сохранены!",

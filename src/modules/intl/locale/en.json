@@ -16,6 +16,7 @@
   "app.common.form.placeholder": "Not defined",
   "app.common.form.placeholder.min": "From",
   "app.common.form.placeholder.max": "To",
+  "app.common.form.placeholder.description": "Short description of item",
   "app.common.actions.chooseColumns": "Choose columns",
   "app.common.warnings.unsaved.title": "Save",
   "app.common.warnings.unsaved.details": "Here is unsaved data!",

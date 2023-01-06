@@ -6,7 +6,6 @@ import {Exchange} from "../shared/models/exchange";
 import {ExchangeService} from "../shared/services/exchange.service";
 import {IntlStore} from "../../intl/store/intl.store";
 import {StorageService} from "../../../shared/services/storage.service";
-import {LanguageCode} from "../../intl/shared/enums/language-code";
 
 const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
@@ -79,7 +78,7 @@ export class ExchangeStore extends  DomainStore<IExchangeDto, Exchange>{
   }
 
   protected initialize(): void {
-    this.load(LanguageCode.En);
+    this.load(this.intlStore.locale);
   }
 
 }
