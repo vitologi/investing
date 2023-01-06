@@ -44,6 +44,10 @@ export const AssetTypeForm = () => {
               message: "app.common.form.rules.length",
               value: 3,
             },
+            maxLength: {
+              message: "app.common.form.rules.length",
+              value: 12,  // TODO: move these values into global area
+            },
           })}
           error={!!errors.name}
         />

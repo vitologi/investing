@@ -5,7 +5,6 @@ import {Currency} from "../shared/models/currency";
 import {CurrenciesService} from "../shared/services/currencies.service";
 import {ICurrencyDto} from "../shared/interfaces/currency.dto";
 import {IntlStore} from "../../intl/store/intl.store";
-import {LanguageCode} from "../../intl/shared/enums/language-code";
 import {StorageService} from "../../../shared/services/storage.service";
 
 const ENABLED_CURRENCIES = 'ENABLED_CURRENCIES';
@@ -79,7 +78,7 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
   }
 
   protected async initialize(): Promise<void> {
-    this.load(LanguageCode.En);
+    this.load(this.intlStore.locale);
   }
 
 }
