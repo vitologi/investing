@@ -18,7 +18,14 @@ export class TransactionsStore extends DomainStore<ITransactionDto, Transaction>
       setDetailsMode: action,
       clearTransaction: action,
       chooseTransaction: action,
+      clearAllTransactions: action,
     });
+  }
+
+  async clearAllTransactions():Promise<void>{
+    for(const item of this.list){
+      await this.delete(item.asDto);
+    }
   }
 
   setDetailsMode(value: boolean): void {
