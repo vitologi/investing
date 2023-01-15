@@ -4,6 +4,7 @@
   "app.common.statuses.error": "Ошибка",
   "app.common.statuses.success": "Успех",
   "app.common.actions.add": "Добавить",
+  "app.common.actions.edit": "Редактировать",
   "app.common.actions.apply": "Применить",
   "app.common.actions.cancel": "Отменить",
   "app.common.actions.close": "Закрыть",

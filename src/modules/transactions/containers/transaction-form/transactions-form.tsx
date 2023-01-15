@@ -1,7 +1,6 @@
 import {Button, FormControl, FormHelperText, InputLabel, MenuItem, Paper, Select, TextField} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
-import {useCallback} from "react";
-import ObjectId from "bson-objectid";
+import {useCallback, useEffect} from "react";
 import {useTransactionsStore} from "../../store/transactions.selector";
 import {useIntlStore} from "../../../intl/store/intl.selector";
 import {FormattedMessage} from "react-intl";
@@ -14,20 +13,10 @@ import {useExchangeStore} from "../../../exchanges/store/exchange.selector";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import {DatePicker} from "@mui/x-date-pickers";
 import {DevTool} from "@hookform/devtools";
-
-export interface IFormData {
-  id: string;
-  date: string;
-  assetType: string;
-  security: string;
-  action: TransactionAction;
-  quantity: number;
-  price: number;
-  commission: number;
-  currency: string;
-  portfolio: string;
-  exchange: string;
-}
+import {IFormData} from "../../shared/interfaces/form-data";
+import {dtoToFormData} from "../../shared/utils/dto-to-form-data";
+import {formDataToDto} from "../../shared/utils/form-data-to-dto";
+import {Transaction} from "../../shared/models/transaction";
 
 // TODO: split form to multiple field components combined by grid
 export const TransactionsForm = observer(() => {
@@ -38,40 +27,46 @@ export const TransactionsForm = observer(() => {
   const exchangeStore = useExchangeStore();
   const intlStore = useIntlStore();
 
-  const {control, handleSubmit} = useForm<IFormData>({
+  const {control, handleSubmit, watch, resetField, reset} = useForm<IFormData>({
     mode: "onChange",
-    defaultValues: {
-      id: new ObjectId().toHexString(),
-      date: new Date().toString(),
-      assetType: '',
-      security: '',
-      action: TransactionAction.Deposit,
-      quantity: 0,
-      price: 0,
-      commission: 0,
-      currency: '',
-      portfolio: '',
-      exchange: '',
-    }
+    defaultValues: dtoToFormData(store.createEmpty().asDto)
   });
 
   const saveHandler = useCallback(async (data: IFormData) => {
-    const {id, date, action, assetType, commission, currency, exchange, portfolio, price, quantity, security} = data;
-    await store.create({
-      _id: id,
-      _date: (new Date(date)).getTime(),
-      action,
-      assetType: assetType!,
-      currency: currency!,
-      portfolio: portfolio!,
-      price,
-      quantity,
-      commission,
-      security,
-      exchange,
-    });
-    store.isAddMode = false;
+    const dto = formDataToDto(data);
+    if (store.editedId) {
+      await store.save(dto);
+      store.clearTransaction();
+    } else {
+      await store.create(dto);
+    }
+    store.setDetailsMode(false);
   }, [store]);
+
+
+  const assetTypeWatch = watch('assetType');
+  useEffect(() => {
+    if (assetTypeWatch !== '' || assetTypeStore.list.length === 0) {
+      return;
+    }
+
+    resetField('assetType', {defaultValue: assetTypeStore.list[0].id});
+  }, [resetField, assetTypeWatch, assetTypeStore.list, assetTypeStore.list.length]);
+
+
+  // update edited model
+  useEffect(() => {
+    let item: Transaction | undefined;
+    if (store.editedId) {
+      item = store.item(store.editedId);
+    }
+
+    if (!item) {
+      item = store.createEmpty();
+    }
+
+    reset(dtoToFormData(item.asDto));
+  }, [store, reset, store.editedId]);
 
   return (
     <Paper sx={{m: 2, p: 2}}>
@@ -344,7 +339,7 @@ export const TransactionsForm = observer(() => {
           />
         </Grid2>
 
-        <Grid2 xs={2} sm={4} md={4}>
+        <Grid2 xs={2} sm={4} md={8}>
           <Controller
             name={"exchange"}
             control={control}
@@ -380,8 +375,8 @@ export const TransactionsForm = observer(() => {
           />
         </Grid2>
 
-        <Grid2>
-          <Button type="submit" sx={{p: 1}} color={"primary"} variant={"contained"}>
+        <Grid2 xs={4} sm={8} md={4}>
+          <Button fullWidth={true} type="submit" sx={{p: 2}} color={"primary"} variant={"contained"}>
             <FormattedMessage id="app.common.actions.save"/>
           </Button>
         </Grid2>

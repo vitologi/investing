@@ -1,4 +1,4 @@
-import {ITransactionDto} from "../interfaces/transaction.dto";
+import {ITransactionDto} from "../dtos/transaction.dto";
 import {transactionsCollection} from "../../offline/transactions.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 
@@ -23,9 +23,13 @@ export class TransactionsService extends BaseApiService<ITransactionDto>{
   }
 
   async update(dto: ITransactionDto): Promise<ITransactionDto| null> {
-    const filter = {_id: dto._id};
-    const result = await transactionsCollection.updateOne(filter, {$set:dto}, {});
+    // TODO: use this after db library will be fixed
+    // const filter = {_id: dto._id};
+    // const result = await transactionsCollection.updateOne(filter, {$set:dto}, {});
+    //
+    // return result.upsertedCount ? dto : null;
 
-    return result.upsertedCount ? dto : null;
+    await this.delete(dto._id);
+    return this.create(dto);
   }
 }

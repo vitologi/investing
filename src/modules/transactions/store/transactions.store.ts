@@ -1,18 +1,36 @@
 import {inject, injectable} from 'inversify';
-import {makeObservable, observable} from 'mobx';
+import {action, makeObservable, observable} from 'mobx';
 import {DomainStore} from "../../../shared/models/domain-store";
-import {ITransactionDto} from "../shared/interfaces/transaction.dto";
+import {ITransactionDto} from "../shared/dtos/transaction.dto";
 import {Transaction} from "../shared/models/transaction";
 import {TransactionsService} from "../shared/services/transactions.service";
 
 @injectable()
-export class TransactionsStore extends  DomainStore<ITransactionDto, Transaction>{
-  isAddMode = false;
+export class TransactionsStore extends DomainStore<ITransactionDto, Transaction> {
+  isDetailsMode = false;
+  editedId: string | null = null
+
   constructor(@inject('TransactionsService') transactionsService: TransactionsService) {
     super(transactionsService);
     makeObservable(this, {
-      isAddMode: observable,
+      isDetailsMode: observable,
+      editedId: observable,
+      setDetailsMode: action,
+      clearTransaction: action,
+      chooseTransaction: action,
     });
+  }
+
+  setDetailsMode(value: boolean): void {
+    this.isDetailsMode = value;
+  }
+
+  clearTransaction(): void {
+    this.editedId = null;
+  }
+
+  chooseTransaction(value: Transaction): void {
+    this.editedId = value.id;
   }
 
   createEmpty(): Transaction {

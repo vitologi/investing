@@ -9,7 +9,7 @@ import {
   IconButton, IconButtonProps, styled,
   Typography
 } from "@mui/material";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {green, red} from "@mui/material/colors";
 import {
   ExpandMore as ExpandMoreIcon,
@@ -19,6 +19,8 @@ import {
   Edit as EditIcon
 } from '@mui/icons-material'
 import {useIntlStore} from "../../../intl/store/intl.selector";
+import {useTransactionsStore} from "../../store/transactions.selector";
+import {observer} from "mobx-react-lite";
 
 interface IProps {
   model: Transaction;
@@ -40,15 +42,26 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export const TransactionItem = (props: IProps): JSX.Element => {
+export const TransactionItem = observer((props: IProps): JSX.Element => {
   const {model} = props;
   const intlStore = useIntlStore();
+  const store = useTransactionsStore();
 
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const editHandler = useCallback(() => {
+    store.chooseTransaction(model);
+    store.setDetailsMode(true);
+  }, [store, model]);
+
+  const deleteHandler = useCallback(() => {
+    store.delete(model.asDto);
+    store.setDetailsMode(false);
+  }, [store, model.asDto]);
 
   return (
     <Card>
@@ -93,15 +106,23 @@ export const TransactionItem = (props: IProps): JSX.Element => {
             {model.quantity}
           </Typography>
         </CardContent>
+
         <CardActions disableSpacing sx={{justifyContent: 'end'}}>
-          <IconButton aria-label="add to favorites">
+          <IconButton
+            onClick={editHandler}
+            aria-label={intlStore.formatMessage("app.common.actions.edit")}
+          >
             <EditIcon/>
           </IconButton>
-          <IconButton aria-label="share">
+
+          <IconButton
+            onClick={deleteHandler}
+            aria-label={intlStore.formatMessage("app.common.actions.delete")}
+          >
             <DeleteIcon/>
           </IconButton>
         </CardActions>
       </Collapse>
     </Card>
   );
-}
+});

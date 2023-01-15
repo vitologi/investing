@@ -4,6 +4,7 @@
   "app.common.statuses.error": "Error",
   "app.common.statuses.success": "Success",
   "app.common.actions.add": "Add",
+  "app.common.actions.edit": "Edit",
   "app.common.actions.apply": "Apply",
   "app.common.actions.cancel": "Cancel",
   "app.common.actions.close": "Close",

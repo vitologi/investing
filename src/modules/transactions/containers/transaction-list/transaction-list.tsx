@@ -1,11 +1,10 @@
 import {observer} from "mobx-react-lite";
 import {useTransactionsStore} from "../../store/transactions.selector";
-import {TransactionItem} from "../../components/transaction-item/transaction-item";
+import {TransactionItem} from "../transaction-item/transaction-item";
 import {Stack} from "@mui/material";
 
 export const TransactionList = observer(() => {
   const store = useTransactionsStore();
-  // const intlStore = useIntlStore();
 
   return (
     <Stack p={2} spacing={2} >

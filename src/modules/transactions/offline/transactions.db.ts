@@ -1,6 +1,6 @@
 import {DbClient} from "@vitologi/local-db";
 import {transactionsMigrations} from "./transactions.migrations";
-import {ITransactionDto} from "../shared/interfaces/transaction.dto";
+import {ITransactionDto} from "../shared/dtos/transaction.dto";
 
 const client = new DbClient({dbName: "transactions"});
 const db = client.db("transactions", {client, migrations: transactionsMigrations});

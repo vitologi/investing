@@ -1,20 +1,19 @@
 import {Model} from "../../../../shared/models/model";
-import {ITransactionDto} from "../interfaces/transaction.dto";
+import {ITransactionDto} from "../dtos/transaction.dto";
 import {TransactionsStore} from "../../store/transactions.store";
 import {computed, makeObservable, observable} from "mobx";
 import {TransactionAction} from "../enums/transaction-action";
-import assetTypeMocks from "../../../asset-types/offline/asset-types.mocks.json";
 
 export class Transaction extends Model<ITransactionDto, TransactionsStore>{
   _date = (new Date()).getTime();
-  assetType = assetTypeMocks[0]._id;
+  assetType: string | null = null;
   security: string | null = null;
   action: TransactionAction = TransactionAction.Deposit;
   quantity= 0;
   price = 0;
   commission = 0;
-  currency = "USD";
-  portfolio = '';
+  currency: string | null = null;
+  portfolio: string | null = null;
   exchange: string | null = null;
 
 
@@ -33,7 +32,7 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
       exchange: observable,
       date: computed,
       isPositive: computed,
-    })
+    });
   }
 
   get date() : Date {

@@ -11,17 +11,17 @@ export const Transactions = observer(() => {
   const store = useTransactionsStore();
   const intlStore = useIntlStore();
 
-  const addHandler = useCallback(() => store.isAddMode = true, [store]);
+  const addHandler = useCallback(() => store.setDetailsMode(true), [store]);
 
   return (
     <>
-      {store.isAddMode && <TransactionsForm/>}
+      {store.isDetailsMode && <TransactionsForm/>}
 
       <TransactionList/>
 
       <Fab
         onClick={addHandler}
-        sx={{position: 'absolute', bottom: 16, right: 16}}
+        sx={{position: 'fixed', bottom: 16, right: 16}}
         aria-label={intlStore.formatMessage("app.common.actions.add")}
         color="primary"
       >
