@@ -1,53 +1,55 @@
 import {Transaction} from "../../shared/models/transaction";
 import {
-  Avatar,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Collapse,
-  IconButton, IconButtonProps, styled,
-  Typography
+  Collapse, Divider,  IconButton, ListItem, ListItemAvatar,
+  ListItemSecondaryAction, ListItemText,  Typography
 } from "@mui/material";
-import {useCallback, useState} from "react";
-import {green, red} from "@mui/material/colors";
+import {Fragment, useCallback, useState} from "react";
 import {
-  ExpandMore as ExpandMoreIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon,
   Delete as DeleteIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  AccountBalance as AccountBalanceIcon,
+  AttachMoney as AttachMoneyIcon,
+  WorkOutline as WorkOutlineIcon,
+  Receipt as ReceiptIcon,
+
 } from '@mui/icons-material'
 import {useIntlStore} from "../../../intl/store/intl.selector";
 import {useTransactionsStore} from "../../store/transactions.selector";
 import {observer} from "mobx-react-lite";
+import {FormattedMessage} from "react-intl";
+import {SystemAssetTypes} from "../../../asset-types/shared/enums/system-asset-types";
+import {useCurrenciesStore} from "../../../currencies/store/currencies.selector";
 
 interface IProps {
   model: Transaction;
 }
 
-
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
-
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const {expand: _, ...other} = props;
-  return <IconButton {...other} />;
-})(({theme, expand}) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
 export const TransactionItem = observer((props: IProps): JSX.Element => {
   const {model} = props;
   const intlStore = useIntlStore();
   const store = useTransactionsStore();
+  const currenciesStore = useCurrenciesStore();
 
   const [expanded, setExpanded] = useState(false);
+
+  const icon = useCallback((type: SystemAssetTypes) => {
+    switch (type) {
+      case SystemAssetTypes.CURRENCY:
+        return <AttachMoneyIcon/>;
+
+      case SystemAssetTypes.BOND:
+      case SystemAssetTypes.EQUITY:
+        return <ReceiptIcon/>;
+
+      case SystemAssetTypes.FUTURE:
+        return <AccountBalanceIcon/>;
+
+      case SystemAssetTypes.MUTUALFUND:
+      case SystemAssetTypes.ETF:
+      default:
+        return <WorkOutlineIcon/>
+    }
+  }, []);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -63,66 +65,64 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
     store.setDetailsMode(false);
   }, [store, model.asDto]);
 
+
   return (
-    <Card>
-      <CardHeader
-        avatar={
-          <Avatar
-            sx={{bgcolor: model.isPositive ? green[500] : red[500]}}
-            aria-label={
-              intlStore.formatMessage(
-                model.isPositive ?
-                  "app.transactions.item.avatarLabelAdd"
-                  : "app.transactions.item.avatarLabelSubtract"
-              )
-            }
-          >
-            {model.isPositive ? <AddIcon/> : <RemoveIcon/>}
-          </Avatar>
-        }
-        action={
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon/>
-          </ExpandMore>
-        }
-        title={model.security}
-        subheader={model.date.toDateString()}
-      />
+    <Fragment>
+      <ListItem>
+        <ListItemAvatar
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label={intlStore.formatMessage("app.empty")}
+          sx={{flexGrow: 0}}
+        >
+          {icon(model.assetType as SystemAssetTypes)}
+        </ListItemAvatar>
+        <ListItemText
+          primary={<FormattedMessage id={`app.transactions.actions.${model.action}`}/>}
+          secondary={[model.security, ' (', model.portfolio, ')'].join('')}
+        />
+        <ListItemText
+          primary={`${model.isPositive ? '+' : '-'} ${model.total.toFixed(2)} ${model.currency}`}
+          sx={{
+            color: model.isPositive ? "success.main" : "error.main",
+            flexGrow: 0,
+          }}
+        />
+      </ListItem>
+
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography>
-            {model.action}
-            {model.portfolio}
-            {model.currency}
-            {model.assetType}
-            {model.commission}
-            {model.exchange}
-            {model.price}
-            {model.quantity}
-          </Typography>
-        </CardContent>
+        <ListItem>
+          <ListItemText inset={true}>
+            <Typography variant="body2" color="text.secondary">
+              {[
+                Number(model.quantity),
+                ' x ',
+                Number(model.price),
+                currenciesStore.symbol(model.currency),
+                ' + ',
+                Number(model.commission),
+                currenciesStore.symbol(model.currency),
+              ].join('')}
+            </Typography>
+          </ListItemText>
+          <ListItemSecondaryAction>
+            <IconButton
+              onClick={editHandler}
+              aria-label={intlStore.formatMessage("app.common.actions.edit")}
+            >
+              <EditIcon/>
+            </IconButton>
 
-        <CardActions disableSpacing sx={{justifyContent: 'end'}}>
-          <IconButton
-            onClick={editHandler}
-            aria-label={intlStore.formatMessage("app.common.actions.edit")}
-          >
-            <EditIcon/>
-          </IconButton>
-
-          <IconButton
-            onClick={deleteHandler}
-            aria-label={intlStore.formatMessage("app.common.actions.delete")}
-          >
-            <DeleteIcon/>
-          </IconButton>
-        </CardActions>
+            <IconButton
+              onClick={deleteHandler}
+              aria-label={intlStore.formatMessage("app.common.actions.delete")}
+            >
+              <DeleteIcon/>
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider/>
       </Collapse>
-    </Card>
+    </Fragment>
   );
 });

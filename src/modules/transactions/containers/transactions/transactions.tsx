@@ -13,7 +13,7 @@ export const Transactions = observer(() => {
   const transferStore = useTransactionsTransferStore();
   const intlStore = useIntlStore();
 
-  const addHandler = useCallback(() => store.setDetailsMode(true), [store]);
+  const addHandler = useCallback(() => store.toggleDetailsMode(), [store]);
 
   const clearHandler = useCallback(()=>transferStore.clearAllTransactions(), [transferStore]);
   const importHandler = useCallback(()=>transferStore.importTransactions(), [transferStore]);

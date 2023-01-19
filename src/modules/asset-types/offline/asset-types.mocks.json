@@ -1,8 +1,8 @@
 [
-  {"_id": "1", "isSystem": true, "name": "CURRENCY"},
-  {"_id": "2", "isSystem": true, "name": "EQUITY"},
-  {"_id": "3", "isSystem": true, "name": "BOND"},
-  {"_id": "4", "isSystem": true, "name": "FUTURE"},
-  {"_id": "5", "isSystem": true, "name": "ETF"},
-  {"_id": "6", "isSystem": true, "name": "MUTUALFUND"}
+  {"_id": "CURRENCY", "isSystem": true, "name": "CURRENCY"},
+  {"_id": "EQUITY", "isSystem": true, "name": "EQUITY"},
+  {"_id": "BOND", "isSystem": true, "name": "BOND"},
+  {"_id": "FUTURE", "isSystem": true, "name": "FUTURE"},
+  {"_id": "ETF", "isSystem": true, "name": "ETF"},
+  {"_id": "MUTUALFUND", "isSystem": true, "name": "MUTUALFUND"}
 ]

@@ -1,6 +1,7 @@
 import {IDbMigration} from "@vitologi/local-db";
 import mocks from './asset-types.mocks.json';
 
+// TODO: need to use enum values
 export const assetTypesMigrations: IDbMigration[] = [
   {
     async up(db): Promise<void> {

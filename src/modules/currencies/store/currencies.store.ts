@@ -25,6 +25,7 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
       enabledList: computed,
       sortedByEnablingList: computed,
       toggleEnabled: action,
+      symbol: action,
     });
 
     this.enabled = this.storageService.get(ENABLED_CURRENCIES, ["USD", "EUR"]);
@@ -57,6 +58,11 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
     return (code: string) => {
       return this.enabled.includes(code);
     }
+  }
+
+  symbol(id: string | null): string {
+    const currency = this.list.find((item)=>item.id === id)
+    return currency ? currency.symbol_native : '';
   }
 
   toggleEnabled(code: string): void {

@@ -1,7 +1,7 @@
 import {Model} from "../../../../shared/models/model";
 import {ITransactionDto} from "../dtos/transaction.dto";
 import {TransactionsStore} from "../../store/transactions.store";
-import {computed, makeObservable, observable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 import {TransactionAction} from "../enums/transaction-action";
 
 export class Transaction extends Model<ITransactionDto, TransactionsStore>{
@@ -32,6 +32,11 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
       exchange: observable,
       date: computed,
       isPositive: computed,
+      bookTotal: computed,
+      adjustments: computed,
+      total: computed,
+      amountPipe: action,
+      currencyPipe: action,
     });
   }
 
@@ -46,19 +51,35 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
   get isPositive(): boolean {
     switch (this.action){
       case TransactionAction.Deposit:
-      case TransactionAction.Buy:
+      case TransactionAction.Sell:
       case TransactionAction.Dividend:
       case TransactionAction.Coupon:
       case TransactionAction.DRIP:
         return true;
 
-
+      case TransactionAction.Buy:
       case TransactionAction.Withdrawal:
-      case TransactionAction.Sell:
       case TransactionAction.Loss:
       default:
         return false;
     }
+  }
+
+  get bookTotal(): number{
+    return this.price*this.quantity;
+  }
+
+  get adjustments(): number{
+    return this.commission * ([
+      TransactionAction.Dividend,
+      TransactionAction.Sell,
+      TransactionAction.Deposit,
+      TransactionAction.Coupon,
+    ].includes(this.action) ? -1 : 1);
+  }
+
+  get total(): number {
+    return this.bookTotal+this.adjustments;
   }
 
   get asDto(): ITransactionDto {
@@ -93,5 +114,57 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
     this.currency = dto.currency;
     this.portfolio = dto.portfolio;
     this.exchange = dto.exchange;
+  }
+
+  // isCurrency(){
+  //   return this.store.isCurrency(this.security);
+  // }
+  //
+  // totalInCurrency(targetSumbol = "USD"){
+  //   return this.total*this.store.getExchangeRate(targetSumbol, this.currency, this.date);
+  // }
+
+  // clone(){
+  //   return new Transaction([
+  //     this._date,
+  //     this.type,
+  //     this.security,
+  //     this.currency,
+  //     this.action,
+  //     this.quantity,
+  //     this.price,
+  //     this.comission,
+  //     this.account,
+  //   ],this.exchange);
+  // }
+
+  amountPipe(initial:number): number {
+    switch(this.action){
+      case TransactionAction.Buy:
+        return initial+this.quantity;
+
+      case TransactionAction.Withdrawal:
+      case TransactionAction.Sell:
+        return initial-this.quantity;
+
+      default:
+        return initial;
+    }
+  }
+
+  currencyPipe(initial:number): number {
+    switch(this.action){
+      case TransactionAction.Buy:
+        return initial-this.total;
+
+      case TransactionAction.Deposit:
+      case TransactionAction.Coupon:
+      case TransactionAction.Dividend:
+      case TransactionAction.Sell:
+        return initial+this.total;
+
+      default:
+        return initial;
+    }
   }
 }
