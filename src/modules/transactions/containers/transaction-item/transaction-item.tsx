@@ -19,6 +19,7 @@ import {observer} from "mobx-react-lite";
 import {FormattedMessage} from "react-intl";
 import {SystemAssetTypes} from "../../../asset-types/shared/enums/system-asset-types";
 import {useCurrenciesStore} from "../../../currencies/store/currencies.selector";
+import {usePortfoliosStore} from "../../../portfolios/store/portfolios.selector";
 
 interface IProps {
   model: Transaction;
@@ -29,6 +30,7 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
   const intlStore = useIntlStore();
   const store = useTransactionsStore();
   const currenciesStore = useCurrenciesStore();
+  const portfolioStore = usePortfoliosStore();
 
   const [expanded, setExpanded] = useState(false);
 
@@ -79,7 +81,7 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
         </ListItemAvatar>
         <ListItemText
           primary={<FormattedMessage id={`app.transactions.actions.${model.action}`}/>}
-          secondary={[model.security, ' (', model.portfolio, ')'].join('')}
+          secondary={[model.security, ' (', portfolioStore.name(model.portfolio), ')'].join('')}
         />
         <ListItemText
           primary={`${model.isPositive ? '+' : '-'} ${model.total.toFixed(2)} ${model.currency}`}

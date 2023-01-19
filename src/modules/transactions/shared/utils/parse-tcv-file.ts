@@ -1,5 +1,8 @@
 export function parseTcvFile(data: string): { [key: string]: string }[] {
-  const rows = data.split('\n').map((row) => row.split('\t'));
+  const rows = data
+    .replaceAll('\r','')
+    .split('\n')
+    .map((row) => row.split('\t'));
   const header = rows.shift();
 
   if (!header) {
