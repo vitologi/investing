@@ -18,7 +18,7 @@ export const TransactionList = observer(() => {
       return;
     }
 
-    if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight) {
+    if ((window.innerHeight + window.scrollY + 10 /* PWA fix */) >= document.documentElement.scrollHeight) {
       setVisibleItems((length) => length + 10);
     }
 

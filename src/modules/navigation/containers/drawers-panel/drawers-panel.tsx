@@ -6,7 +6,11 @@ import {
   List,
   ListSubheader,
 } from '@mui/material';
-import {Dashboard as DashboardIcon, LocalLibrary as LocalLibraryIcon} from '@mui/icons-material';
+import {
+  Dashboard as DashboardIcon,
+  LocalLibrary as LocalLibraryIcon,
+  Settings as SettingsIcon,
+} from '@mui/icons-material';
 import {observer} from 'mobx-react-lite';
 import {Link} from 'react-router-dom';
 
@@ -55,6 +59,14 @@ export const DrawersPanel = observer(() => {
         color={getGroupColor(['/dictionaries'])}
         size="large">
         <LocalLibraryIcon/>
+      </IconButton>
+
+      <IconButton
+        component={Link}
+        to="settings"
+        color={getGroupColor(['/settings'])}
+        size="large">
+        <SettingsIcon/>
       </IconButton>
     </ListSubheader>
   );

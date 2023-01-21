@@ -13,8 +13,8 @@ import ObjectId from "bson-objectid";
 import {TransactionAction} from "../shared/enums/transaction-action";
 import {json2Tsv} from "../shared/utils/json-2-tsv";
 import {saveAs} from "file-saver";
-import {IntlStore} from "../../intl/store/intl.store";
 import {Portfolio} from "../../portfolios/shared/models/portfolio";
+import {AssetType} from "../../asset-types/shared/models/asset-type";
 
 @injectable()
 export class TransactionsTransferStore {
@@ -25,7 +25,6 @@ export class TransactionsTransferStore {
     @inject('PortfoliosStore') private portfoliosStore: PortfoliosStore,
     @inject('ExchangeStore') private exchangeStore: ExchangeStore,
     @inject('AssetTypesStore') private assetTypesStore: AssetTypesStore,
-    @inject('IntlStore') private intlStore: IntlStore,
   ) {
     makeObservable(this, {
       exportTransactions: action,
@@ -58,6 +57,7 @@ export class TransactionsTransferStore {
     const {type = ImportType.CSV} = props;
     let text: string;
     let portfolioModel: Portfolio;
+    let assetTypeModel: AssetType;
 
     if (!this.transactionsStore.list.length) {
       return;
@@ -78,11 +78,18 @@ export class TransactionsTransferStore {
             resultPortfolio = portfolioModel.name;
           }
 
+          let resultAssetType = '';
+          if (assetType) {
+            assetTypeModel = this.assetTypesStore.item(assetType) || this.assetTypesStore.list[0];
+            resultAssetType = assetTypeModel.name;
+          }
+
           return {
-            date: item.date.toLocaleDateString(this.intlStore.locale),
+            date: item.date.toLocaleDateString('en'), // only ISO date format
             portfolio: resultPortfolio,
-            assetType, security, action: actionResult, quantity,
-            price, commission, currency, exchange
+            assetType: resultAssetType,
+            action: actionResult,
+            security, quantity, price, commission, currency, exchange
           }
         }));
         saveAs(new Blob([text], {type: "text/plain;charset=utf-8"}), "investing.dump.csv");
