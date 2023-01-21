@@ -11,6 +11,7 @@ import {Titled} from "../../../navigation/containers/titled/titled";
 import {observer} from "mobx-react-lite";
 import {NotFound} from "../../../../shared/components/not-found/not-found";
 import {Transactions} from "../../../transactions/containers/transactions/transactions";
+import {Settings} from "../../../settings/containers/settings/settings";
 
 const Dictionaries = lazy(() => import("../../../dictionaries/containers/dictionaries/dictionaries"));
 const Dashboard = lazy(() => import("../../../dashboard/containers/dashboard/dashboard"));
@@ -43,6 +44,13 @@ export const App = observer(() => {
               path="transactions/*"
               element={<Titled title="app.titles.transactions">
                 <Transactions/>
+              </Titled>}
+            />
+
+            <Route
+              path="settings/*"
+              element={<Titled title="app.titles.settings">
+                <Settings/>
               </Titled>}
             />
 

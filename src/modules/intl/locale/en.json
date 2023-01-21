@@ -64,6 +64,7 @@
   "app.titles.exchanges": "Exchanges",
   "app.titles.portfolios": "Portfolios",
   "app.titles.transactions": "Transactions",
+  "app.titles.settings": "Settings",
   "app.titles.error": "page not found",
   "app.errors.404": "requested page not found",
   "app.errors.inDevelop": "page {pageName} currently in develop",
@@ -99,6 +100,9 @@
   "app.transactions.actions.Loss": "Loss",
   "app.transactions.item.avatarLabelAdd": "Add transaction",
   "app.transactions.item.avatarLabelSubtract": "Subtract transaction",
+  "app.transactions.actions.clearAll": "Clear all transactions",
+  "app.transactions.actions.import": "Import transactions",
+  "app.transactions.actions.export": "Export transactions",
   "app.portfolios.title.list": "Portfolio list",
   "app.portfolios.title.new": "Portfolio"
 }
