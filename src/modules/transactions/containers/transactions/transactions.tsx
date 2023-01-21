@@ -17,6 +17,7 @@ export const Transactions = observer(() => {
 
   const clearHandler = useCallback(()=>transferStore.clearAllTransactions(), [transferStore]);
   const importHandler = useCallback(()=>transferStore.importTransactions(), [transferStore]);
+  const exportHandler = useCallback(()=>transferStore.exportTransactions(), [transferStore]);
 
   return (
     <>
@@ -27,6 +28,7 @@ export const Transactions = observer(() => {
       {/*TODO: temp*/}
       <Button onClick={clearHandler}>clear all transactions</Button>
       <Button onClick={importHandler}>import transactions</Button>
+      <Button onClick={exportHandler}>export transactions</Button>
 
       <Fab
         onClick={addHandler}

@@ -10,14 +10,14 @@ import {StorageService} from "../../../shared/services/storage.service";
 const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
 @injectable()
-export class ExchangeStore extends  DomainStore<IExchangeDto, Exchange>{
+export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
   enabled: string[];
 
   constructor(
     @inject('ExchangeService') exchangeService: ExchangeService,
     @inject('IntlStore') private intlStore: IntlStore,
     @inject('StorageService') private storageService: StorageService,
-    ) {
+  ) {
     super(exchangeService);
     makeObservable(this, {
       enabled: observable,
@@ -25,6 +25,8 @@ export class ExchangeStore extends  DomainStore<IExchangeDto, Exchange>{
       enabledList: computed,
       sortedByEnablingList: computed,
       toggleEnabled: action,
+      getExchangeBySuffix: action,
+      getExchangeByMic: action,
     });
 
     this.enabled = this.storageService.get(ENABLED_EXCHANGES, ["XNYS", "XNAS"]);
@@ -37,8 +39,8 @@ export class ExchangeStore extends  DomainStore<IExchangeDto, Exchange>{
     );
 
     reaction(
-      ()=>this.intlStore.locale,
-      (locale)=>{
+      () => this.intlStore.locale,
+      (locale) => {
         this.load(locale);
       }
     )
@@ -60,11 +62,21 @@ export class ExchangeStore extends  DomainStore<IExchangeDto, Exchange>{
   }
 
   toggleEnabled(code: string): void {
-    if(this.enabled.includes(code)){
-      this.enabled.splice(this.enabled.indexOf(code),1);
-    }else {
+    if (this.enabled.includes(code)) {
+      this.enabled.splice(this.enabled.indexOf(code), 1);
+    } else {
       this.enabled.push(code);
     }
+  }
+
+  getExchangeByMic(mic: string): string | null {
+    const model = this.list.find((item)=>item.mic === mic);
+    return model ? model.id : null;
+  }
+
+  getExchangeBySuffix(suffix: string): string | null {
+    const model = this.list.find((item) => item.yahooSuffix === suffix);
+    return model ? model.id : null;
   }
 
   createEmpty(): Exchange {

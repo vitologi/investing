@@ -3,7 +3,7 @@ import {action, makeObservable} from 'mobx';
 import {ImportType} from "../shared/enums/import-type";
 import {TransactionsStore} from "./transactions.store";
 import {uploadFile} from "../../../shared/utils/upload-file-content";
-import {parseTcvFile} from "../shared/utils/parse-tcv-file";
+import {tsv2Json} from "../shared/utils/tsv-2-json";
 import {ITransactionDto} from "../shared/dtos/transaction.dto";
 import {CurrenciesStore} from "../../currencies/store/currencies.store";
 import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
@@ -11,6 +11,10 @@ import {ExchangeStore} from "../../exchanges/store/exchange.store";
 import {AssetTypesStore} from "../../asset-types/store/asset-types.store";
 import ObjectId from "bson-objectid";
 import {TransactionAction} from "../shared/enums/transaction-action";
+import {json2Tsv} from "../shared/utils/json-2-tsv";
+import {saveAs} from "file-saver";
+import {IntlStore} from "../../intl/store/intl.store";
+import {Portfolio} from "../../portfolios/shared/models/portfolio";
 
 @injectable()
 export class TransactionsTransferStore {
@@ -21,23 +25,25 @@ export class TransactionsTransferStore {
     @inject('PortfoliosStore') private portfoliosStore: PortfoliosStore,
     @inject('ExchangeStore') private exchangeStore: ExchangeStore,
     @inject('AssetTypesStore') private assetTypesStore: AssetTypesStore,
+    @inject('IntlStore') private intlStore: IntlStore,
   ) {
     makeObservable(this, {
+      exportTransactions: action,
       importTransactions: action,
       clearAllTransactions: action,
     });
   }
 
   async importTransactions(props: { type?: ImportType } = {}): Promise<void> {
-    const {type = ImportType.TSV} = props;
+    const {type = ImportType.CSV} = props;
     let text: string;
     const dtos: ITransactionDto[] = [];
 
     switch (type) {
-      case ImportType.TSV:
+      case ImportType.CSV:
       default:
         text = await uploadFile();
-        for (const obj of parseTcvFile(text)) {
+        for (const obj of tsv2Json(text)) {
           dtos.push(await this.validateTransaction(obj));
         }
         break;
@@ -48,8 +54,44 @@ export class TransactionsTransferStore {
     }
   }
 
+  async exportTransactions(props: { type?: ImportType } = {}): Promise<void> {
+    const {type = ImportType.CSV} = props;
+    let text: string;
+    let portfolioModel: Portfolio;
+
+    if (!this.transactionsStore.list.length) {
+      return;
+    }
+
+    switch (type) {
+      case ImportType.CSV:
+      default:
+        text = json2Tsv(this.transactionsStore.list.map((item) => {
+          const {
+            assetType, security, action: actionResult, quantity,
+            price, commission, currency, portfolio, exchange,
+          } = item.asDto;
+
+          let resultPortfolio = '';
+          if (portfolio) {
+            portfolioModel = this.portfoliosStore.item(portfolio) || this.portfoliosStore.list[0];
+            resultPortfolio = portfolioModel.name;
+          }
+
+          return {
+            date: item.date.toLocaleDateString(this.intlStore.locale),
+            portfolio: resultPortfolio,
+            assetType, security, action: actionResult, quantity,
+            price, commission, currency, exchange
+          }
+        }));
+        saveAs(new Blob([text], {type: "text/plain;charset=utf-8"}), "investing.dump.csv");
+        break;
+    }
+  }
+
   async clearAllTransactions(): Promise<void> {
-    const dtos = this.transactionsStore.list.map((item)=>item.asDto);
+    const dtos = this.transactionsStore.list.map((item) => item.asDto);
     for (const dto of dtos) {
       await this.transactionsStore.delete(dto);
     }
@@ -57,28 +99,26 @@ export class TransactionsTransferStore {
 
   private async validateTransaction(data: { [key: string]: string }): Promise<ITransactionDto> {
     const {
-      _date, assetType, security, action: dataAction, quantity,
+      date, assetType, security, action: dataAction, quantity,
       price, commission, currency, portfolio, exchange
     } = data;
 
     const _id = new ObjectId().toHexString();
-    const resultDate = new Date(_date).getTime();
+    const resultDate = new Date(date).getTime();
 
-    let resultExchange;
+    let resultExchange = null;
     let resultSecurity
-    if(security){
-      if(security.includes('.')){
+    if (security) {
+      if (security.includes('.')) {
         const [sec, exch] = security.split('.');
         resultSecurity = sec;
-        resultExchange = exch;
-      }else {
+        resultExchange = this.exchangeStore.getExchangeBySuffix('.' + exch);
+      } else {
         resultSecurity = security;
       }
-    }else{
+    } else {
       resultSecurity = '-';
     }
-
-
 
     let resultAssetType = '';
     if (assetType) {
@@ -108,14 +148,12 @@ export class TransactionsTransferStore {
       resultPortfolio = this.portfoliosStore.list[0].id;
     }
 
-    if(exchange){
-      const exchangeModel = this.exchangeStore.list.find((item)=>item.mic === exchange);
-      if(!exchangeModel){
+    if (exchange) {
+      const exchangeId = this.exchangeStore.getExchangeByMic(exchange);
+      if (!exchangeId) {
         alert(`Exchange ${exchange} hadn't been found in system.`)
       }
       resultExchange = exchange;
-    }else if(!resultExchange){
-      resultExchange = this.exchangeStore.enabledList[0].mic;
     }
 
 
