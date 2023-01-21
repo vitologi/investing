@@ -41,7 +41,7 @@ export const App = observer(() => {
 
             <Route
               path="transactions/*"
-              element={<Titled title="app.titles.error">
+              element={<Titled title="app.titles.transactions">
                 <Transactions/>
               </Titled>}
             />

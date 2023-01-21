@@ -343,9 +343,6 @@ export const TransactionsForm = observer(() => {
           <Controller
             name={"exchange"}
             control={control}
-            rules={{
-              required: "app.common.form.rules.required",
-            }}
             render={({field, fieldState: {error}}) => (
               <Observer>{() => (
                 <FormControl fullWidth={true}>

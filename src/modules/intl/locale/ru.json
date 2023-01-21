@@ -71,6 +71,8 @@
   "app.navigation.drawersPanel.logout": "Выйти",
   "app.navigation.drawersPanel.login": "Войти",
   "app.navigation.navigationPanel.login": "Войти",
+  "app.assetTypes.title.list": "Список типов активов",
+  "app.assetTypes.title.new": "Тип актива",
   "app.assetTypes.type.EQUITY": "Акция",
   "app.assetTypes.type.BOND": "Облигация",
   "app.assetTypes.type.FUTURE": "Опцион",
@@ -96,5 +98,7 @@
   "app.transactions.actions.Withdrawal": "Вывод",
   "app.transactions.actions.Loss": "Потеря",
   "app.transactions.item.avatarLabelAdd": "Добавление актива",
-  "app.transactions.item.avatarLabelSubtract": "Удаление актива"
+  "app.transactions.item.avatarLabelSubtract": "Удаление актива",
+  "app.portfolios.title.list": "Список портфелей",
+  "app.portfolios.title.new": "Портфель"
 }

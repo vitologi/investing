@@ -3,13 +3,17 @@ import {ITransactionDto} from "../dtos/transaction.dto";
 import {TransactionsStore} from "../../store/transactions.store";
 import {action, computed, makeObservable, observable} from "mobx";
 import {TransactionAction} from "../enums/transaction-action";
+import {AssetType} from "../../../asset-types/shared/models/asset-type";
+import {Portfolio} from "../../../portfolios/shared/models/portfolio";
+import {Exchange} from "../../../exchanges/shared/models/exchange";
+import {Currency} from "../../../currencies/shared/models/currency";
 
-export class Transaction extends Model<ITransactionDto, TransactionsStore>{
+export class Transaction extends Model<ITransactionDto, TransactionsStore> {
   _date = (new Date()).getTime();
   assetType: string | null = null;
   security: string | null = null;
   action: TransactionAction = TransactionAction.Deposit;
-  quantity= 0;
+  quantity = 0;
   price = 0;
   commission = 0;
   currency: string | null = null;
@@ -37,19 +41,23 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
       total: computed,
       amountPipe: action,
       currencyPipe: action,
+      setAssetType: action,
+      setPortfolio: action,
+      setExchange: action,
+      setCurrency: action,
     });
   }
 
-  get date() : Date {
+  get date(): Date {
     return new Date(this._date);
   }
 
-  set date(value: Date){
+  set date(value: Date) {
     this._date = value.getTime();
   }
 
   get isPositive(): boolean {
-    switch (this.action){
+    switch (this.action) {
       case TransactionAction.Deposit:
       case TransactionAction.Sell:
       case TransactionAction.Dividend:
@@ -65,11 +73,11 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
     }
   }
 
-  get bookTotal(): number{
-    return this.price*this.quantity;
+  get bookTotal(): number {
+    return this.price * this.quantity;
   }
 
-  get adjustments(): number{
+  get adjustments(): number {
     return this.commission * ([
       TransactionAction.Dividend,
       TransactionAction.Sell,
@@ -79,7 +87,7 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
   }
 
   get total(): number {
-    return this.bookTotal+this.adjustments;
+    return this.bookTotal + this.adjustments;
   }
 
   get asDto(): ITransactionDto {
@@ -97,6 +105,24 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
       exchange: this.exchange,
     };
   }
+
+
+  setAssetType(value: AssetType | null): void {
+    this.assetType = value ? value.id : null;
+  }
+
+  setPortfolio(value: Portfolio | null): void {
+    this.portfolio = value ? value.id : null;
+  }
+
+  setExchange(value: Exchange | null): void {
+    this.exchange = value ? value.id : null;
+  }
+
+  setCurrency(value: Currency | null): void {
+    this.currency = value ? value.id : null;
+  }
+
   dispose(): void {
   }
 
@@ -138,30 +164,30 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore>{
   //   ],this.exchange);
   // }
 
-  amountPipe(initial:number): number {
-    switch(this.action){
+  amountPipe(initial: number): number {
+    switch (this.action) {
       case TransactionAction.Buy:
-        return initial+this.quantity;
+        return initial + this.quantity;
 
       case TransactionAction.Withdrawal:
       case TransactionAction.Sell:
-        return initial-this.quantity;
+        return initial - this.quantity;
 
       default:
         return initial;
     }
   }
 
-  currencyPipe(initial:number): number {
-    switch(this.action){
+  currencyPipe(initial: number): number {
+    switch (this.action) {
       case TransactionAction.Buy:
-        return initial-this.total;
+        return initial - this.total;
 
       case TransactionAction.Deposit:
       case TransactionAction.Coupon:
       case TransactionAction.Dividend:
       case TransactionAction.Sell:
-        return initial+this.total;
+        return initial + this.total;
 
       default:
         return initial;

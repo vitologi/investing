@@ -71,6 +71,8 @@
   "app.navigation.drawersPanel.logout": "Logout",
   "app.navigation.drawersPanel.login": "Login",
   "app.navigation.navigationPanel.login": "Login",
+  "app.assetTypes.title.list": "Asset type list",
+  "app.assetTypes.title.new": "Asset type",
   "app.assetTypes.type.EQUITY": "Equity",
   "app.assetTypes.type.BOND": "Bond",
   "app.assetTypes.type.FUTURE": "Future",
@@ -96,5 +98,7 @@
   "app.transactions.actions.Withdrawal": "Withdrawal",
   "app.transactions.actions.Loss": "Loss",
   "app.transactions.item.avatarLabelAdd": "Add transaction",
-  "app.transactions.item.avatarLabelSubtract": "Subtract transaction"
+  "app.transactions.item.avatarLabelSubtract": "Subtract transaction",
+  "app.portfolios.title.list": "Portfolio list",
+  "app.portfolios.title.new": "Portfolio"
 }

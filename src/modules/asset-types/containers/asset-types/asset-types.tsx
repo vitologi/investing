@@ -12,7 +12,7 @@ export const AssetTypes = observer(() => {
       <Route
         index
         element={
-          <Titled title="app.titles.error">
+          <Titled title="app.assetTypes.title.list">
             <AssetTypeList/>
           </Titled>
         }
@@ -20,7 +20,7 @@ export const AssetTypes = observer(() => {
 
       <Route
         path="new/*"
-        element={<Titled title="app.titles.error"><AssetTypeForm/></Titled>}
+        element={<Titled title="app.assetTypes.title.new"><AssetTypeForm/></Titled>}
       />
 
       <Route
