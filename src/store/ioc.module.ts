@@ -16,6 +16,9 @@ import {ExchangeStore} from "../modules/exchanges/store/exchange.store";
 import {ExchangeService} from "../modules/exchanges/shared/services/exchange.service";
 import {PortfoliosService} from "../modules/portfolios/shared/services/portfolios.service";
 import {PortfoliosStore} from "../modules/portfolios/store/portfolios.store";
+import {TransactionsStore} from "../modules/transactions/store/transactions.store";
+import {TransactionsService} from "../modules/transactions/shared/services/transactions.service";
+import {TransactionsTransferStore} from "../modules/transactions/store/transactions-transfer.store";
 
 export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   // bind('OfflineService').to(OfflineService).inSingletonScope();
@@ -35,4 +38,7 @@ export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   bind('ExchangeStore').to(ExchangeStore).inSingletonScope();
   bind('PortfoliosService').to(PortfoliosService).inSingletonScope();
   bind('PortfoliosStore').to(PortfoliosStore).inSingletonScope();
+  bind('TransactionsService').to(TransactionsService).inSingletonScope();
+  bind('TransactionsStore').to(TransactionsStore).inSingletonScope();
+  bind('TransactionsTransferStore').to(TransactionsTransferStore).inSingletonScope();
 });

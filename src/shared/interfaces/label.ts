@@ -1,6 +1,4 @@
-export interface ILabel<IdentifierType = string> {
+export type ILabel<P = unknown, IdentifierType = string> = P & {
   id: IdentifierType;
   title: string;
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  [key: string]: any;
 }

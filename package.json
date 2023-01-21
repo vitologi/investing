@@ -1,6 +1,6 @@
 {
   "name": "@vitologi/investing",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "homepage": "https://investing.vitologi.com",
   "private": true,
   "dependencies": {
@@ -18,6 +18,7 @@
     "bson-objectid": "^2.0.4",
     "currency-list": "^1.0.8",
     "date-fns": "^2.29.3",
+    "file-saver": "^2.0.5",
     "inversify": "^6.0.1",
     "mobx": "^6.7.0",
     "mobx-react-lite": "^3.4.0",
@@ -52,6 +53,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/enzyme": "^3.10.12",
+    "@types/file-saver": "^2.0.5",
     "@types/jest": "^29.2.4",
     "@types/material-ui": "^0.21.12",
     "@types/node": "^18.11.17",

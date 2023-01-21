@@ -10,6 +10,7 @@ import {Routes, Route} from "react-router-dom";
 import {Titled} from "../../../navigation/containers/titled/titled";
 import {observer} from "mobx-react-lite";
 import {NotFound} from "../../../../shared/components/not-found/not-found";
+import {Transactions} from "../../../transactions/containers/transactions/transactions";
 
 const Dictionaries = lazy(() => import("../../../dictionaries/containers/dictionaries/dictionaries"));
 const Dashboard = lazy(() => import("../../../dashboard/containers/dashboard/dashboard"));
@@ -35,6 +36,13 @@ export const App = observer(() => {
               path="dictionaries/*"
               element={<Titled title="app.titles.dictionaries">
                 <Dictionaries/>
+              </Titled>}
+            />
+
+            <Route
+              path="transactions/*"
+              element={<Titled title="app.titles.transactions">
+                <Transactions/>
               </Titled>}
             />
 

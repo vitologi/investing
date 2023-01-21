@@ -12,7 +12,7 @@ export const Portfolios = observer(() => {
       <Route
         index
         element={
-          <Titled title="app.titles.error">
+          <Titled title="app.portfolios.title.list">
             <PortfolioList/>
           </Titled>
         }
@@ -20,7 +20,7 @@ export const Portfolios = observer(() => {
 
       <Route
         path="new/*"
-        element={<Titled title="app.titles.error"><PortfolioForm/></Titled>}
+        element={<Titled title="app.portfolios.title.new"><PortfolioForm/></Titled>}
       />
 
       <Route

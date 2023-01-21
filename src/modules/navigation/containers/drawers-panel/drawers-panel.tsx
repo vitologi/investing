@@ -6,7 +6,7 @@ import {
   List,
   ListSubheader,
 } from '@mui/material';
-import {  Dashboard as DashboardIcon, LocalLibrary as LocalLibraryIcon} from '@mui/icons-material';
+import {Dashboard as DashboardIcon, LocalLibrary as LocalLibraryIcon} from '@mui/icons-material';
 import {observer} from 'mobx-react-lite';
 import {Link} from 'react-router-dom';
 
@@ -14,30 +14,47 @@ import {LanguageSwitcher} from '../../../intl';
 import {DrawerItem} from '../../components/drawer-item/drawer-item';
 import {useDrawersPanelStore} from '../../store/drawers-panel.selector';
 import {useNavigationPanelStore} from '../../store/navigation-panel.selector';
+import {useCallback} from "react";
 
 export const DrawersPanel = observer(() => {
   const store = useDrawersPanelStore();
   const navigationStore = useNavigationPanelStore();
-  const includeCurrentRoute = (route: string): boolean => navigationStore.path.startsWith(route);
-  const getGroupColor = (route: string): 'inherit' | 'primary' => (includeCurrentRoute(route) ? 'primary' : 'inherit');
+
+  const includeCurrentRoute = useCallback(
+    (route: string): boolean => navigationStore.path.startsWith(route),
+    [navigationStore]
+  );
+
+  const getGroupColor = useCallback((routes: string[]): 'inherit' | 'primary' => {
+    for (const route of routes) {
+      if (
+        navigationStore.path === route
+        || route !== '/' && includeCurrentRoute(route)
+      ) {
+        return 'primary';
+      }
+    }
+
+    return 'inherit';
+  }, [navigationStore, includeCurrentRoute]);
 
   // TODO: integrate route active link
   const header = (
     <ListSubheader component="div" id="nested-list-subheader">
       <IconButton
         component={Link}
-        to="dashboard"
-        color={getGroupColor('/dashboard')}
+        to="/"
+        color={getGroupColor(['/', '/transactions'])}
         size="large">
-        <DashboardIcon />
+        <DashboardIcon/>
       </IconButton>
 
       <IconButton
         component={Link}
         to="dictionaries"
-        color={getGroupColor('/dictionaries')}
+        color={getGroupColor(['/dictionaries'])}
         size="large">
-        <LocalLibraryIcon />
+        <LocalLibraryIcon/>
       </IconButton>
     </ListSubheader>
   );
@@ -62,27 +79,30 @@ export const DrawersPanel = observer(() => {
             backgroundColor: 'background.paper',
           }}
         >
-          {includeCurrentRoute('/dashboard') && (
-            <>
 
-            </>
-          )}
-
-          {includeCurrentRoute('/dictionaries') && (
-            <>
-              <DrawerItem url="dictionaries/asset-types" name="app.titles.assetTypes" />
-              <DrawerItem url="dictionaries/currencies" name="app.titles.currencies" />
-              <DrawerItem url="dictionaries/exchanges" name="app.titles.exchanges" />
-              <DrawerItem url="dictionaries/portfolios" name="app.titles.portfolios" />
-            </>
-          )}
+          {includeCurrentRoute('/dictionaries')
+            ? (
+              <>
+                <DrawerItem url="dictionaries/asset-types" name="app.titles.assetTypes"/>
+                <DrawerItem url="dictionaries/currencies" name="app.titles.currencies"/>
+                <DrawerItem url="dictionaries/exchanges" name="app.titles.exchanges"/>
+                <DrawerItem url="dictionaries/portfolios" name="app.titles.portfolios"/>
+              </>
+            )
+            : (
+              <>
+                <DrawerItem url="/" name="app.titles.dashboard"/>
+                <DrawerItem url="transactions" name="app.titles.transactions"/>
+              </>
+            )
+          }
 
 
         </List>
 
-        <Divider />
+        <Divider/>
 
-        <LanguageSwitcher />
+        <LanguageSwitcher/>
       </Box>
     </Drawer>
   );

@@ -10,10 +10,10 @@ import {Portfolios} from "../../../portfolios/containers/portfolios/portfolios";
 const Dictionaries = observer((): JSX.Element => {
   return (
     <Routes>
-      <Route path="portfolios/*" element={<Titled title="app.titles.error"><Portfolios /></Titled>} />
-      <Route path="currencies/*" element={<Titled title="app.titles.error"><Currencies /></Titled>} />
-      <Route path="exchanges/*" element={<Titled title="app.titles.error"><Exchanges /></Titled>} />
-      <Route path="asset-types/*" element={<Titled title="app.titles.error"><AssetTypes /></Titled>} />
+      <Route path="portfolios/*" element={<Titled title="app.titles.portfolios"><Portfolios /></Titled>} />
+      <Route path="currencies/*" element={<Titled title="app.titles.currencies"><Currencies /></Titled>} />
+      <Route path="exchanges/*" element={<Titled title="app.titles.exchanges"><Exchanges /></Titled>} />
+      <Route path="asset-types/*" element={<Titled title="app.titles.assetTypes"><AssetTypes /></Titled>} />
     </Routes>
   );
 });
