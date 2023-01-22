@@ -29,6 +29,7 @@ export class TransactionsStore extends DomainStore<ITransactionDto, Transaction>
       chooseTransaction: action,
       clearAllTransactions: action,
       toggleDetailsMode: action,
+      isCurrency: action,
     });
   }
 
@@ -58,6 +59,10 @@ export class TransactionsStore extends DomainStore<ITransactionDto, Transaction>
 
   chooseTransaction(value: Transaction): void {
     this.editedId = value.id;
+  }
+
+  isCurrency(security: string | null): boolean {
+    return !!this.currenciesStore.list.find((item) => item.code === security);
   }
 
   createEmpty(): Transaction {

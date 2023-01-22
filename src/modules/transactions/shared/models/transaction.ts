@@ -34,6 +34,7 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> {
       currency: observable,
       portfolio: observable,
       exchange: observable,
+      isCurrency: computed,
       date: computed,
       isPositive: computed,
       bookTotal: computed,
@@ -46,6 +47,10 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> {
       setExchange: action,
       setCurrency: action,
     });
+  }
+
+  get isCurrency(){
+    return this.store.isCurrency(this.security);
   }
 
   get date(): Date {
@@ -142,9 +147,7 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> {
     this.exchange = dto.exchange;
   }
 
-  // isCurrency(){
-  //   return this.store.isCurrency(this.security);
-  // }
+
   //
   // totalInCurrency(targetSumbol = "USD"){
   //   return this.total*this.store.getExchangeRate(targetSumbol, this.currency, this.date);

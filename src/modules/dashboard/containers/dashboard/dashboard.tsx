@@ -1,8 +1,19 @@
 import {observer} from 'mobx-react-lite';
+import Grid2 from "@mui/material/Unstable_Grid2";
+import {Tickers} from "../../../tickers/containers/tickers/transactions";
+import {Paper} from "@mui/material";
 
 const Dashboard = observer((): JSX.Element =>{
   return  (
-    <div>dashboard</div>
+    <Grid2 container={true} p={2}>
+      <Grid2 xs={12} sm={12} md={6}>
+        <Tickers/>
+      </Grid2>
+
+      <Grid2 xs={12} sm={12} md={6}>
+        <Paper></Paper>
+      </Grid2>
+    </Grid2>
   );
 });
 
