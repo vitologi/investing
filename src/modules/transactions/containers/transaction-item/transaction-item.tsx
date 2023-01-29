@@ -1,17 +1,22 @@
 import {Transaction} from "../../shared/models/transaction";
 import {
-  Collapse, Divider,  IconButton, ListItem, ListItemAvatar,
-  ListItemSecondaryAction, ListItemText,  Typography
+  Collapse,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography
 } from "@mui/material";
-import {Fragment, useCallback, useState} from "react";
+import {Fragment, useCallback, useMemo, useState} from "react";
 import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
   AccountBalance as AccountBalanceIcon,
   AttachMoney as AttachMoneyIcon,
-  WorkOutline as WorkOutlineIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
   Receipt as ReceiptIcon,
-
+  WorkOutline as WorkOutlineIcon,
 } from '@mui/icons-material'
 import {useIntlStore} from "../../../intl/store/intl.selector";
 import {useTransactionsStore} from "../../store/transactions.selector";
@@ -20,6 +25,8 @@ import {FormattedMessage} from "react-intl";
 import {SystemAssetTypes} from "../../../asset-types/shared/enums/system-asset-types";
 import {useCurrenciesStore} from "../../../currencies/store/currencies.selector";
 import {usePortfoliosStore} from "../../../portfolios/store/portfolios.selector";
+import {isPositive} from "../../shared/utils/is-positive";
+import {TransactionType} from "../../shared/enums/transaction-type";
 
 interface IProps {
   model: Transaction;
@@ -34,8 +41,8 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
 
   const [expanded, setExpanded] = useState(false);
 
-  const icon = useCallback((type: SystemAssetTypes) => {
-    switch (type) {
+  const icon = useMemo(() => {
+    switch (model.assetType) {
       case SystemAssetTypes.CURRENCY:
         return <AttachMoneyIcon/>;
 
@@ -51,7 +58,7 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
       default:
         return <WorkOutlineIcon/>
     }
-  }, []);
+  }, [model.assetType]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -77,16 +84,16 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
           aria-label={intlStore.formatMessage("app.empty")}
           sx={{flexGrow: 0}}
         >
-          {icon(model.assetType as SystemAssetTypes)}
+          {icon}
         </ListItemAvatar>
         <ListItemText
-          primary={<FormattedMessage id={`app.transactions.actions.${model.action}`}/>}
-          secondary={[model.security, ' (', portfolioStore.name(model.portfolio), ')'].join('')}
+          primary={<FormattedMessage id={`app.transactions.actions.${model.type}`}/>}
+          secondary={`${model.security} (${portfolioStore.name(model.portfolio)})`}
         />
         <ListItemText
-          primary={`${model.isPositive ? '+' : '-'} ${model.total.toFixed(2)} ${model.currency}`}
+          primary={`${isPositive(model.total) ? '+' : ''}${model.total.toFixed(2)} ${model.currency}`}
           sx={{
-            color: model.isPositive ? "success.main" : "error.main",
+            color: isPositive(model.total) ? "success.main" : "error.main",
             flexGrow: 0,
           }}
         />
@@ -96,15 +103,18 @@ export const TransactionItem = observer((props: IProps): JSX.Element => {
         <ListItem>
           <ListItemText inset={true}>
             <Typography variant="body2" color="text.secondary">
-              {[
-                Number(model.quantity),
-                ' x ',
-                Number(model.price),
-                currenciesStore.symbol(model.currency),
-                ' + ',
-                Number(model.commission),
-                currenciesStore.symbol(model.currency),
-              ].join('')}
+              {[TransactionType.Buy, TransactionType.Sell].includes(model.type) && (
+                [
+
+                  Number(model.quantity),
+                  ' x ',
+                  Number(model.price),
+                  currenciesStore.symbol(model.currency),
+                  ' + ',
+                  Number(model.commission?.amount),
+                  currenciesStore.symbol(model.currency),
+                ].join('')
+              )}
             </Typography>
           </ListItemText>
           <ListItemSecondaryAction>

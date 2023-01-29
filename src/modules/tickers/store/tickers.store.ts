@@ -10,6 +10,7 @@ import {AssetTypesStore} from "../../asset-types/store/asset-types.store";
 import {Currency} from "../../currencies/shared/models/currency";
 import {AssetType} from "../../asset-types/shared/models/asset-type";
 import {CurrencyTicker} from "../shared/models/currency-ticker";
+import {SystemAssetTypes} from "../../asset-types/shared/enums/system-asset-types";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
@@ -39,7 +40,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
   }
 
   createFromDto(dto: ITickerDto): Ticker {
-    const model = new Ticker(this, dto._id);
+    const model = dto.assetType === SystemAssetTypes.CURRENCY ? new CurrencyTicker(this, dto._id) : new Ticker(this, dto._id);
     model.updateFromDto(dto);
     model.init();
     return model;
@@ -48,7 +49,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
   protected initialize(): void {
     // this.load();
 
-    /* fill tickers with debounce 500ms
+    /* fill tickers-table with debounce 500ms
      * TODO: need optimization
      * TODO: need to use multiple insertion because async update
      */

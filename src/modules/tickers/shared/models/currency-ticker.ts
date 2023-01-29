@@ -4,6 +4,11 @@ import {Ticker} from "./ticker";
 import {Transaction} from "../../../transactions/shared/models/transaction";
 
 export class CurrencyTicker extends Ticker {
+  protected _assetType: string | null = null;
+  protected _security: string | null = null;
+  protected _currency: string | null = null;
+  protected _amount = 0;
+
   constructor(protected store: TickersStore, id?: string) {
     super(store, id);
     makeObservable(this, {
@@ -13,7 +18,9 @@ export class CurrencyTicker extends Ticker {
 
   get oppositeTransactions(): Transaction[] {
     return this.store.transactionsStore.list
-      .filter((item) => item.currency === this._currency);
+      .filter((item) => {
+        return item.currency === this._security;
+      });
   }
 
   amountOnDate(date = new Date()) {
@@ -22,7 +29,7 @@ export class CurrencyTicker extends Ticker {
     const oppositeAmount = this.oppositeTransactions
       .filter((transaction) => transaction.date <= finalDate)
       .reduce((amount, transaction) => {
-        return transaction.amountPipe(amount);
+        return transaction.backward ? transaction.backward.pipe(amount) : amount;
       }, 0);
 
     return generalAmount + oppositeAmount;

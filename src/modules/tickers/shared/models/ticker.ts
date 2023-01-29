@@ -73,7 +73,7 @@ export class Ticker extends Model<ITickerDto, TickersStore> implements ITicker {
     return this.transactions
       .filter((transaction) => transaction.date <= finalDate)
       .reduce((amount, transaction) => {
-        return transaction.amountPipe(amount);
+        return transaction.forward ? transaction.forward.pipe(amount) : amount;
       }, 0);
   }
 

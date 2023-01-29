@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {action, makeObservable} from 'mobx';
-import {ImportType} from "../shared/enums/import-type";
+import {ImportFormat} from "../shared/enums/import-format";
 import {TransactionsStore} from "./transactions.store";
 import {uploadFile} from "../../../shared/utils/upload-file-content";
 import {tsv2Json} from "../shared/utils/tsv-2-json";
@@ -10,11 +10,13 @@ import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
 import {ExchangeStore} from "../../exchanges/store/exchange.store";
 import {AssetTypesStore} from "../../asset-types/store/asset-types.store";
 import ObjectId from "bson-objectid";
-import {TransactionAction} from "../shared/enums/transaction-action";
+import {TransactionType} from "../shared/enums/transaction-type";
 import {json2Tsv} from "../shared/utils/json-2-tsv";
 import {saveAs} from "file-saver";
 import {Portfolio} from "../../portfolios/shared/models/portfolio";
 import {AssetType} from "../../asset-types/shared/models/asset-type";
+import {OperationType} from "../shared/enums/operation-type";
+import {getDefaultOperations} from "../shared/utils/get-default-operations";
 
 @injectable()
 export class TransactionsTransferStore {
@@ -33,13 +35,13 @@ export class TransactionsTransferStore {
     });
   }
 
-  async importTransactions(props: { type?: ImportType } = {}): Promise<void> {
-    const {type = ImportType.CSV} = props;
+  async importTransactions(props: { format?: ImportFormat } = {}): Promise<void> {
+    const {format = ImportFormat.CSV} = props;
     let text: string;
     const dtos: ITransactionDto[] = [];
 
-    switch (type) {
-      case ImportType.CSV:
+    switch (format) {
+      case ImportFormat.CSV:
       default:
         text = await uploadFile();
         for (const obj of tsv2Json(text)) {
@@ -53,8 +55,9 @@ export class TransactionsTransferStore {
     }
   }
 
-  async exportTransactions(props: { type?: ImportType } = {}): Promise<void> {
-    const {type = ImportType.CSV} = props;
+  // TODO: need to implement import interface like ITransactionImportDto{...}
+  async exportTransactions(props: { format?: ImportFormat } = {}): Promise<void> {
+    const {format = ImportFormat.CSV} = props;
     let text: string;
     let portfolioModel: Portfolio;
     let assetTypeModel: AssetType;
@@ -63,24 +66,19 @@ export class TransactionsTransferStore {
       return;
     }
 
-    switch (type) {
-      case ImportType.CSV:
+    switch (format) {
+      case ImportFormat.CSV:
       default:
         text = json2Tsv(this.transactionsStore.list.map((item) => {
-          const {
-            assetType, security, action: actionResult, quantity,
-            price, commission, currency, portfolio, exchange,
-          } = item.asDto;
-
           let resultPortfolio = '';
-          if (portfolio) {
-            portfolioModel = this.portfoliosStore.item(portfolio) || this.portfoliosStore.list[0];
+          if (item.portfolio) {
+            portfolioModel = this.portfoliosStore.item(item.portfolio) || this.portfoliosStore.list[0];
             resultPortfolio = portfolioModel.name;
           }
 
           let resultAssetType = '';
-          if (assetType) {
-            assetTypeModel = this.assetTypesStore.item(assetType) || this.assetTypesStore.list[0];
+          if (item.forward && item.forward.assetType) {
+            assetTypeModel = this.assetTypesStore.item(item.forward.assetType) || this.assetTypesStore.list[0];
             resultAssetType = assetTypeModel.name;
           }
 
@@ -88,8 +86,13 @@ export class TransactionsTransferStore {
             date: item.date.toLocaleDateString('en'), // only ISO date format
             portfolio: resultPortfolio,
             assetType: resultAssetType,
-            action: actionResult,
-            security, quantity, price, commission, currency, exchange
+            exchange: item.exchange,
+            type: item.type,
+            security: item.forward ? item.forward.name : '',
+            quantity: item.forward ? item.forward.amount : '',
+            currency: item.backward ? item.backward.name : '',
+            price: item.backward ? item.backward.amount : '',
+            commission: item.commission ? item.commission.amount : '',
           }
         }));
         saveAs(new Blob([text], {type: "text/plain;charset=utf-8"}), "investing.dump.csv");
@@ -104,10 +107,11 @@ export class TransactionsTransferStore {
     }
   }
 
+  // TODO: apply import interface
   private async validateTransaction(data: { [key: string]: string }): Promise<ITransactionDto> {
     const {
-      date, assetType, security, action: dataAction, quantity,
-      price, commission, currency, portfolio, exchange
+      date, assetType, security, type, quantity,
+      price, commission: commissionOrTax, currency, portfolio, exchange
     } = data;
 
     const _id = new ObjectId().toHexString();
@@ -166,27 +170,54 @@ export class TransactionsTransferStore {
 
     const resultQuantity = quantity ? parseFloat(quantity.replaceAll(",", "")) : 0;
     const resultPrice = price ? parseFloat(price.replaceAll(",", "")) : 0;
-    const resultCommission = commission ? parseFloat(commission.replaceAll(",", "")) : 0;
-    const resultAction = (
-      dataAction && Object.values(TransactionAction).includes(dataAction as TransactionAction)
-    ) ? dataAction as TransactionAction : TransactionAction.Deposit;
+    const resultCommissionOrTax = commissionOrTax ? parseFloat(commissionOrTax.replaceAll(",", "")) : 0;
+    const resultType = (
+      type && Object.values(TransactionType).includes(type as TransactionType)
+    ) ? type as TransactionType : TransactionType.Deposit;
 
     // TODO: need to set assertion
     const resultCurrency = currency || this.currenciesStore.enabledList[0].code;
 
 
-    return {
+    const result: ITransactionDto = {
       _id,
       _date: resultDate,
-      assetType: resultAssetType,
-      currency: resultCurrency,
-      security: resultSecurity,
-      quantity: resultQuantity,
-      price: resultPrice,
-      commission: resultCommission,
-      action: resultAction,
+      type: resultType,
       exchange: resultExchange,
       portfolio: resultPortfolio,
+      operations: getDefaultOperations(resultType),
+    };
+
+    const forwardOp = result.operations.find((item) => item.type === OperationType.Forward);
+    const backwardOp = result.operations.find((item) => item.type === OperationType.Backward);
+    const commissionOp = result.operations.find((item) => item.type === OperationType.Commission);
+    const taxOp = result.operations.find((item) => item.type === OperationType.Tax);
+
+    if (forwardOp) {
+      forwardOp.assetType = resultAssetType;
+      forwardOp.name = resultSecurity;
+      forwardOp.amount = resultQuantity;
     }
+
+    if (backwardOp) {
+      backwardOp.name = resultCurrency;
+      backwardOp.amount = resultPrice;
+    }
+
+    if (commissionOp) {
+      commissionOp.amount = resultCommissionOrTax;
+      if (backwardOp) {
+        commissionOp.name = backwardOp.name;
+      }
+    }
+
+    if (taxOp) {
+      taxOp.amount = resultCommissionOrTax;
+      if (backwardOp) {
+        taxOp.name = backwardOp.name;
+      }
+    }
+
+    return result;
   }
 }

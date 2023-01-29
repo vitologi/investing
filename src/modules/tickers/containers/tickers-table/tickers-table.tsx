@@ -7,7 +7,7 @@ import {
   TableHead, TableRow
 } from "@mui/material";
 
-export const Tickers = observer(() => {
+export const TickersTable = observer(() => {
   const store = useTickersStore();
 
   return (
