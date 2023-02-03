@@ -13,6 +13,7 @@ import {Transaction} from "../../transactions/shared/models/transaction";
 import {SystemAssetTypes} from "../../asset-types/shared/enums/system-asset-types";
 import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
 import {Portfolio} from "../../portfolios/shared/models/portfolio";
+import {CompositeTicker} from "../shared/models/composite-ticker";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
@@ -26,21 +27,35 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
     super(tickersService);
     makeObservable(this, {
       transactions: computed,
+      compositeList: computed,
       sortedList: computed,
       getCurrency: action,
       getAssetType: action,
     });
   }
 
-  get sortedList(): Ticker[] {
-    const sorted = this.list.concat();
-    // sorted.sort((a, b) => a.assetType.id > b.assetType.id ? -1 : 1);
-    // sorted.sort((a, _) => a.assetType.id === SystemAssetTypes.CURRENCY ? -1 : 1);
+  get compositeList(): CompositeTicker[] {
+    return Array.from(this.list.reduce((acc, item) => {
+      const key = [item.assetType, item.security].join('.');
+      if (!acc.has(key)) {
+        acc.set(key, new CompositeTicker());
+      }
+      const composite = acc.get(key);
+      if (composite) {
+        composite.add(item);
+      }
+
+      return acc;
+    }, new Map<string, CompositeTicker>).values());
+  }
+
+  get sortedList(): CompositeTicker[] {
+    const sorted = this.compositeList.concat();
     sorted.sort((a, b) => {
       return a.assetType.id === SystemAssetTypes.CURRENCY ? -1
         : b.assetType.id === SystemAssetTypes.CURRENCY ? 1
-        : a.assetType.id.localeCompare(b.assetType.id)
-        || a.security.localeCompare(b.security);
+          : a.assetType.id.localeCompare(b.assetType.id)
+          || a.security.localeCompare(b.security);
     });
     return sorted;
   }
