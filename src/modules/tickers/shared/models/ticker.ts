@@ -208,7 +208,9 @@ export class Ticker extends Model<ITickerDto, TickersStore> implements ITicker {
   }
 
   isDuplicate(value: ITicker): boolean {
-    return value.portfolio.id === this.portfolio.id && value.security === this.security;
+    return value.portfolio.id === this.portfolio.id
+      && value.assetType.id === this.assetType.id
+      && value.security === this.security;
   }
 
 }
