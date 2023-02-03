@@ -1,15 +1,11 @@
-import {TransactionAction} from "../enums/transaction-action";
+import {TransactionType} from "../enums/transaction-type";
+import {IOperationDto} from "./operation.dto";
 
 export interface ITransactionDto {
   _id: string;
   _date: number;  // ms
-  assetType: string | null;  // id of assetType
-  security: string | null;   // ticker symbol
-  action: TransactionAction;
-  quantity: number;
-  price: number;
-  commission: number;
-  currency: string | null; // currency code
+  type: TransactionType;
   portfolio: string | null;
   exchange: string | null; // exchange MIC
+  operations: IOperationDto[];
 }

@@ -15,7 +15,7 @@ export const Transactions = observer(() => {
 
   return (
     <>
-      {store.isDetailsMode && <TransactionsForm/>}
+      {store.isDetailsMode && <TransactionsForm id={store.editedId}/>}
 
       <TransactionList/>
 

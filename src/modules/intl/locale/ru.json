@@ -3,6 +3,7 @@
   "app.common.statuses.loading": "...",
   "app.common.statuses.error": "Ошибка",
   "app.common.statuses.success": "Успех",
+  "app.common.actions.success": "Операция выполнена успешно",
   "app.common.actions.add": "Добавить",
   "app.common.actions.edit": "Редактировать",
   "app.common.actions.apply": "Применить",
@@ -64,6 +65,7 @@
   "app.titles.exchanges": "Биржи",
   "app.titles.portfolios": "Портфели",
   "app.titles.transactions": "Транзакции",
+  "app.titles.tickers": "Тикеры",
   "app.titles.settings": "Настройки",
   "app.titles.error": "страница не найдена",
   "app.errors.404": "запрошенная страница не существует",
@@ -104,5 +106,7 @@
   "app.transactions.actions.import": "Импортировать операции",
   "app.transactions.actions.export": "Экспортировать операции",
   "app.portfolios.title.list": "Список портфелей",
-  "app.portfolios.title.new": "Портфель"
+  "app.portfolios.title.new": "Портфель",
+  "app.tickers.table.avgCost": "Ср.цена",
+  "app.tickers.table.amount": "Количество"
 }

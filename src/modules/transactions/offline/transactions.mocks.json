@@ -4,7 +4,7 @@
     "_date": 1673092440668,
     "assetType": "4",
     "security": "USD",
-    "action": "Deposit",
+    "type": "Deposit",
     "quantity": 100,
     "price": 1,
     "commission": 0,

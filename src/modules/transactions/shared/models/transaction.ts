@@ -2,50 +2,70 @@ import {Model} from "../../../../shared/models/model";
 import {ITransactionDto} from "../dtos/transaction.dto";
 import {TransactionsStore} from "../../store/transactions.store";
 import {action, computed, makeObservable, observable} from "mobx";
-import {TransactionAction} from "../enums/transaction-action";
-import {AssetType} from "../../../asset-types/shared/models/asset-type";
-import {Portfolio} from "../../../portfolios/shared/models/portfolio";
-import {Exchange} from "../../../exchanges/shared/models/exchange";
-import {Currency} from "../../../currencies/shared/models/currency";
+import {TransactionType} from "../enums/transaction-type";
+import {SystemAssetTypes} from "../../../asset-types/shared/enums/system-asset-types";
+import {ITransaction} from "../interfaces/transaction";
+import {IOperation} from "../interfaces/operation";
+import {OperationType} from "../enums/operation-type";
+import {Operation} from "./operation";
+import {getDefaultOperations} from "../utils/get-default-operations";
 
-export class Transaction extends Model<ITransactionDto, TransactionsStore> {
+export class Transaction extends Model<ITransactionDto, TransactionsStore> implements ITransaction {
   _date = (new Date()).getTime();
-  assetType: string | null = null;
-  security: string | null = null;
-  action: TransactionAction = TransactionAction.Deposit;
-  quantity = 0;
-  price = 0;
-  commission = 0;
-  currency: string | null = null;
+  type: TransactionType = TransactionType.Deposit;
   portfolio: string | null = null;
   exchange: string | null = null;
 
+  operations: IOperation[] = getDefaultOperations(this.type)
+    .map((operationDto) => {
+      const operation = new Operation();
+      operation.updateFromDto(operationDto);
+      return operation;
+    });
 
   constructor(protected store: TransactionsStore, id?: string) {
     super(store, id);
     makeObservable(this, {
       _date: observable,
-      assetType: observable,
-      security: observable,
-      action: observable,
-      quantity: observable,
-      price: observable,
-      commission: observable,
-      currency: observable,
+      type: observable,
       portfolio: observable,
       exchange: observable,
+      operations: observable,
       date: computed,
-      isPositive: computed,
+
+      operationByType: computed,
+      forward: computed,
+      backward: computed,
+      commission: computed,
+      tax: computed,
+
+      assetType: computed,
+      security: computed,
+      quantity: computed,
+      price: computed,
+      currency: computed,
+      isCurrency: computed,
       bookTotal: computed,
-      adjustments: computed,
       total: computed,
-      amountPipe: action,
-      currencyPipe: action,
-      setAssetType: action,
-      setPortfolio: action,
-      setExchange: action,
-      setCurrency: action,
+      applyOperations: action,
     });
+  }
+
+  get assetType(): string | null {
+    return this.forward ? this.forward.assetType : null;
+  }
+
+  get security(): string | null {
+    return this.forward ? this.forward.name : null;
+  }
+
+  get quantity(): number {
+    return this.forward ? this.forward.amount : 0;
+  }
+
+  get currency(): string | null {
+    const operation = this.type === TransactionType.Deposit ? this.forward : this.backward;
+    return operation ? operation.name : null;
   }
 
   get date(): Date {
@@ -56,71 +76,58 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> {
     this._date = value.getTime();
   }
 
-  get isPositive(): boolean {
-    switch (this.action) {
-      case TransactionAction.Deposit:
-      case TransactionAction.Sell:
-      case TransactionAction.Dividend:
-      case TransactionAction.Coupon:
-      case TransactionAction.DRIP:
-        return true;
+  get operationByType(): (type: OperationType) => IOperation | null {
+    return (type: OperationType) => this.operations.find((item) => item.type === type) || null;
+  }
 
-      case TransactionAction.Buy:
-      case TransactionAction.Withdrawal:
-      case TransactionAction.Loss:
-      default:
-        return false;
-    }
+  get forward() {
+    // return this.operations.find((item) => item.type === OperationType.Forward) || null;
+    return this.operationByType(OperationType.Forward);
+  }
+
+  get backward() {
+    // return this.operations.find((item) => item.type === OperationType.Backward) || null;
+    return this.operationByType(OperationType.Backward);
+  }
+
+  get commission() {
+    return this.operationByType(OperationType.Commission);
+  }
+
+  get tax() {
+    return this.operationByType(OperationType.Tax);
+  }
+
+
+  /**
+   * @deprecated
+   */
+  get isCurrency() {
+    return this.forward && this.forward.assetType === SystemAssetTypes.CURRENCY;
+  }
+
+  get price(): number {
+    return (this.backward?.amount || 0) / (this.forward?.amount || 1);
   }
 
   get bookTotal(): number {
-    return this.price * this.quantity;
-  }
-
-  get adjustments(): number {
-    return this.commission * ([
-      TransactionAction.Dividend,
-      TransactionAction.Sell,
-      TransactionAction.Deposit,
-      TransactionAction.Coupon,
-    ].includes(this.action) ? -1 : 1);
+    return (this.backward ? this.backward.amount : 0);
   }
 
   get total(): number {
-    return this.bookTotal + this.adjustments;
+    const operations = this.type === TransactionType.Deposit ? [this.forward] : [this.backward, this.commission];
+    return this.applyOperations(operations);
   }
 
   get asDto(): ITransactionDto {
     return {
       _id: this.id,
       _date: this._date,
-      assetType: this.assetType,
-      security: this.security,
-      action: this.action,
-      quantity: this.quantity,
-      price: this.price,
-      commission: this.commission,
-      currency: this.currency,
+      type: this.type,
       portfolio: this.portfolio,
       exchange: this.exchange,
+      operations: this.operations.map((item) => item.asDto),
     };
-  }
-
-
-  setAssetType(value: AssetType | null): void {
-    this.assetType = value ? value.id : null;
-  }
-
-  setPortfolio(value: Portfolio | null): void {
-    this.portfolio = value ? value.id : null;
-  }
-
-  setExchange(value: Exchange | null): void {
-    this.exchange = value ? value.id : null;
-  }
-
-  setCurrency(value: Currency | null): void {
-    this.currency = value ? value.id : null;
   }
 
   dispose(): void {
@@ -131,66 +138,21 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> {
 
   updateFromDto(dto: ITransactionDto): void {
     this._date = dto._date;
-    this.assetType = dto.assetType;
-    this.security = dto.security;
-    this.action = dto.action;
-    this.quantity = dto.quantity;
-    this.price = dto.price;
-    this.commission = dto.commission;
-    this.currency = dto.currency;
+    this.type = dto.type;
     this.portfolio = dto.portfolio;
     this.exchange = dto.exchange;
+    this.operations.length = 0;
+    this.operations.push(...dto.operations.map((operationDto) => {
+      const operation = new Operation();
+      operation.updateFromDto(operationDto);
+      return operation;
+    }));
   }
 
-  // isCurrency(){
-  //   return this.store.isCurrency(this.security);
-  // }
-  //
-  // totalInCurrency(targetSumbol = "USD"){
-  //   return this.total*this.store.getExchangeRate(targetSumbol, this.currency, this.date);
-  // }
-
-  // clone(){
-  //   return new Transaction([
-  //     this._date,
-  //     this.type,
-  //     this.security,
-  //     this.currency,
-  //     this.action,
-  //     this.quantity,
-  //     this.price,
-  //     this.comission,
-  //     this.account,
-  //   ],this.exchange);
-  // }
-
-  amountPipe(initial: number): number {
-    switch (this.action) {
-      case TransactionAction.Buy:
-        return initial + this.quantity;
-
-      case TransactionAction.Withdrawal:
-      case TransactionAction.Sell:
-        return initial - this.quantity;
-
-      default:
-        return initial;
-    }
-  }
-
-  currencyPipe(initial: number): number {
-    switch (this.action) {
-      case TransactionAction.Buy:
-        return initial - this.total;
-
-      case TransactionAction.Deposit:
-      case TransactionAction.Coupon:
-      case TransactionAction.Dividend:
-      case TransactionAction.Sell:
-        return initial + this.total;
-
-      default:
-        return initial;
-    }
+  applyOperations(operations: (IOperation | null)[]): number {
+    const isOperation = (operation: IOperation | null): operation is IOperation => operation !== null;
+    return operations
+      .filter(isOperation)
+      .reduce((total, operation) => operation.pipe(total), 0);
   }
 }

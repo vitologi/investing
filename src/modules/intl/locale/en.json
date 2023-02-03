@@ -3,6 +3,7 @@
   "app.common.statuses.loading": "...",
   "app.common.statuses.error": "Error",
   "app.common.statuses.success": "Success",
+  "app.common.actions.success": "Operation completed successfully",
   "app.common.actions.add": "Add",
   "app.common.actions.edit": "Edit",
   "app.common.actions.apply": "Apply",
@@ -64,6 +65,7 @@
   "app.titles.exchanges": "Exchanges",
   "app.titles.portfolios": "Portfolios",
   "app.titles.transactions": "Transactions",
+  "app.titles.tickers": "Tickers",
   "app.titles.settings": "Settings",
   "app.titles.error": "page not found",
   "app.errors.404": "requested page not found",
@@ -104,5 +106,7 @@
   "app.transactions.actions.import": "Import transactions",
   "app.transactions.actions.export": "Export transactions",
   "app.portfolios.title.list": "Portfolio list",
-  "app.portfolios.title.new": "Portfolio"
+  "app.portfolios.title.new": "Portfolio",
+  "app.tickers.table.avgCost": "Avg.cost",
+  "app.tickers.table.amount": "Amount"
 }

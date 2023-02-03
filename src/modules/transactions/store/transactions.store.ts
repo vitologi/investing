@@ -4,21 +4,13 @@ import {DomainStore} from "../../../shared/models/domain-store";
 import {ITransactionDto} from "../shared/dtos/transaction.dto";
 import {Transaction} from "../shared/models/transaction";
 import {TransactionsService} from "../shared/services/transactions.service";
-import {AssetTypesStore} from "../../asset-types/store/asset-types.store";
-import {CurrenciesStore} from "../../currencies/store/currencies.store";
-import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
 
 @injectable()
 export class TransactionsStore extends DomainStore<ITransactionDto, Transaction> {
   isDetailsMode = false;
   editedId: string | null = null
 
-  constructor(
-    @inject('TransactionsService') transactionsService: TransactionsService,
-    @inject('AssetTypesStore') private assetTypesStore: AssetTypesStore,
-    @inject('CurrenciesStore') private currenciesStore: CurrenciesStore,
-    @inject('PortfoliosStore') private portfoliosStore: PortfoliosStore,
-  ) {
+  constructor(@inject('TransactionsService') transactionsService: TransactionsService) {
     super(transactionsService);
     makeObservable(this, {
       isDetailsMode: observable,
@@ -61,11 +53,7 @@ export class TransactionsStore extends DomainStore<ITransactionDto, Transaction>
   }
 
   createEmpty(): Transaction {
-    const model = new Transaction(this);
-    model.setAssetType(this.assetTypesStore.list[0] || null);
-    model.setCurrency(this.currenciesStore.enabledList[0] || null);
-    model.setPortfolio(this.portfoliosStore.list[0] || null);
-    return model;
+    return new Transaction(this);
   }
 
   createFromDto(dto: ITransactionDto): Transaction {
