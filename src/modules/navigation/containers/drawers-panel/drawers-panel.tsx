@@ -101,7 +101,11 @@ export const DrawersPanel = observer(() => {
                 <DrawerItem url="dictionaries/portfolios" name="app.titles.portfolios"/>
               </>
             )
-            : (
+            : includeCurrentRoute('/settings') ? (
+              <>
+                <DrawerItem url="settings/transactions" name="app.titles.transactions"/>
+              </>
+            ) : (
               <>
                 <DrawerItem url="/" name="app.titles.dashboard"/>
                 <DrawerItem url="transactions" name="app.titles.transactions"/>

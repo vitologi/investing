@@ -3,4 +3,5 @@ export enum OperationType {
   Backward = 'Backward',
   Commission = 'Commission',
   Tax = 'Tax',
+  Compose = 'Compose',
 }

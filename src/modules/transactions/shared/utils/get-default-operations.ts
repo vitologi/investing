@@ -40,7 +40,7 @@ export function getDefaultOperations(transactionType: TransactionType): IOperati
         },
         {
           type: OperationType.Backward,
-          assetType: null,
+          assetType: SystemAssetTypes.CURRENCY,
           name: null,
           amount: 0,
           direction: OperationDirection.Negative,
@@ -65,7 +65,7 @@ export function getDefaultOperations(transactionType: TransactionType): IOperati
         },
         {
           type: OperationType.Backward,
-          assetType: null,
+          assetType: SystemAssetTypes.CURRENCY,
           name: null,
           amount: 0,
           direction: OperationDirection.Positive,

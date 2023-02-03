@@ -22,9 +22,6 @@ root.render(
         <ThemeProviderWrapper>
           <IntlProviderWrapper>
             <App/>
-            {/*<Routes>*/}
-            {/*  <Route path="*" element={<App/>}/>*/}
-            {/*</Routes>*/}
           </IntlProviderWrapper>
         </ThemeProviderWrapper>
       </BrowserRouter>

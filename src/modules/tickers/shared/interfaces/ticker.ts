@@ -1,14 +1,19 @@
 import {AssetType} from "../../../asset-types/shared/models/asset-type";
-import {Currency} from "../../../currencies/shared/models/currency";
-import {Transaction} from "../../../transactions/shared/models/transaction";
+import {Operation} from "../../../transactions/shared/models/operation";
+import {Portfolio} from "../../../portfolios/shared/models/portfolio";
 
 export interface ITicker {
+  readonly portfolio: Portfolio;
   readonly assetType: AssetType;
-  readonly currency: Currency | null;
   readonly security: string | null;
-  readonly transactions: Transaction[];
-
   readonly amount: number;
+  readonly operations: Operation[];
+
+  lastSync: Date;
+
+  avgPrice(currencyCode?: string):number;
 
   amountOnDate(date?: Date): number;
+
+  isDuplicate(value: ITicker): boolean;
 }
