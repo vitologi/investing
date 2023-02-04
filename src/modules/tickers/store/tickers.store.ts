@@ -14,6 +14,7 @@ import {SystemAssetTypes} from "../../asset-types/shared/enums/system-asset-type
 import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
 import {Portfolio} from "../../portfolios/shared/models/portfolio";
 import {CompositeTicker} from "../shared/models/composite-ticker";
+import {OperationType} from "../../transactions/shared/enums/operation-type";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
@@ -31,6 +32,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
       sortedList: computed,
       getCurrency: action,
       getAssetType: action,
+      getTickerByTransaction: action,
     });
   }
 
@@ -74,6 +76,19 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
 
   getAssetType(id: string): AssetType | null {
     return this.assetTypesStore.list.find((item) => item.id === id) || null;
+  }
+
+  getTickerByTransaction(transaction: Transaction, operationType: OperationType = OperationType.Forward): Ticker | null {
+    const operation = transaction.operationByType(operationType);
+    if(!operation){
+      return null;
+    }
+
+    return this.list.find((item) => (
+      item.portfolio.id === transaction.portfolio
+      && item.assetType.id === operation.assetType
+      && item.security === operation.name
+    )) || null;
   }
 
   createEmpty(): Ticker {

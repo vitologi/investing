@@ -1,5 +1,14 @@
 import {observer} from "mobx-react-lite";
-import {Button, ButtonGroup, Card, CardHeader, CardContent, Alert, Snackbar} from "@mui/material";
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  Alert,
+  Snackbar,
+  Tooltip,
+  Stack, CircularProgress
+} from "@mui/material";
 import {FormattedMessage} from "react-intl";
 import {useTransactionsTransferStore} from "../../../transactions/store/transactions-transfer.selector";
 import {SyntheticEvent, useCallback, useState} from "react";
@@ -33,6 +42,10 @@ export const TransactionSettings = observer(() => {
     () => transferStore.exportTransactions().then(successHandler),
     [transferStore, successHandler]
   );
+  const adjustBalanceHandler = useCallback(
+    () => transferStore.adjustBalance().then(successHandler),
+    [transferStore, successHandler]
+  );
 
   return (
     <>
@@ -40,11 +53,33 @@ export const TransactionSettings = observer(() => {
         <CardHeader title={<FormattedMessage id={"app.titles.transactions"}/>}/>
 
         <CardContent>
-          <ButtonGroup>
-            <Button onClick={clearHandler}><FormattedMessage id={"app.transactions.actions.clearAll"}/></Button>
-            <Button onClick={importHandler}><FormattedMessage id={"app.transactions.actions.import"}/></Button>
-            <Button onClick={exportHandler}><FormattedMessage id={"app.transactions.actions.export"}/></Button>
-          </ButtonGroup>
+          <Stack direction={"column"} spacing={2}>
+
+            <Stack direction={"row"} spacing={2}>
+              <Button variant={"outlined"} onClick={clearHandler}>
+                <FormattedMessage id={"app.transactions.actions.clearAll"}/>
+              </Button>
+              <Button variant={"outlined"} onClick={importHandler}>
+                <FormattedMessage id={"app.transactions.actions.import"}/>
+              </Button>
+              <Button variant={"outlined"} onClick={exportHandler}>
+                <FormattedMessage id={"app.transactions.actions.export"}/>
+              </Button>
+            </Stack>
+
+            <Stack direction={"row"} spacing={2}>
+              <Tooltip title={<FormattedMessage id={"app.transactions.description.adjustBalance"}/>}
+                       placement="right-start">
+                <Button
+                  variant={"outlined"}
+                  onClick={adjustBalanceHandler}
+                  startIcon={<CircularProgress variant="determinate" value={transferStore.process}/>}
+                >
+                  <FormattedMessage id={"app.transactions.actions.adjustBalance"}/>
+                </Button>
+              </Tooltip>
+            </Stack>
+          </Stack>
         </CardContent>
       </Card>
 

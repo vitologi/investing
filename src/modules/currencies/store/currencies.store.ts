@@ -28,7 +28,7 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
       symbol: action,
     });
 
-    this.enabled = this.storageService.get(ENABLED_CURRENCIES, ["USD", "EUR"]);
+    this.enabled = this.storageService.get(ENABLED_CURRENCIES, ["USD", "EUR", "RUB", "HKD"]);
 
     reaction(
       () => this.enabled.length,
