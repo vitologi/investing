@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {action, makeObservable} from 'mobx';
+import {action, computed, makeObservable, observable} from 'mobx';
 import {ImportFormat} from "../shared/enums/import-format";
 import {TransactionsStore} from "./transactions.store";
 import {uploadFile} from "../../../shared/utils/upload-file-content";
@@ -17,9 +17,12 @@ import {Portfolio} from "../../portfolios/shared/models/portfolio";
 import {AssetType} from "../../asset-types/shared/models/asset-type";
 import {OperationType} from "../shared/enums/operation-type";
 import {getDefaultOperations} from "../shared/utils/get-default-operations";
+import {TickersStore} from "../../tickers/store/tickers.store";
+import {Transaction} from "../shared/models/transaction";
 
 @injectable()
 export class TransactionsTransferStore {
+  process = 0;
 
   constructor(
     @inject('TransactionsStore') private transactionsStore: TransactionsStore,
@@ -27,12 +30,25 @@ export class TransactionsTransferStore {
     @inject('PortfoliosStore') private portfoliosStore: PortfoliosStore,
     @inject('ExchangeStore') private exchangeStore: ExchangeStore,
     @inject('AssetTypesStore') private assetTypesStore: AssetTypesStore,
+    @inject('TickersStore') private tickersStore: TickersStore,
   ) {
     makeObservable(this, {
+      process: observable,
+      isInProgress: computed,
       exportTransactions: action,
       importTransactions: action,
       clearAllTransactions: action,
+      adjustBalance: action,
+      setProgress: action,
     });
+  }
+
+  get isInProgress(): boolean {
+    return this.process > 0 && this.process < 100;
+  }
+
+  setProgress(value = 0): void {
+    this.process = value;
   }
 
   async importTransactions(props: { format?: ImportFormat } = {}): Promise<void> {
@@ -105,6 +121,47 @@ export class TransactionsTransferStore {
     for (const dto of dtos) {
       await this.transactionsStore.delete(dto);
     }
+  }
+
+  async adjustBalance(): Promise<void> {
+    if (this.isInProgress) {
+      return;
+    }
+    this.setProgress(0);
+
+    const transactions = this.transactionsStore.list.concat()
+      .filter((item) => [TransactionType.Buy].includes(item.type));
+    transactions.sort((a, b) => a.date > b.date ? 1 : -1)
+    const lenght = transactions.length;
+    const fixTransactionIds = [];
+
+    for (const [index, transaction] of Array.from(transactions.entries())) {
+      this.setProgress(Math.ceil(index * 100 / lenght));
+
+      // TODO: need to cache results
+      const ticker = this.tickersStore.getTickerByTransaction(transaction, OperationType.Backward);
+
+      if (!ticker || !transaction.backward) {
+        continue;
+      }
+
+      const availableAmount = ticker.amountOnDate(transaction.date);
+      if (transaction.total && availableAmount < 0) {
+        const fixTransaction = this.createFixTransaction(transaction);
+
+        // correct by smallest sum
+        if(fixTransaction.forward && Math.abs(availableAmount) < Math.abs(transaction.total)){
+          fixTransaction.forward.setAmount(Math.abs(availableAmount));
+        }
+
+        const dto = await this.transactionsStore.create(fixTransaction.asDto);
+        fixTransactionIds.push(dto._id);
+        console.log(this.transactionsStore.list.length);
+      }
+    }
+
+    this.setProgress(100);
+    return;
   }
 
   // TODO: apply import interface
@@ -219,5 +276,21 @@ export class TransactionsTransferStore {
     }
 
     return result;
+  }
+
+  private createFixTransaction(transaction: Transaction): Transaction {
+    const fixTransaction = this.transactionsStore.createEmpty();
+    fixTransaction.updateFromDto({
+      ...transaction.asDto,
+      type: TransactionType.Deposit,
+      operations: getDefaultOperations(TransactionType.Deposit),
+    });
+
+    if (!fixTransaction.forward) {
+      throw new Error(`Forward operation wasn't found`);
+    }
+    fixTransaction.forward.setName(transaction.currency);
+    fixTransaction.forward.setAmount(Math.abs(transaction.total));
+    return fixTransaction;
   }
 }
