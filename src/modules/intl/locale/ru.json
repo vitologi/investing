@@ -103,6 +103,7 @@
   "app.transactions.actions.clearAll": "Удалить все операции",
   "app.transactions.actions.import": "Импортировать операции",
   "app.transactions.actions.export": "Экспортировать операции",
+  "app.transactions.actions.combineAdjustInOne": "комбинировать все операции в одну",
   "app.transactions.actions.adjustBalance": "Скорректировать баланс",
   "app.transactions.description.adjustBalance": "Если в истории транзакция приводит к отрицательному балансу, то перед ней будет создана корректирующая транзакция",
   "app.transactions.item.avatarLabelAdd": "Добавление операции",
