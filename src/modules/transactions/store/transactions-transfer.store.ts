@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {action, computed, makeObservable, observable} from 'mobx';
+import {action, computed, makeObservable, observable, when} from 'mobx';
 import {ImportFormat} from "../shared/enums/import-format";
 import {TransactionsStore} from "./transactions.store";
 import {uploadFile} from "../../../shared/utils/upload-file-content";
@@ -19,6 +19,7 @@ import {OperationType} from "../shared/enums/operation-type";
 import {getDefaultOperations} from "../shared/utils/get-default-operations";
 import {TickersStore} from "../../tickers/store/tickers.store";
 import {Transaction} from "../shared/models/transaction";
+import {Ticker} from "../../tickers/shared/models/ticker";
 
 @injectable()
 export class TransactionsTransferStore {
@@ -69,6 +70,9 @@ export class TransactionsTransferStore {
     for (const dto of dtos) {
       await this.transactionsStore.create(dto);
     }
+
+    // recalculate tickers
+    this.tickersStore.list.forEach((item) => item.init());
   }
 
   // TODO: need to implement import interface like ITransactionImportDto{...}
@@ -123,7 +127,7 @@ export class TransactionsTransferStore {
     }
   }
 
-  async adjustBalance(): Promise<void> {
+  async adjustBalance(combineInOne = false): Promise<void> {
     if (this.isInProgress) {
       return;
     }
@@ -133,7 +137,8 @@ export class TransactionsTransferStore {
       .filter((item) => [TransactionType.Buy].includes(item.type));
     transactions.sort((a, b) => a.date > b.date ? 1 : -1)
     const lenght = transactions.length;
-    const fixTransactionIds = [];
+    const fixTransactionIds: string[] = [];
+    const tickers = new Set<Ticker>();
 
     for (const [index, transaction] of Array.from(transactions.entries())) {
       this.setProgress(Math.ceil(index * 100 / lenght));
@@ -144,22 +149,27 @@ export class TransactionsTransferStore {
       if (!ticker || !transaction.backward) {
         continue;
       }
+      tickers.add(ticker);
 
       const availableAmount = ticker.amountOnDate(transaction.date);
       if (transaction.total && availableAmount < 0) {
         const fixTransaction = this.createFixTransaction(transaction);
 
         // correct by smallest sum
-        if(fixTransaction.forward && Math.abs(availableAmount) < Math.abs(transaction.total)){
+        if (fixTransaction.forward && Math.abs(availableAmount) < Math.abs(transaction.total)) {
           fixTransaction.forward.setAmount(Math.abs(availableAmount));
         }
 
         const dto = await this.transactionsStore.create(fixTransaction.asDto);
         fixTransactionIds.push(dto._id);
-        console.log(this.transactionsStore.list.length);
       }
     }
 
+    if (combineInOne) {
+      await this.combineInOne(fixTransactionIds);
+    }
+
+    Array.from(tickers.values()).forEach((item) => item.init());
     this.setProgress(100);
     return;
   }
@@ -170,6 +180,11 @@ export class TransactionsTransferStore {
       date, assetType, security, type, quantity,
       price, commission: commissionOrTax, currency, portfolio, exchange
     } = data;
+
+    await when(() => this.assetTypesStore.list.length > 0);
+    await when(() => this.portfoliosStore.list.length > 0);
+    await when(() => this.exchangeStore.list.length > 0);
+    await when(() => this.currenciesStore.list.length > 0);
 
     const _id = new ObjectId().toHexString();
     const resultDate = new Date(date).getTime();
@@ -292,5 +307,49 @@ export class TransactionsTransferStore {
     fixTransaction.forward.setName(transaction.currency);
     fixTransaction.forward.setAmount(Math.abs(transaction.total));
     return fixTransaction;
+  }
+
+  private async combineInOne(ids: string[]): Promise<void> {
+    const store = this.transactionsStore;
+    await when(() => store.sortedList.length > 0);
+    const transactions = store.sortedList.filter((item) => ids.includes(item.id));
+    const firstDate = store.sortedList[store.sortedList.length - 1].date;
+    const combineMap = new Map<string, Transaction>();
+
+    if (transactions.length !== ids.length) {
+      throw new Error(`Combined transactions mismatch`);
+    }
+
+    for (const transaction of transactions) {
+      const key = [transaction.portfolio, transaction.assetType, transaction.security].join('.');
+      let item: Transaction | null = null;
+
+      if (!combineMap.has(key)) {
+        item = store.createEmpty();
+        item.updateFromDto(transaction.asDto);
+        item.date = firstDate;
+        combineMap.set(key, item);
+        continue;
+      }
+
+      item = combineMap.get(key) || null;
+
+      if (!item || !item.forward || !transaction.forward) {
+        throw new Error(`Combine in one operation has been crashed`);
+      }
+
+      item.forward.setAmount(item.forward.amount + transaction.forward.amount);
+    }
+
+    // TODO: maybe need to revert operations if something goes wrong
+    // set new items
+    for (const transaction of Array.from(combineMap.values())) {
+      await store.create(transaction.asDto);
+    }
+
+    // delete old's
+    for (const transaction of transactions) {
+      await store.delete(transaction.asDto);
+    }
   }
 }
