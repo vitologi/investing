@@ -12,6 +12,7 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
   constructor() {
     makeObservable(this, {
       children: observable,
+      baseCurrencyCode: computed,
       amount: computed,
       child: computed,
       isCurrency: computed,
@@ -32,6 +33,10 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
 
   get id(): string {
     return this.children.reduce((id, item) => id + item.id, '');
+  }
+
+  get baseCurrencyCode(): string {
+    return this.child.baseCurrencyCode;
   }
 
   get amount(): number {

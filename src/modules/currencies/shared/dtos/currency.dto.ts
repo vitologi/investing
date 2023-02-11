@@ -1,4 +1,3 @@
-
 export interface ICurrencyDto {
   _id: string;  // is the same as code
   name: string;

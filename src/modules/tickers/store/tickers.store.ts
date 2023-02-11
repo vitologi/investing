@@ -18,6 +18,7 @@ import {OperationType} from "../../transactions/shared/enums/operation-type";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
+
   constructor(
     @inject('TickersService') tickersService: TickersService,
     @inject('TransactionsStore') public readonly transactionsStore: TransactionsStore,
@@ -34,6 +35,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
       getAssetType: action,
       getTickerByTransaction: action,
     });
+
   }
 
   get compositeList(): CompositeTicker[] {
@@ -80,7 +82,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
 
   getTickerByTransaction(transaction: Transaction, operationType: OperationType = OperationType.Forward): Ticker | null {
     const operation = transaction.operationByType(operationType);
-    if(!operation){
+    if (!operation) {
       return null;
     }
 
