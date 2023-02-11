@@ -16,6 +16,11 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - name: 'Get commit history'
+        run: |
+          git log --pretty=format:"%h %s" > git_log.txt
+          cat git_log.txt
+
       - name: 'Setup node'
         uses: actions/setup-node@v3
         with:
