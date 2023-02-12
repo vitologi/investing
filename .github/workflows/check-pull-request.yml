@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'Setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: 'Checkout source code'
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-
-      - name: 'Setup node'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
 
       - run: npm ci
       - run: npm run test
@@ -33,11 +33,11 @@ jobs:
         with:
           bump-policy: 'ignore'
           tag-prefix: ''
-          minor-wording: '[minor]'
-          major-wording: '[major]'
-          patch-wording: '[patch]'     # Providing patch-wording will override commits
-          # defaulting to a patch bump.
-          rc-wording: '[release]'
+#          minor-wording: '[minor]'
+#          major-wording: '[major]'
+#          patch-wording: '[patch]'     # Providing patch-wording will override commits
+#          # defaulting to a patch bump.
+#          rc-wording: '[release]'
           skip-tag: false
           skip-commit: false
           skip-push: false
