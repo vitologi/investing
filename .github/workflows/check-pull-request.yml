@@ -29,8 +29,11 @@ jobs:
       - run: npm run build
 
 
-      - name: Set GITHUB_EVENT_PATH
-        run: echo "::set-env name=GITHUB_EVENT_PATH::$GITHUB_WORKSPACE/.github/workflows/$GITHUB_ACTION.json"
+      - name: Store event data
+        uses: actions/upload-artifact@v2
+        with:
+          name: event-data
+          path: $GITHUB_EVENT_PATH
 
       - name: 'Automated Version Bump into PR'
         uses: 'phips28/gh-action-bump-version@master'
