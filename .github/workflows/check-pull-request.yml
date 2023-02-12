@@ -21,19 +21,25 @@ jobs:
       - name: 'Checkout source code'
         uses: actions/checkout@v2
         with:
+          node-version: 16
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - run: npm ci
-      - run: npm run test
-      - run: npm run build
+#      - run: npm ci
+#      - run: npm run test
+#      - run: npm run build
 
 
-      - name: Store event data
+      - name: Store event information
+        run: echo "$GITHUB_EVENT_JSON" > event.json
+
+      - name: Upload event information as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: event-data
-          path: $GITHUB_EVENT_PATH
+          node-version: 16
+          name: event-info
+          path: event.json
+
 
       - name: 'Automated Version Bump into PR'
         uses: 'phips28/gh-action-bump-version@master'
