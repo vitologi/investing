@@ -2,6 +2,8 @@ name: Confirm Pull Request and set version
 
 on:
   pull_request:
+    branches:
+      - main
 
 concurrency: pull-request
 
@@ -19,11 +21,36 @@ jobs:
       - name: 'Setup node'
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
-      - run: npm ci
-      - run: npm run test
-      - run: npm build
+#      - run: npm ci
+#      - run: npm run test
+#      - run: npm build
+
+#      - name: Get commit history for PR
+#        id: commit_history
+#        run: |
+#          # Get commit history for the pull request
+#          COMMIT_HISTORY=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+#            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.number }}/commits)
+#
+#          # Write commit history to a file
+#          echo "$COMMIT_HISTORY" > commit_history.json
+#          cat commit_history.json
+
+      - name: 'Set INPUT_VERSION_TYPE'
+        run: |
+          commits=($(git log --pretty=format:"%s" ${{github.base_sha}}...${{github.head_sha}}))
+          for commit in "${commits[@]}"
+          do
+            if [[ $commit =~ \[minor\] ]]; then
+              echo "::set-env name=INPUT_VERSION_TYPE::minor"
+              break
+            elif [[ $commit =~ \[major\] ]]; then
+              echo "::set-env name=INPUT_VERSION_TYPE::major"
+              break
+            fi
+          done
 
       - name: 'Automated Version Bump into PR'
         uses: 'phips28/gh-action-bump-version@master'
