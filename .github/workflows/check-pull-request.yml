@@ -1,9 +1,9 @@
 name: Confirm Pull Request and set version
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - develop
 
 concurrency: pull-request
 
