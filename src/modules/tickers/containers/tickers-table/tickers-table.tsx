@@ -15,6 +15,9 @@ export const TickersTable = observer(() => {
             <TableCell></TableCell>
             <TableCell>Ticker</TableCell>
             <TableCell align="right">
+              <FormattedMessage id={"app.tickers.table.avgCostInCurrency"}/>
+            </TableCell>
+            <TableCell align="right">
               <FormattedMessage id={"app.tickers.table.avgCost"}/>
             </TableCell>
             <TableCell align="right">

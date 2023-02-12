@@ -111,5 +111,10 @@
   "app.portfolios.title.list": "Portfolio list",
   "app.portfolios.title.new": "Portfolio",
   "app.tickers.table.avgCost": "Avg.cost",
-  "app.tickers.table.amount": "Amount"
+  "app.tickers.table.avgCostInCurrency": "Avg.cost in currency",
+  "app.tickers.table.amount": "Amount",
+  "app.settings.titles.common": "Common settings",
+  "app.settings.baseCurrency": "Base currency",
+  "app.settings.rateProvider": "Currency rate provider",
+  "app.settings.securityKey": "Security key"
 }

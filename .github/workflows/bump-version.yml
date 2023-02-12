@@ -1,0 +1,38 @@
+name: Bump version
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  bump:
+    name: Bump version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 'Setup node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: 'Automated Version Bump into PR'
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          tag-prefix: ''
+          minor-wording: '[minor]'
+          major-wording: '[major]'
+          patch-wording: '[patch]'     # Providing patch-wording will override commits
+          # defaulting to a patch bump.
+          rc-wording: '[release]'
+          skip-tag: false
+          skip-commit: false
+          skip-push: false
+          commit-message: 'CI: bumps version to {{version}} [skip ci]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

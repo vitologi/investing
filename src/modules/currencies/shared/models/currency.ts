@@ -1,6 +1,6 @@
 import {Model} from "../../../../shared/models/model";
 import {CurrenciesStore} from "../../store/currencies.store";
-import {ICurrencyDto} from "../interfaces/currency.dto";
+import {ICurrencyDto} from "../dtos/currency.dto";
 import {makeObservable, observable} from "mobx";
 
 export class Currency extends Model<ICurrencyDto, CurrenciesStore> {

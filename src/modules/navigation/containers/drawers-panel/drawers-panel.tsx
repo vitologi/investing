@@ -103,7 +103,9 @@ export const DrawersPanel = observer(() => {
             )
             : includeCurrentRoute('/settings') ? (
               <>
+                <DrawerItem url="settings/common" name="app.settings.titles.common"/>
                 <DrawerItem url="settings/transactions" name="app.titles.transactions"/>
+                <DrawerItem url="settings/currencies" name="app.titles.currencies"/>
               </>
             ) : (
               <>

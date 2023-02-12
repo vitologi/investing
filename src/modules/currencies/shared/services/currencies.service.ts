@@ -1,4 +1,4 @@
-import {ICurrencyDto} from "../interfaces/currency.dto";
+import {ICurrencyDto} from "../dtos/currency.dto";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {LanguageCode} from "../../../intl/shared/enums/language-code";
 

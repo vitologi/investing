@@ -23,6 +23,7 @@ import {SettingsService} from "../modules/settings/shared/services/settings.serv
 import {SettingsStore} from "../modules/settings/store/settings.store";
 import {TickersStore} from "../modules/tickers/store/tickers.store";
 import {TickersService} from "../modules/tickers/shared/services/tickers.service";
+import {CurrencyRatesService} from "../modules/currencies/shared/services/currency-rates.service";
 
 export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   // bind('OfflineService').to(OfflineService).inSingletonScope();
@@ -37,6 +38,7 @@ export const IocModule = new ContainerModule((bind: interfaces.Bind) => {
   bind('AssetTypesService').to(AssetTypesService).inSingletonScope();
   bind('AssetTypesStore').to(AssetTypesStore).inSingletonScope();
   bind('CurrenciesService').to(CurrenciesService).inSingletonScope();
+  bind('CurrencyRatesService').to(CurrencyRatesService).inSingletonScope();
   bind('CurrenciesStore').to(CurrenciesStore).inSingletonScope();
   bind('ExchangeService').to(ExchangeService).inSingletonScope();
   bind('ExchangeStore').to(ExchangeStore).inSingletonScope();

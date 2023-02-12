@@ -111,5 +111,10 @@
   "app.portfolios.title.list": "Список портфелей",
   "app.portfolios.title.new": "Портфель",
   "app.tickers.table.avgCost": "Ср.цена",
-  "app.tickers.table.amount": "Количество"
+  "app.tickers.table.avgCostInCurrency": "Ср.цена в валюте",
+  "app.tickers.table.amount": "Количество",
+  "app.settings.titles.common": "Общие настройки",
+  "app.settings.baseCurrency": "Базовая валюта",
+  "app.settings.rateProvider": "Провайдер валютных котировок",
+  "app.settings.securityKey": "Ключ безопасности"
 }

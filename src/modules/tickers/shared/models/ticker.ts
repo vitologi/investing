@@ -31,6 +31,7 @@ export class Ticker extends Model<ITickerDto, TickersStore> implements ITicker {
       assetType: computed,
       security: computed,
       avgPrice: computed,
+      baseCurrencyCode: computed,
       setAssetType: action,
       setSecurity: action,
       amountOnDate: action,
@@ -94,6 +95,10 @@ export class Ticker extends Model<ITickerDto, TickersStore> implements ITicker {
 
   get amount(): number {
     return this._amount;
+  }
+
+  get baseCurrencyCode(): string {
+    return this.operations[0].name || 'USD';
   }
 
   setPortfolio(value: string | null): void {

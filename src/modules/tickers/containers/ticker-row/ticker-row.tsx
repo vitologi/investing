@@ -40,12 +40,25 @@ export const TickerRow = observer(({model}: IProps) => {
         </TableCell>
 
         <TableCell align="right">
+          {currenciesStore.baseCurrency && (
+            <>
+              {model.isCurrency ? (
+                roundTo(currenciesStore.convert(model.amount, model.security, currenciesStore.baseCurrency.code))
+              ) : (
+                roundTo(currenciesStore.convert(model.avgPrice(), model.baseCurrencyCode, currenciesStore.baseCurrency.code))
+              )}
+              {currenciesStore.baseCurrency.symbol_native}
+            </>
+          )}
+        </TableCell>
+
+        <TableCell align="right">
           {model.isCurrency ? (
-            "-"
+            '-'
           ) : (
             <>
               {roundTo(model.avgPrice())}
-              {model.operations[0] && currenciesStore.item(model.operations[0].name || "")?.symbol_native}
+              {currenciesStore.item(model.baseCurrencyCode)?.symbol_native}
             </>
           )}
         </TableCell>
@@ -68,12 +81,25 @@ export const TickerRow = observer(({model}: IProps) => {
           </TableCell>
 
           <TableCell align="right">
+            {currenciesStore.baseCurrency && (
+              <>
+                {item.isCurrency ? (
+                  roundTo(currenciesStore.convert(item.amount, item.security, currenciesStore.baseCurrency.code))
+                ) : (
+                  roundTo(currenciesStore.convert(item.avgPrice(), item.baseCurrencyCode, currenciesStore.baseCurrency.code))
+                )}
+                {currenciesStore.baseCurrency.symbol_native}
+              </>
+            )}
+          </TableCell>
+
+          <TableCell align="right">
             {item.isCurrency ? (
               "-"
             ) : (
               <>
                 {roundTo(item.avgPrice())}
-                {item.operations[0] && currenciesStore.item(item.operations[0].name || "")?.symbol_native}
+                {currenciesStore.item(item.baseCurrencyCode)?.symbol_native}
               </>
             )}
           </TableCell>
@@ -85,7 +111,7 @@ export const TickerRow = observer(({model}: IProps) => {
           </TableCell>
         </TableRow>
       ))}
-      {open && (<TableRow><TableCell colSpan={4}></TableCell></TableRow>)}
+      {open && (<TableRow><TableCell colSpan={5}></TableCell></TableRow>)}
     </>
   );
 })

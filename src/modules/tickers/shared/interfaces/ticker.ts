@@ -11,6 +11,7 @@ export interface ITicker {
   readonly amount: number;
   readonly operations: Operation[];
   readonly isCurrency: boolean;
+  readonly baseCurrencyCode: string;  // TODO: handle different children currencies and taxes (if it was needed)
 
   lastSync: Date;
 

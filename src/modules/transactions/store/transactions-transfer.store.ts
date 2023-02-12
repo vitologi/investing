@@ -89,7 +89,7 @@ export class TransactionsTransferStore {
     switch (format) {
       case ImportFormat.CSV:
       default:
-        text = json2Tsv(this.transactionsStore.list.map((item) => {
+        text = json2Tsv(this.transactionsStore.sortedList.map((item) => {
           let resultPortfolio = '';
           if (item.portfolio) {
             portfolioModel = this.portfoliosStore.item(item.portfolio) || this.portfoliosStore.list[0];
