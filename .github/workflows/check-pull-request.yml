@@ -23,10 +23,10 @@ jobs:
           git status
           git branch -v
 
-      - name: 'Setup node'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+#      - name: 'Setup node'
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 16
 
       - run: npm ci
       - run: npm run test
