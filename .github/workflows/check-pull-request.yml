@@ -1,9 +1,9 @@
 name: Confirm Pull Request and set version
 
 on:
-  push:
+  pull_request:
     branches:
-      - develop
+      - main
 
 concurrency: pull-request
 
@@ -21,7 +21,7 @@ jobs:
       - name: 'Checkout source code'
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.pull_request.head.ref }}
           fetch-depth: 0
 
 #      - run: npm ci
