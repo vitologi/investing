@@ -3,7 +3,7 @@ name: Confirm Pull Request and set version
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 concurrency: pull-request
 
@@ -31,6 +31,7 @@ jobs:
       - name: 'Automated Version Bump into PR'
         uses: 'phips28/gh-action-bump-version@master'
         with:
+          bump-policy: 'ignore'
           tag-prefix: ''
           minor-wording: '[minor]'
           major-wording: '[major]'
