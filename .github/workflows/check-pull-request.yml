@@ -2,6 +2,8 @@ name: Confirm Pull Request and set version
 
 on:
   pull_request:
+    branches:
+      - master
 
 concurrency: pull-request
 
@@ -17,12 +19,6 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: 'Get commit history'
-        run: |
-          git log --pretty=format:"%h %s"
-          git status
-          git branch -v
-
       - name: 'Setup node'
         uses: actions/setup-node@v3
         with:
@@ -36,9 +32,9 @@ jobs:
         uses: 'phips28/gh-action-bump-version@master'
         with:
           tag-prefix: ''
-          minor-wording: 'MINOR'
-          major-wording: 'MAJOR'
-          patch-wording: 'PATCH'     # Providing patch-wording will override commits
+          minor-wording: '[minor]'
+          major-wording: '[major]'
+          patch-wording: '[patch]'     # Providing patch-wording will override commits
           # defaulting to a patch bump.
           rc-wording: '[release]'
           skip-tag: false
