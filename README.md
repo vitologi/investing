@@ -4,7 +4,6 @@
 - implement ticker local saving
 - save base currency through sessions
 
-
 # Install
 ```
 npm i
