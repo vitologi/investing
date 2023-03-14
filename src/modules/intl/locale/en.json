@@ -4,6 +4,11 @@
   "app.common.statuses.error": "Error",
   "app.common.statuses.success": "Success",
   "app.common.actions.success": "Operation completed successfully",
+  "app.common.actions.error": "Operation failed",
+  "app.common.actions.yes": "Yes",
+  "app.common.actions.no": "No",
+  "app.common.actions.confirm": "Confirm",
+  "app.common.actions.reject": "Reject",
   "app.common.actions.add": "Add",
   "app.common.actions.edit": "Edit",
   "app.common.actions.apply": "Apply",
@@ -15,6 +20,10 @@
   "app.common.actions.reset": "Reset",
   "app.common.actions.save": "Save",
   "app.common.actions.select": "Select",
+  "app.common.actions.continue": "Continue",
+  "app.common.actions.next": "Next",
+  "app.common.actions.back": "Back",
+  "app.common.actions.finish": "Finish",
   "app.common.form.placeholder": "Not defined",
   "app.common.form.placeholder.min": "From",
   "app.common.form.placeholder.max": "To",
@@ -116,5 +125,7 @@
   "app.settings.titles.common": "Common settings",
   "app.settings.baseCurrency": "Base currency",
   "app.settings.rateProvider": "Currency rate provider",
-  "app.settings.securityKey": "Security key"
+  "app.settings.securityKey": "Security key",
+  "app.manual.demoDialog.title": "Populate application with demo data",
+  "app.manual.demoDialog.content": "Before we proceed, would you like to populate the application with demo data and skip the tutorial, or would you rather review the core features of the application and start from scratch?"
 }

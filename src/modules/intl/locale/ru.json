@@ -4,6 +4,11 @@
   "app.common.statuses.error": "Ошибка",
   "app.common.statuses.success": "Успех",
   "app.common.actions.success": "Операция выполнена успешно",
+  "app.common.actions.error": "Операция завершилась ошибкой",
+  "app.common.actions.yes": "Да",
+  "app.common.actions.no": "Нет",
+  "app.common.actions.confirm": "Подтвердить",
+  "app.common.actions.reject": "Отказаться",
   "app.common.actions.add": "Добавить",
   "app.common.actions.edit": "Редактировать",
   "app.common.actions.apply": "Применить",
@@ -15,6 +20,10 @@
   "app.common.actions.reset": "Сбросить",
   "app.common.actions.save": "Сохранить",
   "app.common.actions.select": "Выбрать",
+  "app.common.actions.continue": "Продолжить",
+  "app.common.actions.next": "Далее",
+  "app.common.actions.back": "Назад",
+  "app.common.actions.finish": "Завершить",
   "app.common.form.placeholder": "Не задано",
   "app.common.form.placeholder.min": "От",
   "app.common.form.placeholder.max": "До",
@@ -116,5 +125,7 @@
   "app.settings.titles.common": "Общие настройки",
   "app.settings.baseCurrency": "Базовая валюта",
   "app.settings.rateProvider": "Провайдер валютных котировок",
-  "app.settings.securityKey": "Ключ безопасности"
+  "app.settings.securityKey": "Ключ безопасности",
+  "app.manual.demoDialog.title": "Заполнить приложение демонстрационными данными",
+  "app.manual.demoDialog.content": "Прежде чем мы продолжим, хотите ли вы заполнить приложение демонстрационными данными и пропустить руководство, или вы предпочитаете просмотреть основные функции приложения и начать с нуля?"
 }

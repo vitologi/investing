@@ -52,16 +52,16 @@ export class TransactionsTransferStore {
     this.process = value;
   }
 
-  async importTransactions(props: { format?: ImportFormat } = {}): Promise<void> {
+  async importTransactions(props: { format?: ImportFormat; data?: string } = {}): Promise<void> {
     const {format = ImportFormat.CSV} = props;
-    let text: string;
     const dtos: ITransactionDto[] = [];
+    let {data} = props;
 
     switch (format) {
       case ImportFormat.CSV:
       default:
-        text = await uploadFile();
-        for (const obj of tsv2Json(text)) {
+        data = data || await uploadFile();
+        for (const obj of tsv2Json(data)) {
           dtos.push(await this.validateTransaction(obj));
         }
         break;

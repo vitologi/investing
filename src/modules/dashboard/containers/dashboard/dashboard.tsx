@@ -7,7 +7,7 @@ import {FormattedMessage} from "react-intl";
 const Dashboard = observer((): JSX.Element => {
   return (
     <Grid2 container={true} p={2}>
-      <Grid2 xs={12} sm={12} md={6}>
+      <Grid2 xs={12} sm={12} md={12}>
         <Card>
           <CardHeader title={<FormattedMessage id={"app.titles.tickers"}/>}/>
           <CardContent sx={{p: 0, '&:last-child': { pb: 0 }}}>
