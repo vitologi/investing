@@ -2,7 +2,8 @@ name: Confirm Pull Request
 
 on:
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 concurrency: pull-request
 
