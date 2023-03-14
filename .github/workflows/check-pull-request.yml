@@ -2,7 +2,13 @@ name: Confirm Pull Request
 
 on:
   pull_request:
-    branches: ["main"]
+    types: [opened, edited, synchronize]
+    branches: [main]
+  workflow_run:
+    workflows:
+      - Bump version
+    types:
+      - completed
 
 concurrency: pull-request
 
@@ -25,3 +31,4 @@ jobs:
       - run: npm ci
       - run: npm run test
       - run: npm run build
+      - run: 'echo "Check successful"'
