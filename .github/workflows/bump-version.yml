@@ -1,9 +1,14 @@
 name: Bump version
 
+#on:
+#  push:
+#    branches-ignore:
+#      - main
+
 on:
-  push:
-    branches-ignore:
-      - main
+  workflow_run:
+    workflows: [Confirm Pull Request]
+    types: [completed]
 
 jobs:
   bump:
