@@ -26,3 +26,10 @@ jobs:
       - run: npm ci
       - run: npm run test
       - run: npm run build
+
+      - name: Set status check
+        uses: peter-evans/create-pull-request-status@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          state: success
+          description: Workflow succeeded
