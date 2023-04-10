@@ -12,6 +12,7 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
   constructor() {
     makeObservable(this, {
       children: observable,
+      getActiveChildren: computed,
       baseCurrencyCode: computed,
       amount: computed,
       child: computed,
@@ -40,7 +41,7 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
   }
 
   get amount(): number {
-    return this.children.reduce((acc, item) => acc + item.amount, 0);
+    return this.getActiveChildren.reduce((acc, item) => acc + item.amount, 0);
   }
 
   get child(): ITicker {
@@ -49,6 +50,10 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
       throw new Error(`Composite ticker hasn't any children`);
     }
     return item;
+  }
+
+  get getActiveChildren(): ITicker[]{
+    return this.children.filter((child)=>child.amount > 0);
   }
 
   get assetType(): AssetType {
@@ -78,8 +83,8 @@ export class CompositeTicker implements ITicker, IComposite<ITicker> {
 
   get avgPrice(): () => number {
     return (currencyCode?: string): number => {
-      const allPrices = this.children.reduce((acc, item) => acc + item.avgPrice(currencyCode), 0);
-      return allPrices / this.children.length;
+      const allPrices = this.getActiveChildren.reduce((acc, item) => acc + item.avgPrice(currencyCode), 0);
+      return allPrices / this.getActiveChildren.length;
     };
   }
 
