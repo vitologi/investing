@@ -8,8 +8,25 @@ on:
 concurrency: pull-request
 
 jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check status of previous runs
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { data: runs } = await github.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: context.workflow,
+              status: 'in_progress'
+            })
+            if (runs.length > 0) {
+              throw new Error('A previous run is still in progress, please wait for it to complete before creating a pull request.')
+            }
   tests:
     name: Conduct tests
+    needs: check-status
     runs-on: ubuntu-latest
 
     steps:

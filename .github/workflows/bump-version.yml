@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Automated Version Bump into PR'
+      - name: 'Automated Version Bump'
         uses: 'phips28/gh-action-bump-version@master'
         with:
           tag-prefix: ''
