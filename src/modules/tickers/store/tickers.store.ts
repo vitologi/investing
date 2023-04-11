@@ -54,7 +54,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
   }
 
   get sortedList(): CompositeTicker[] {
-    const sorted = this.compositeList.concat();
+    const sorted = this.compositeList.concat().filter((item)=>item.getActiveChildren.length);
     sorted.sort((a, b) => {
       return a.assetType.id === SystemAssetTypes.CURRENCY ? -1
         : b.assetType.id === SystemAssetTypes.CURRENCY ? 1

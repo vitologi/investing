@@ -12,7 +12,7 @@ interface IProps {
 
 export const TickerRow = observer(({model}: IProps) => {
   const currenciesStore = useCurrenciesStore();
-  const hasChild = useMemo(() => model.getChildren().length > 1, [model]);
+  const hasChild = useMemo(() => model.getActiveChildren.length > 1, [model]);
   const [open, setOpen] = useState(false);
   const openHandler = useCallback(() => setOpen((value) => !value), [setOpen]);
 
@@ -70,7 +70,7 @@ export const TickerRow = observer(({model}: IProps) => {
         </TableCell>
       </TableRow>
 
-      {open && hasChild && model.getChildren().map((item) => (
+      {open && hasChild && model.getActiveChildren.map((item) => (
         <TableRow key={item.id} sx={{'& > *': {borderBottom: 0, pt: 0, pb: 0}}}>
           <TableCell></TableCell>
 
