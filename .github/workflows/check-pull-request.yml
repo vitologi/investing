@@ -8,8 +8,12 @@ on:
 concurrency: pull-request
 
 jobs:
+  bump:
+    uses: ./.github/workflows/bump-version.yml
+
   tests:
     name: Conduct tests
+    needs: [bump]
     runs-on: ubuntu-latest
 
     steps:
