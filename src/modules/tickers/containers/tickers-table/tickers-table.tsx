@@ -47,7 +47,6 @@ export const TickersTable = observer(() => {
       {/*  </Tooltip>*/}
       {/*</Toolbar>*/}
 
-
     </TableContainer>
   );
 })
