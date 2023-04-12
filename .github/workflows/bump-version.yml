@@ -4,6 +4,9 @@ on:
   push:
     branches-ignore:
       - main
+    paths-ignore:
+      - 'package.json'
+      - 'package-lock.json'
 
 jobs:
   bump:
@@ -33,6 +36,6 @@ jobs:
           skip-tag: false
           skip-commit: false
           skip-push: false
-          commit-message: 'CI: bumps version to {{version}} [skip ci]'
+          commit-message: 'CI: bumps version to {{version}}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
