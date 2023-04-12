@@ -1,5 +1,9 @@
 name: Bump version
-on: [workflow_call]
+
+on:
+  push:
+    branches-ignore:
+      - main
 
 jobs:
   bump:
