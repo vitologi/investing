@@ -1,6 +1,6 @@
 {
   "name": "@vitologi/investing",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "homepage": "https://investing.vitologi.com",
   "private": true,
   "dependencies": {
@@ -87,7 +87,7 @@
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint:write": "npm run lint -- --fix",
     "start": "react-app-rewired start",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jsdom --coverage",
     "build": "react-app-rewired build"
   },
   "eslintConfig": {
@@ -95,6 +95,16 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "statements": 1,
+        "branches": 1,
+        "functions": 1,
+        "lines": 1
+      }
+    }
   },
   "browserslist": {
     "production": [
