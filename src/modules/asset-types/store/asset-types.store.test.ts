@@ -6,34 +6,22 @@ import {AssetType} from "../shared/models/asset-type";
 import defaultAssetTypes from "../offline/asset-types.mocks.json";
 import {sleep} from "../../../shared/utils/sleep";
 
-const assetTypeDto = {
-  _id: 'test',
-  name: 'test type',
-  isSystem: false
-};
-
-// jest.mock<typeof import("../shared/services/asset-types.service")>("../shared/services/asset-types.service", () => ({
-//   AssetTypesService: jest.fn().mockImplementation(() => ({
-//     list: jest.fn().mockImplementation(async () => []),
-//     get: jest.fn().mockImplementation(async () => assetTypeDto),
-//     create: jest.fn().mockImplementation(async () => {
-//       console.log("mocked create called"); return assetTypeDto;}),
-//     update: jest.fn().mockImplementation(async () => assetTypeDto),
-//     delete: jest.fn().mockImplementation(async () => {
-//     }),
-//   }))
-// }));
-
 describe('AssetTypesStore', () => {
   let container: Container;
   let assetTypesServiceMock: jest.Mocked<AssetTypesService>;
   let store: AssetTypesStore;
+  const assetTypeDto = {
+    _id: 'test',
+    name: 'test type',
+    isSystem: false
+  };
 
   beforeAll(() => {
     container = new Container();
   });
 
   beforeEach(() => {
+
     assetTypesServiceMock = {
       create: jest.fn(async (dto) => dto),
       get: jest.fn(async (_) => assetTypeDto),
@@ -43,7 +31,7 @@ describe('AssetTypesStore', () => {
       }),
       update: jest.fn(async (dto) => dto),
       delete: jest.fn(async (_) => void 0),
-    };
+    } as unknown as jest.Mocked<AssetTypesService>;
     container.unbindAll();
     container.bind<AssetTypesService>('AssetTypesService').toConstantValue(assetTypesServiceMock);
     container.bind<AssetTypesStore>('AssetTypesStore').to(AssetTypesStore);
