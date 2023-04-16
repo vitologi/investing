@@ -15,9 +15,6 @@ export class Portfolio extends Model<IPortfolioDto, PortfoliosStore>{
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   updateFromDto(dto: IPortfolioDto): void {
     this.name = dto.name;
     this.description = dto.description;

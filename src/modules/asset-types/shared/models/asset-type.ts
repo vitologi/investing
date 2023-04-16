@@ -15,9 +15,6 @@ export class AssetType extends Model<IAssetTypeDto, AssetTypesStore>{
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   updateFromDto(dto: IAssetTypeDto): void {
     this.name = dto.name;
     this.isSystem = dto.isSystem;

@@ -3,16 +3,22 @@ import {DomainStore} from "../../../shared/models/domain-store";
 import {IPortfolioDto} from "../shared/interfaces/portfolio.dto";
 import {Portfolio} from "../shared/models/portfolio";
 import {PortfoliosService} from "../shared/services/portfolios.service";
-import {computed, makeObservable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 
 @injectable()
 export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
+  isInit = false;
+
   constructor(@inject('PortfoliosService') portfoliosService: PortfoliosService) {
     super(portfoliosService);
 
     makeObservable(this, {
+      isInit: observable,
       name: computed,
-    })
+      init: action,
+    });
+
+    this.load().then(() => this.init());
   }
 
   get name(): (id: string | null) => string {
@@ -20,6 +26,10 @@ export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
       const model = this.list.find((item) => item.id === id);
       return model ? model.name : '-';
     }
+  }
+
+  init():void{
+    this.isInit = true;
   }
 
   createEmpty(): Portfolio {
@@ -30,10 +40,6 @@ export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
     const model = new Portfolio(this, dto._id);
     model.updateFromDto(dto);
     return model;
-  }
-
-  protected initialize(): void {
-    this.load();
   }
 
   // override delete with check (TODO: implement checking by usable item in other collection)

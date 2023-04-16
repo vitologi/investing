@@ -39,7 +39,18 @@ module.exports = {
      * @see https://archive.jestjs.io/docs/en/configuration
      * we can also use .babelrc + jest props in package.json
      */
-  jest: override(function (config) {
-    return config;
-  }),
+  jest: override(
+    function (config) {
+      // TODO: remove it after dist won't contain es6
+      config.transformIgnorePatterns = ["/node_modules/(?!(@vitologi)/).*/"]
+      config.coverageThreshold = {
+        global: {
+          statements: 1,
+          branches: 1,
+          functions: 1,
+          lines: 1,
+        },
+      };
+      return config;
+    }),
 };

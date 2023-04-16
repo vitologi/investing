@@ -11,6 +11,7 @@ const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
 @injectable()
 export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
+  isInit = false;
   enabled: string[];
 
   constructor(
@@ -20,17 +21,18 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
   ) {
     super(exchangeService);
     makeObservable(this, {
+      isInit: observable,
       enabled: observable,
       isEnabled: computed,
       enabledList: computed,
       sortedByEnablingList: computed,
+      init: action,
       toggleEnabled: action,
       getExchangeBySuffix: action,
       getExchangeByMic: action,
     });
 
     this.enabled = this.storageService.get(ENABLED_EXCHANGES, ["XNYS", "XNAS"]);
-
     reaction(
       () => this.enabled.length,
       async () => {
@@ -41,8 +43,9 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
     reaction(
       () => this.intlStore.locale,
       (locale) => {
-        this.load(locale);
-      }
+        this.load(locale).then(() => this.init());
+      },
+      {fireImmediately: true}
     )
   }
 
@@ -51,14 +54,17 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
   }
 
   get sortedByEnablingList(): Exchange[] {
-    const sortedList = this.list.slice().sort((a, _) => this.isEnabled(a.id) ? -1 : 1);
-    return sortedList;
+    return this.list.slice().sort((a, _) => this.isEnabled(a.id) ? -1 : 1);
   }
 
   get isEnabled(): (code: string) => boolean {
     return (code: string) => {
       return this.enabled.includes(code);
     }
+  }
+
+  init(): void {
+    this.isInit = true;
   }
 
   toggleEnabled(code: string): void {
@@ -70,7 +76,7 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
   }
 
   getExchangeByMic(mic: string): string | null {
-    const model = this.list.find((item)=>item.mic === mic);
+    const model = this.list.find((item) => item.mic === mic);
     return model ? model.id : null;
   }
 
@@ -88,9 +94,4 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
     model.updateFromDto(dto);
     return model;
   }
-
-  protected initialize(): void {
-    this.load(this.intlStore.locale);
-  }
-
 }

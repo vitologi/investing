@@ -1,6 +1,6 @@
 {
   "name": "@vitologi/investing",
-  "version": "0.3.9",
+  "version": "0.3.12",
   "homepage": "https://investing.vitologi.com",
   "private": true,
   "dependencies": {
@@ -10,7 +10,6 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.1",
-    "@mui/styles": "^5.11.1",
     "@mui/utils": "^5.11.1",
     "@mui/x-date-pickers": "^5.0.11",
     "@vitologi/local-db": "^0.9.5",
@@ -64,7 +63,6 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "acorn": "^8.8.1",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "customize-cra": "^1.0.0",
@@ -75,6 +73,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "fake-indexeddb": "^4.0.1",
     "husky": "^8.0.2",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
@@ -87,7 +86,7 @@
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint:write": "npm run lint -- --fix",
     "start": "react-app-rewired start",
-    "test": "react-scripts test --env=jsdom --coverage",
+    "test": "react-app-rewired test --env=jsdom --coverage",
     "build": "react-app-rewired build"
   },
   "eslintConfig": {
@@ -95,16 +94,6 @@
       "react-app",
       "react-app/jest"
     ]
-  },
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "statements": 1,
-        "branches": 1,
-        "functions": 1,
-        "lines": 1
-      }
-    }
   },
   "browserslist": {
     "production": [

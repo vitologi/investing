@@ -6,7 +6,7 @@ export abstract class BaseApiService<TDtoModel,
   TListFilter = Partial<IListFilter>,
   TIdentifier = string> {
 
-  abstract list(request: TListFilter, options?: unknown): Promise<TDtoModel[]>;
+  abstract list(request?: TListFilter, options?: unknown): Promise<TDtoModel[]>;
 
   abstract get(id: TIdentifier, options?: unknown): Promise<TDtoModel | null>;
 

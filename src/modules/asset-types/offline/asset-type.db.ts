@@ -6,4 +6,4 @@ const client = new DbClient({dbName: "assetTypes"});
 const db = client.db("assetTypes", {client, migrations: assetTypesMigrations});
 db.open();
 
-export const assetTypesCollection = db.collection<IAssetTypeDto>("assetTypes");
+export const assetTypesCollection = () => db.collection<IAssetTypeDto>("assetTypes");

@@ -18,6 +18,7 @@ const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
 
 @injectable()
 export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
+  isInit = false;
   _baseCurrencyCode = 'USD';
 
   openExchangeRatesApiToken: string | null = null;
@@ -34,6 +35,7 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
   ) {
     super(currenciesService);
     makeObservable(this, {
+      isInit: observable,
       _baseCurrencyCode: observable,
       rateProvider: observable,
       storedExchangeRates: observable,
@@ -51,13 +53,15 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
       setOpenExchangeRatesApiToken: action,
       setStoredExchangeRate: action,
       removeStoredExchangeRate: action,
+      init: action,
     });
 
     reaction(
       () => this.intlStore.locale,
       (locale) => {
-        this.load(locale);
-      }
+        this.load(locale).then(() => this.init());
+      },
+      {fireImmediately: true}
     );
 
     this.enabled = this.storageService.get(ENABLED_CURRENCIES, ["USD", "EUR", "RUB", "HKD"]);
@@ -123,6 +127,10 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
     }
   }
 
+  init(): void {
+    this.isInit = true;
+  }
+
   setBaseCurrency(value: string): void {
     this._baseCurrencyCode = value;
   }
@@ -181,9 +189,4 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
     model.updateFromDto(dto);
     return model;
   }
-
-  protected async initialize(): Promise<void> {
-    this.load(this.intlStore.locale);
-  }
-
 }

@@ -133,9 +133,6 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> imple
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   updateFromDto(dto: ITransactionDto): void {
     this._date = dto._date;
     this.type = dto.type;
