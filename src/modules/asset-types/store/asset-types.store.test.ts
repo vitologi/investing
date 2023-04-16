@@ -1,14 +1,15 @@
 import {Container} from "inversify";
 import {when} from "mobx";
 import {AssetTypesStore} from "./asset-types.store";
-import {AssetTypesService} from "../shared/services/asset-types.service";
 import {AssetType} from "../shared/models/asset-type";
 import defaultAssetTypes from "../offline/asset-types.mocks.json";
 import {sleep} from "../../../shared/utils/sleep";
+import {BaseApiService} from "../../../shared/interfaces/base-api.service";
+import {IAssetTypeDto} from "../shared/interfaces/asset-type.dto";
 
 describe('AssetTypesStore', () => {
   let container: Container;
-  let assetTypesServiceMock: jest.Mocked<AssetTypesService>;
+  let assetTypesServiceMock: jest.Mocked<BaseApiService<IAssetTypeDto>>;
   let store: AssetTypesStore;
   const assetTypeDto = {
     _id: 'test',
@@ -31,9 +32,9 @@ describe('AssetTypesStore', () => {
       }),
       update: jest.fn(async (dto) => dto),
       delete: jest.fn(async (_) => void 0),
-    } as unknown as jest.Mocked<AssetTypesService>;
+    };
     container.unbindAll();
-    container.bind<AssetTypesService>('AssetTypesService').toConstantValue(assetTypesServiceMock);
+    container.bind<BaseApiService<IAssetTypeDto>>('AssetTypesService').toConstantValue(assetTypesServiceMock);
     container.bind<AssetTypesStore>('AssetTypesStore').to(AssetTypesStore);
     store = container.get<AssetTypesStore>('AssetTypesStore');
   });
