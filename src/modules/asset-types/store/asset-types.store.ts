@@ -3,13 +3,13 @@ import {action, makeObservable, observable} from 'mobx';
 import {DomainStore} from "../../../shared/models/domain-store";
 import {IAssetTypeDto} from "../shared/interfaces/asset-type.dto";
 import {AssetType} from "../shared/models/asset-type";
-import {AssetTypesService} from "../shared/services/asset-types.service";
+import {BaseApiService} from "../../../shared/interfaces/base-api.service";
 
 @injectable()
 export class AssetTypesStore extends DomainStore<IAssetTypeDto, AssetType> {
   isInit = false;
 
-  constructor(@inject('AssetTypesService') assetTypesService: AssetTypesService) {
+  constructor(@inject('AssetTypesService') assetTypesService: BaseApiService<IAssetTypeDto>) {
     super(assetTypesService);
     makeObservable(this, {
       isInit: observable,
