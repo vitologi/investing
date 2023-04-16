@@ -7,27 +7,36 @@ import {TransactionsService} from "../shared/services/transactions.service";
 
 @injectable()
 export class TransactionsStore extends DomainStore<ITransactionDto, Transaction> {
+  isInit = false;
   isDetailsMode = false;
   editedId: string | null = null
 
   constructor(@inject('TransactionsService') transactionsService: TransactionsService) {
     super(transactionsService);
     makeObservable(this, {
+      isInit: observable,
       isDetailsMode: observable,
       editedId: observable,
       sortedList: computed,
+      init: action,
       setDetailsMode: action,
       clearTransaction: action,
       chooseTransaction: action,
       clearAllTransactions: action,
       toggleDetailsMode: action,
     });
+
+    this.load().then(() => this.init());
   }
 
   get sortedList(): Transaction[] {
     const sorted = this.list.concat();
     sorted.sort((a, b) => a.date < b.date ? 1 : -1);
     return sorted;
+  }
+
+  init():void {
+    this.isInit = true;
   }
 
   async clearAllTransactions(): Promise<void> {
@@ -61,9 +70,4 @@ export class TransactionsStore extends DomainStore<ITransactionDto, Transaction>
     model.updateFromDto(dto);
     return model;
   }
-
-  protected initialize(): void {
-    this.load();
-  }
-
 }

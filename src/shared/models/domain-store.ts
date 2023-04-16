@@ -35,16 +35,7 @@ export abstract class DomainStore<  TDto extends IModelDto,  TDomainModel extend
       updateFromDto: action.bound,
       clear: action.bound,
     });
-
-    Promise.resolve().then(() => {
-      this.initialize();
-    });
   }
-
-  /**
-   * Initialize reactions that use other stores (wait when all stores will be created)
-   */
-  protected abstract initialize(): void;
 
   abstract createFromDto(dto: TDto): TDomainModel;
 

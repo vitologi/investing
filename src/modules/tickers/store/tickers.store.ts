@@ -36,6 +36,31 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
       getTickerByTransaction: action,
     });
 
+    /* fill tickers-table with debounce 500ms
+    * TODO: need optimization
+    * TODO: need to use multiple insertion because async update
+    */
+    let timer: ReturnType<typeof setTimeout>;
+    reaction(
+      () => this.transactionsStore.list.length,
+      () => {
+        clearTimeout(timer);
+        timer = setTimeout(async () => {
+
+          for (const ticker of this.buildTickersFromTransactions()) {
+            if (this.hasTicker(ticker)) {
+              return;
+            }
+
+            await this.create(ticker.asDto);
+          }
+
+          // recalculate amount
+          this.list.forEach((item) => item.init());
+        }, 500);
+      },
+      {fireImmediately: true}
+    );
   }
 
   get compositeList(): CompositeTicker[] {
@@ -103,38 +128,6 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
     model.init();
     return model;
   }
-
-  protected initialize(): void {
-    // this.load();
-
-    /* fill tickers-table with debounce 500ms
-     * TODO: need optimization
-     * TODO: need to use multiple insertion because async update
-     */
-    let timer: ReturnType<typeof setTimeout>;
-    reaction(
-      () => this.transactionsStore.list.length,
-      () => {
-        clearTimeout(timer);
-        timer = setTimeout(async () => {
-
-          for (const ticker of this.buildTickersFromTransactions()) {
-            if (this.hasTicker(ticker)) {
-              return;
-            }
-
-            await this.create(ticker.asDto);
-          }
-
-          // recalculate amount
-          this.list.forEach((item) => item.init());
-        }, 500);
-      },
-      {fireImmediately: true}
-    );
-
-  }
-
 
   private hasTicker(model: Ticker): boolean {
     return !!this.list.find((item) => item.isDuplicate(model));
