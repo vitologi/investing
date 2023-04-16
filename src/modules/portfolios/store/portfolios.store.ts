@@ -3,7 +3,7 @@ import {DomainStore} from "../../../shared/models/domain-store";
 import {IPortfolioDto} from "../shared/interfaces/portfolio.dto";
 import {Portfolio} from "../shared/models/portfolio";
 import {PortfoliosService} from "../shared/services/portfolios.service";
-import {action, computed, makeObservable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 
 @injectable()
 export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
@@ -13,7 +13,7 @@ export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
     super(portfoliosService);
 
     makeObservable(this, {
-      isInit: computed,
+      isInit: observable,
       name: computed,
       init: action,
     });

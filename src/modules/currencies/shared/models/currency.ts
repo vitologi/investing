@@ -46,9 +46,6 @@ export class Currency extends Model<ICurrencyDto, CurrenciesStore> {
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   // currency cant be updated
   updateFromDto(dto: ICurrencyDto): void {
     this.name = dto.name;

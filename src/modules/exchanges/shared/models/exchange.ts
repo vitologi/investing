@@ -32,9 +32,6 @@ constructor(protected store: ExchangeStore, id:string) {
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   updateFromDto(dto: IExchangeDto): void {
     this.name = dto.name;
     this.country = dto.country;

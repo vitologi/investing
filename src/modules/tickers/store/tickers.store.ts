@@ -37,13 +37,16 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
     });
 
     /* fill tickers-table with debounce 500ms
-    * TODO: need optimization
-    * TODO: need to use multiple insertion because async update
-    */
+     * TODO: need optimization
+     * TODO: need to use multiple insertion because async update
+     */
     let timer: ReturnType<typeof setTimeout>;
     reaction(
-      () => this.transactionsStore.list.length,
-      () => {
+      () => (currenciesStore.isInit && !!this.transactionsStore.list.length),
+      (init) => {
+        if(!init){
+          return;
+        }
         clearTimeout(timer);
         timer = setTimeout(async () => {
 
@@ -79,7 +82,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
   }
 
   get sortedList(): CompositeTicker[] {
-    const sorted = this.compositeList.concat().filter((item)=>item.getActiveChildren.length);
+    const sorted = this.compositeList.concat().filter((item) => item.getActiveChildren.length);
     sorted.sort((a, b) => {
       return a.assetType.id === SystemAssetTypes.CURRENCY ? -1
         : b.assetType.id === SystemAssetTypes.CURRENCY ? 1

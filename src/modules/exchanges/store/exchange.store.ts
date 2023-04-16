@@ -32,10 +32,7 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
       getExchangeByMic: action,
     });
 
-    this.load(intlStore.locale).then(() => this.init());
-
     this.enabled = this.storageService.get(ENABLED_EXCHANGES, ["XNYS", "XNAS"]);
-
     reaction(
       () => this.enabled.length,
       async () => {
@@ -46,8 +43,9 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
     reaction(
       () => this.intlStore.locale,
       (locale) => {
-        this.load(locale);
-      }
+        this.load(locale).then(() => this.init());
+      },
+      {fireImmediately: true}
     )
   }
 
@@ -65,7 +63,7 @@ export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
     }
   }
 
-  init():void {
+  init(): void {
     this.isInit = true;
   }
 

@@ -11,14 +11,11 @@ export abstract class Model<TDto extends IModelDto, TStore extends DomainStore<a
 
   abstract dispose(): void;
 
-  protected abstract initialize(): void;
-
   constructor(
     protected store: TStore,
     public id: string = new ObjectId().toHexString(),
   ) {
     makeObservable(this, {});
-    this.initialize();
   }
 
   abstract updateFromDto(dto: TDto): void;

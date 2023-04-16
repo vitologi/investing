@@ -196,9 +196,6 @@ export class Ticker extends Model<ITickerDto, TickersStore> implements ITicker {
   dispose(): void {
   }
 
-  protected initialize(): void {
-  }
-
   updateFromDto(dto: ITickerDto): void {
     this._lastSync = dto.lastSync;
     this._portfolio = dto.portfolio;
