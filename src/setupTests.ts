@@ -5,3 +5,7 @@
 import 'reflect-metadata';
 import '@testing-library/jest-dom';
 import 'fake-indexeddb/auto'; // mock indexedDb (service testing)
+
+
+import {configure} from "mobx";
+configure({ safeDescriptors: false });

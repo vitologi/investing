@@ -1,8 +1,8 @@
 import {Model} from "../../../../shared/models/model";
 import {IAssetTypeDto} from "../interfaces/asset-type.dto";
-import {AssetTypesStore} from "../../store/asset-types.store";
+import {IDomainStore} from "../../../../shared/interfaces/domain-store";
 
-export class AssetType extends Model<IAssetTypeDto, AssetTypesStore>{
+export class AssetType extends Model<IAssetTypeDto, IDomainStore<IAssetTypeDto, AssetType>>{
   name = '';
   isSystem = false;
   get asDto(): IAssetTypeDto {

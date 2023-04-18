@@ -1,14 +1,11 @@
 import {injectable} from 'inversify';
-import {action, computed, observable, makeObservable} from 'mobx';
-import {BaseApiService} from '../interfaces/base-api.service';
-import {Model} from './model';
-import {IModelDto} from "../dtos/model.dto";
-import {IDomainStore} from "../interfaces/domain-store";
+import { action, computed, observable, makeObservable } from 'mobx';
+import {Model} from '../model';
+import {IModelDto} from "../../dtos/model.dto";
 
 @injectable()
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends Model<TDto, any>>
-  implements IDomainStore<TDto, TDomainModel> {
+export abstract class DomainStore< TDto extends IModelDto, TDomainModel extends Model<TDto, any>> {
   isLoading = false;
 
   list: TDomainModel[] = [];
@@ -22,7 +19,7 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
   }
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  constructor(protected readonly service: BaseApiService<TDto, any, any>) {
+  constructor() {
     makeObservable(this, {
       isLoading: observable,
       list: observable,
@@ -100,6 +97,7 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
       });
   }
 
+  // delete = jest.fn(async (dto) => dto);
   delete(dto: TDto): Promise<TDto | void> {
     this.isLoading = true;
 
@@ -108,7 +106,7 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
         const id = response ? response._id : dto._id;
         const model = this.item(id);
 
-        if (model) {
+        if(model){
           this.clear(model);
         }
 
@@ -144,40 +142,21 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
     model.dispose();
   }
 
-  /**
-   * Load entities hook (need for overloading)
-   */
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  async loadFromServer(payload: any = {}): Promise<TDto[]> {
-    return this.service.list(payload);
+  async loadFromServer(_: any = {}): Promise<TDto[]> {
+    return [];
   }
-
-  /**
-   * Load entity hook (need for overloading)
-   */
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  async loadOneFromServer(id: any): Promise<TDto | null> {
-    return this.service.get(id);
+  async loadOneFromServer(_: any): Promise<TDto | null> {
+    return null;
   }
-
-  /**
-   * Create entity hook (need for overloading)
-   */
   async createOnServer(dto: TDto): Promise<TDto> {
-    return this.service.create(dto);
+    return dto;
   }
-
-  /**
-   * Update entity hook (need for overloading)
-   */
   async saveOnServer(dto: TDto): Promise<TDto | null> {
-    return this.service.update(dto);
+    return dto;
   }
-
-  /**
-   * Delete entity hook (need for overloading)
-   */
   async deleteOnServer(dto: TDto): Promise<void | TDto> {
-    return this.service.delete(dto._id);
+    return dto;
   }
 }
