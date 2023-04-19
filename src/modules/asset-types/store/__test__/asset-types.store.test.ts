@@ -11,7 +11,7 @@ jest.mock("../../shared/services/asset-types.service");
 
 describe('AssetTypesStore', () => {
   let container: Container;
-  let assetTypesServiceMock: AssetTypesService;
+  let assetTypesServiceMock: jest.Mocked<AssetTypesService>;
   let store: AssetTypesStore;
   const assetTypeDto = {
     _id: '_id',
@@ -24,7 +24,7 @@ describe('AssetTypesStore', () => {
   });
 
   beforeEach(() => {
-    assetTypesServiceMock = new AssetTypesService();
+    assetTypesServiceMock = new AssetTypesService() as jest.Mocked<AssetTypesService>;
     container.unbindAll();
     container.bind<BaseApiService<IAssetTypeDto>>('AssetTypesService').toConstantValue(assetTypesServiceMock);
     container.bind<AssetTypesStore>('AssetTypesStore').to(AssetTypesStore);
@@ -34,6 +34,21 @@ describe('AssetTypesStore', () => {
   test('created', () => {
     expect(store).toBeTruthy();
   });
+
+  test('init (should use lazy initialization)', async () => {
+    // automatically
+    expect(store.isInit).toBeFalsy();
+    await when(() => store.isInit);
+    expect(store.isInit).toBeTruthy();
+
+    // manual
+    store.isInit = false;
+    expect(store.isInit).toBeFalsy();
+    store.init();
+    expect(store.isInit).toBeTruthy();
+  });
+
+
 
   test('createEmpty', () => {
     expect(store.createEmpty()).toBeInstanceOf(AssetType);

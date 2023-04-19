@@ -1,10 +1,10 @@
 // export {}
-import {AssetType} from "./asset-type";
-import {AssetTypesStore} from "../../store/asset-types.store";
-import {AssetTypesService} from "../services/asset-types.service";
+import {AssetType} from "../asset-type";
+import {AssetTypesStore} from "../../../store/asset-types.store";
+import {AssetTypesService} from "../../services/asset-types.service";
 
-jest.mock("../services/asset-types.service");
-jest.mock("../../store/asset-types.store");
+jest.mock("../../services/asset-types.service");
+jest.mock("../../../store/asset-types.store");
 
 describe('AssetType', () => {
   let model: AssetType;
@@ -52,6 +52,15 @@ describe('AssetType', () => {
 
     expect(spy).toHaveBeenCalledTimes(0);
     await model.delete();
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  test('dispose (should do nothing)', async () => {
+    const spy = jest.spyOn(store, 'delete');
+    expect(model.asDto).toEqual(defaultDto);
+    expect(spy).toHaveBeenCalledTimes(0);
+    model.dispose();
+    expect(model.asDto).toEqual(defaultDto);
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
