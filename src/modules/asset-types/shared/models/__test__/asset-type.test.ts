@@ -1,4 +1,3 @@
-// export {}
 import {AssetType} from "../asset-type";
 import {AssetTypesStore} from "../../../store/asset-types.store";
 import {AssetTypesService} from "../../services/asset-types.service";
