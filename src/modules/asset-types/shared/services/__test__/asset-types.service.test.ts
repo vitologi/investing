@@ -1,11 +1,30 @@
+import {ICollection} from "@vitologi/local-db";
 import {AssetTypesService} from "../asset-types.service";
+import {assetTypesCollection} from "../../../offline/asset-type.db";
+import {IAssetTypeDto} from "../../interfaces/asset-type.dto";
 
-jest.mock("../../../offline/asset-type.db");
+jest.mock("../../../offline/asset-type.db", ()=>{
+  const mockCollection = {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    deleteOne: jest.fn(),
+    insertOne: jest.fn(),
+    updateOne: jest.fn(),
+  };
+
+  return ({
+    __esModule: true,
+    assetTypesCollection: jest.fn(()=>mockCollection)
+  })
+});
+
 describe('AssetTypesService', ()=>{
   let service: AssetTypesService;
+  let mockCollection: jest.Mocked<ICollection<IAssetTypeDto>>;
 
   beforeAll(async ()=>{
     service = new AssetTypesService();
+    mockCollection = assetTypesCollection() as unknown as jest.Mocked<ICollection<IAssetTypeDto>>;
   });
 
   test('created', ()=>{
@@ -13,30 +32,32 @@ describe('AssetTypesService', ()=>{
   });
 
   test('list (should call find method)', async ()=>{
-    expect(await service.list()).toEqual('find');
+    await service.list();
+    expect(mockCollection.find).toHaveBeenCalledTimes(1);
   });
 
   test('create (should call insertOne method)', async ()=>{
-    expect(await service.create({_id:'_id',name:'name',isSystem:false})).toEqual({_id:'_id',name:'name',isSystem:false});
+    await service.create({_id:'_id',name:'name',isSystem:false});
+    expect(mockCollection.insertOne).toHaveBeenCalledTimes(1);
   });
 
   test('delete (should call deleteOne method)', async ()=>{
-    expect(await service.delete('id')).toBeUndefined();
+    await service.delete('id');
+    expect(mockCollection.deleteOne).toHaveBeenCalledTimes(1);
   });
 
   test('get (should call findOne method)', async ()=>{
-    expect(await service.get('id')).toEqual('findOne');
+    await service.get('id');
+    expect(mockCollection.findOne).toHaveBeenCalledTimes(1);
   });
 
   test('update (should call updateOne method)', async ()=>{
+    mockCollection.updateOne
+      .mockResolvedValueOnce({upsertedCount: 1, upsertedIds:["_id"], matchedCount:1 })
+      .mockResolvedValueOnce({upsertedCount: 0, upsertedIds:[], matchedCount:0 });
+
+    expect(await service.update({_id:'_id',name:'name',isSystem:false})).toEqual({_id:'_id',name:'name',isSystem:false});
     expect(await service.update({_id:'_id',name:'name',isSystem:false})).toEqual(null);
+    expect(mockCollection.updateOne).toHaveBeenCalledTimes(2);
   });
 })
-
-//   async update(dto: IAssetTypeDto): Promise<IAssetTypeDto| null> {
-//     const filter = {_id: dto._id};
-//     const result = await this._collection.updateOne(filter, {$set:dto}, {});
-//
-//     return result.upsertedCount ? dto : null;
-//   }
-// }

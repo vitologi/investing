@@ -23,6 +23,7 @@ describe('AssetTypesStore', () => {
     container = new Container();
   });
 
+  // TODO: remove container, use mocked service directly through constructor
   beforeEach(() => {
     assetTypesServiceMock = new AssetTypesService() as jest.Mocked<AssetTypesService>;
     container.unbindAll();
