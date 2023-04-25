@@ -24,13 +24,14 @@ export const AssetTypeList = observer(() => {
                 onClick={() => item.delete()}
                 edge="end"
                 aria-label={intlStore.formatMessage("app.common.actions.delete")}
+                data-testid="deleteButton"
               >
                 <DeleteIcon/>
               </IconButton>
             }
             key={item.id}
           >
-            <ListItemText>
+            <ListItemText data-testid="assetTypeName">
               {item.isSystem ? <FormattedMessage id={`app.assetTypes.type.${item.name}`}/> : item.name}
             </ListItemText>
           </ListItem>
@@ -42,6 +43,7 @@ export const AssetTypeList = observer(() => {
         sx={{position: 'absolute', bottom: 16, right: 16}}
         aria-label={intlStore.formatMessage("app.common.actions.add")}
         color="primary"
+        data-testid="addButton"
       >
         <AddIcon/>
       </Fab>
