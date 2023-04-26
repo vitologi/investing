@@ -31,6 +31,7 @@ export const AssetTypeForm = () => {
         component="form"
         onSubmit={handleSubmit(saveHandler)}
         sx={{m: 1, p: 1, display: 'flex', alignItems: 'center'}}
+        data-testid="assetTypeForm"
       >
         <input type="hidden" {...register("id", {value: new ObjectId().toHexString()})}/>
         <input type="hidden" {...register("isSystem", {value: false})}/>
