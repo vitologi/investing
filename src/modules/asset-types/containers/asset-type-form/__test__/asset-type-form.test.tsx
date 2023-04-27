@@ -7,8 +7,8 @@ import {IntlStore} from "../../../../intl/store/intl.store";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {AssetTypesService} from "../../../shared/services/asset-types.service";
 import {AssetTypeForm} from "../asset-type-form";
-// import userEvent from "@testing-library/user-event";
-import {fireEvent} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {IAssetTypeDto} from "../../../shared/interfaces/asset-type.dto";
 
 jest.mock("../../../shared/services/asset-types.service");
 jest.mock("../../../store/asset-types.store");
@@ -43,61 +43,48 @@ describe('AssetTypeForm', () => {
   test('shouldn`t create new model if inputs are invalid', async () => {
     const spy = jest.spyOn(mockAssetTypesStore, "create");
     const {getByRole, findByRole} = render(<DiProvider container={container}><AssetTypeForm/></DiProvider>);
-    const save = () => fireEvent.submit(getByRole('button', {name: /app.common.actions.save/i}));
-
+    const save = () => userEvent.click(getByRole('button', {name: /app.common.actions.save/i}));
+    const alert = () => findByRole('alert', {name: /app.common.form.alert/i})
 
     // empty value
-    save();
-    expect(await findByRole('alert', {name: /app.common.form.alert/i})).toHaveTextContent("Field is required");
+    await save();
+    expect(await alert()).toHaveTextContent("Field is required");
     expect(spy).not.toHaveBeenCalled();
 
+    // min length
+    await userEvent.type(
+      getByRole("textbox", {name: /app.assetTypes.form.name/i}),
+      "AA"
+    );
+    expect(await alert()).toHaveTextContent("Field use length from 3 to 12 characters");
+    expect(spy).not.toHaveBeenCalled();
 
-    // console.log(getByRole("textbox", {name: /app.assetTypes.form.name/i}))
-    // // min length
-    // fireEvent.input(
-    //   getByRole("textbox", {name: /app.assetTypes.form.name/i}),
-    //   {
-    //     target: {
-    //       value: "AA"
-    //     }
-    //   });
-    // save();
-    // expect(await findByRole('alert', {name: /app.common.form.alert/i})).toHaveTextContent("Fiel8d is required");
-    // expect(spy).not.toHaveBeenCalled();
-
-
+    // max length
+    await userEvent.type(
+      getByRole("textbox", {name: /app.assetTypes.form.name/i}),
+      "abcdefghijklmnop"
+    );
+    expect(await alert()).toHaveTextContent("Field use length from 3 to 12 characters");
+    expect(spy).not.toHaveBeenCalled();
   });
 
-  // test('should create new model and redirect to top after submit', async () => {
-  //   // let start = performance.now();
-  //   const spy = jest.spyOn(mockAssetTypesStore, "create");
-  //   const {getByRole} = render(<DiProvider container={container}><AssetTypeForm/></DiProvider>);
-  //   // expect(await findByTestId('submitButton')).toBeInTheDocument();
-  //   // let point = performance.now();
-  //   // console.log(`render time: ${point-start} ms`)
-  //   // start = performance.now();
-  //   expect(navigate).toHaveBeenCalledTimes(0);
-  //   expect(spy).toHaveBeenCalledTimes(0);
-  //   // mockAssetTypesStore.create({_id:'sdf', name:'sdf',isSystem:false});
-  //   // expect(spy).toHaveBeenCalledTimes(1);
-  //   await userEvent.click(getByRole('button', {name: /app.common.actions.save/i}));
-  //   // point = performance.now();
-  //   // console.log(`click time: ${point-start} ms`)
-  //   // start = performance.now();
-  //   // await waitFor(
-  //   //   ()=>{
-  //   //     expect(spy).toHaveBeenCalledTimes(1);
-  //   //   },
-  //   //   {timeout:4000}
-  //   // );
-  //   // point = performance.now();
-  //   // console.log(`waitFor time: ${point-start} ms`)
-  //   // start = performance.now();
-  //   expect(spy).toHaveBeenCalledTimes(0);
-  //   // expect(navigate).toHaveBeenCalledTimes(1);
-  //   // expect(navigate).toHaveBeenCalledWith('..');
-  //   // point = performance.now();
-  //   // console.log(`end time: ${point-start} ms`)
-  // });
+  test('should create new model if inputs are valid', async () => {
+    const spy = jest.spyOn(mockAssetTypesStore, "create");
+    const {getByRole, queryByRole} = render(<DiProvider container={container}><AssetTypeForm/></DiProvider>);
+    const save = () => userEvent.click(getByRole('button', {name: /app.common.actions.save/i}));
+    const alert = () => queryByRole('alert', {name: /app.common.form.alert/i});
+
+    await userEvent.type(
+      getByRole("textbox", {name: /app.assetTypes.form.name/i}),
+      "validName"
+    );
+    await save();
+    expect(await alert()).toBeFalsy();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining<Partial<IAssetTypeDto>>({
+      name: "validName", isSystem: false
+    }));
+    expect(navigate).toHaveBeenCalledWith('..');
+  });
 
 });

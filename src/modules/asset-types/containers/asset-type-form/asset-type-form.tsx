@@ -15,15 +15,12 @@ interface IFormData {
 }
 
 export const AssetTypeForm = () => {
-  const {register, handleSubmit, formState: {errors}} = useForm<IFormData>({
-    mode: "onChange"
-  });
+  const {register, handleSubmit, formState: {errors}} = useForm<IFormData>();
   const intlStore = useIntlStore();
   const store = useAssetTypesStore();
   const navigate = useNavigate();
 
   const saveHandler = useCallback(async (data: IFormData) => {
-    console.log('start------------')
     await store.create({_id: data.id, name: data.name, isSystem: data.isSystem});
     navigate('..');
   }, [store, navigate]);
