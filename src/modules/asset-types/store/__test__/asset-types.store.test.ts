@@ -1,19 +1,21 @@
 import {Container} from "inversify";
 import {when} from "mobx";
-import {AssetTypesStore} from "./asset-types.store";
-import {AssetType} from "../shared/models/asset-type";
-import defaultAssetTypes from "../offline/asset-types.mocks.json";
-import {sleep} from "../../../shared/utils/sleep";
-import {BaseApiService} from "../../../shared/interfaces/base-api.service";
-import {IAssetTypeDto} from "../shared/interfaces/asset-type.dto";
+import {AssetTypesStore} from "../asset-types.store";
+import {AssetType} from "../../shared/models/asset-type";
+import defaultAssetTypes from "../../offline/asset-types.mocks.json";
+import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
+import {IAssetTypeDto} from "../../shared/interfaces/asset-type.dto";
+import {AssetTypesService} from "../../shared/services/asset-types.service";
+
+jest.mock("../../shared/services/asset-types.service");
 
 describe('AssetTypesStore', () => {
   let container: Container;
-  let assetTypesServiceMock: jest.Mocked<BaseApiService<IAssetTypeDto>>;
+  let assetTypesServiceMock: jest.Mocked<AssetTypesService>;
   let store: AssetTypesStore;
   const assetTypeDto = {
-    _id: 'test',
-    name: 'test type',
+    _id: '_id',
+    name: 'name',
     isSystem: false
   };
 
@@ -21,18 +23,9 @@ describe('AssetTypesStore', () => {
     container = new Container();
   });
 
+  // TODO: remove container, use mocked service directly through constructor
   beforeEach(() => {
-
-    assetTypesServiceMock = {
-      create: jest.fn(async (dto) => dto),
-      get: jest.fn(async (_) => assetTypeDto),
-      list: jest.fn(async () => {
-        await sleep(10);
-        return defaultAssetTypes;
-      }),
-      update: jest.fn(async (dto) => dto),
-      delete: jest.fn(async (_) => void 0),
-    };
+    assetTypesServiceMock = new AssetTypesService() as jest.Mocked<AssetTypesService>;
     container.unbindAll();
     container.bind<BaseApiService<IAssetTypeDto>>('AssetTypesService').toConstantValue(assetTypesServiceMock);
     container.bind<AssetTypesStore>('AssetTypesStore').to(AssetTypesStore);
@@ -42,6 +35,21 @@ describe('AssetTypesStore', () => {
   test('created', () => {
     expect(store).toBeTruthy();
   });
+
+  test('init (should use lazy initialization)', async () => {
+    // automatically
+    expect(store.isInit).toBeFalsy();
+    await when(() => store.isInit);
+    expect(store.isInit).toBeTruthy();
+
+    // manual
+    store.isInit = false;
+    expect(store.isInit).toBeFalsy();
+    store.init();
+    expect(store.isInit).toBeTruthy();
+  });
+
+
 
   test('createEmpty', () => {
     expect(store.createEmpty()).toBeInstanceOf(AssetType);
