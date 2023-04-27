@@ -15,12 +15,15 @@ interface IFormData {
 }
 
 export const AssetTypeForm = () => {
-  const {register, handleSubmit, formState: {errors}} = useForm<IFormData>({});
+  const {register, handleSubmit, formState: {errors}} = useForm<IFormData>({
+    mode: "onChange"
+  });
   const intlStore = useIntlStore();
   const store = useAssetTypesStore();
   const navigate = useNavigate();
 
   const saveHandler = useCallback(async (data: IFormData) => {
+    console.log('start------------')
     await store.create({_id: data.id, name: data.name, isSystem: data.isSystem});
     navigate('..');
   }, [store, navigate]);
@@ -32,6 +35,7 @@ export const AssetTypeForm = () => {
         onSubmit={handleSubmit(saveHandler)}
         sx={{m: 1, p: 1, display: 'flex', alignItems: 'center'}}
         data-testid="assetTypeForm"
+        aria-label={intlStore.formatMessage("app.assetTypes.form.form")}
       >
         <input type="hidden" {...register("id", {value: new ObjectId().toHexString()})}/>
         <input type="hidden" {...register("isSystem", {value: false})}/>
@@ -39,17 +43,20 @@ export const AssetTypeForm = () => {
         <InputBase
           sx={{flex: 1}}
           placeholder={intlStore.formatMessage("app.assetTypes.form.name")}
-          inputProps={register("name", {
-            required: "app.common.form.rules.required",
-            minLength: {
-              message: "app.common.form.rules.length",
-              value: 3,
-            },
-            maxLength: {
-              message: "app.common.form.rules.length",
-              value: 12,  // TODO: move these values into global area
-            },
-          })}
+          inputProps={{
+            ...register("name", {
+              required: "app.common.form.rules.required",
+              minLength: {
+                message: "app.common.form.rules.length",
+                value: 3,
+              },
+              maxLength: {
+                message: "app.common.form.rules.length",
+                value: 12,  // TODO: move these values into global area
+              },
+            }),
+            "aria-label": intlStore.formatMessage("app.assetTypes.form.name")
+          }}
           error={!!errors.name}
         />
 
@@ -63,7 +70,11 @@ export const AssetTypeForm = () => {
       </Paper>
 
       {errors.name && (
-        <FormHelperText sx={{p: 1, color: 'error.main'}}>
+        <FormHelperText
+          role={"alert"}
+          aria-label={intlStore.formatMessage("app.common.form.alert")}
+          sx={{p: 1, color: 'error.main'}}
+        >
           <FormattedMessage id={errors.name?.message} values={{minLength: 3, maxLength: 12}}/>
         </FormHelperText>
       )}
