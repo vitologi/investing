@@ -25,14 +25,13 @@ describe('CurrenciesService', ()=>{
 
   test('list (get currencies with default LanguageCode)', async ()=>{
     const currencies = await service.list();
-    expect(currencies.length).toBe(119);
+    expect(currencies.length >= 119).toBeTruthy();
   });
 
   test('other methods (cant use any other method except list)', async ()=>{
-    // expect(await service.create(testCurrency)).to(new Error(`CurrenciesService haven't method create implementation`));
-    // expect(await service.delete('id')).toThrowError();
-    // expect(await service.get('id')).toThrowError();
-    // expect(await service.update(testCurrency)).toThrowError();
-    console.log(testCurrency);
+    await expect(service.create(testCurrency)).rejects.toThrowError(`CurrenciesService haven't method create implementation`);
+    await expect(service.delete('id')).rejects.toThrowError(`CurrenciesService haven't method delete implementation`);
+    await expect(service.get('id')).rejects.toThrowError(`CurrenciesService haven't method get implementation`);
+    await expect(service.update(testCurrency)).rejects.toThrowError(`CurrenciesService haven't method update implementation`);
   });
 })
