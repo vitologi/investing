@@ -11,15 +11,14 @@ export class OpenexchangeratesProvider implements ICurrencyRatesProvider {
     this.token = token;
   }
 
-  getExchangeRates(date: Date = new Date()): Promise<ICurrencyRateDto | null> {
+  async getExchangeRates(date: Date = new Date()): Promise<ICurrencyRateDto | null> {
     if (!this.token) {
       throw new Error(`Token hasn't been set`);
     }
 
-    const url = this.url.replace(/\b(?:DATE_VAR|TOKEN_VAR)\b/gi, matched => ({
-      DATE_VAR: date.toISOString().split('T')[0],
-      TOKEN_VAR: this.token
-    })[matched] || '');
+    const url = this.url
+        .replace('DATE_VAR', date.toISOString().split('T')[0])
+        .replace('TOKEN_VAR', this.token);
 
     return fetch(url)
       .then((response) => {
@@ -35,6 +34,7 @@ export class OpenexchangeratesProvider implements ICurrencyRatesProvider {
   private parseResponse(data: IOpenexchangeratesDto): ICurrencyRateDto {
     const {timestamp: responseTimestamp, base, rates} = data;
     const timestamp = parseToTimestamp(responseTimestamp * 1000);
+
     return {
       _id: timestamp.toString(),
       timestamp,
