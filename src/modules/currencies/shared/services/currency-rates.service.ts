@@ -1,18 +1,24 @@
-// import Dinero, {Currency as DineroCurrency} from "dinero.js";
 import {ICurrencyRatesProvider} from "../interfaces/currency-rates.provider";
 import {currencyRatesCollection} from "../../offline/currencies.db";
 import {injectable} from "inversify";
 import {parseToTimestamp} from "../utils/parse-to-timestamp";
 import {EmptyCurrencyRatesProvider} from "./empty-currency-rates.provider";
+import {ICollection} from "@vitologi/local-db";
+import {ICurrencyRateDto} from "../dtos/currency-rate.dto";
 
 @injectable()
 export class CurrencyRatesService {
   private _provider: ICurrencyRatesProvider = new EmptyCurrencyRatesProvider();
-  private deferredRequests: (() => void)[] = [];
+  private deferredRequests: ((err: unknown) => void)[] = [];
   private requestedTimestamp = new Map<number, boolean>();
+  private collection: ICollection<ICurrencyRateDto>;
 
   get provider(): ICurrencyRatesProvider {
     return this._provider;
+  }
+
+  constructor() {
+    this.collection = currencyRatesCollection();
   }
 
   setProvider(provider: ICurrencyRatesProvider): void {
@@ -26,16 +32,18 @@ export class CurrencyRatesService {
     const timestampKey = parseToTimestamp(date);
 
     // try to get rate from local db
-    let rateDto = await currencyRatesCollection.findOne({timestamp: timestampKey});
-
+    let rateDto = await this.collection.findOne({timestamp: timestampKey});
 
     // if there is no rates on date then return promise of exact rate
     if (!rateDto) {
-
-      const result = new Promise<number>((resolve) => {
-        const resolveHandler = () => {
-          resolve(this.getExchangeRate(props));
+      const result = new Promise<number>((resolve,reject) => {
+        const resolveHandler = (err?: unknown) => {
           this.deferredRequests.splice(this.deferredRequests.indexOf(resolveHandler), 1);
+
+          if(err)
+            return reject(err);
+
+          return resolve(this.getExchangeRate(props));
         }
         this.deferredRequests.push(resolveHandler);
       });
@@ -49,15 +57,13 @@ export class CurrencyRatesService {
 
           if (rateDto) {
             // save or cache received rates
-            await currencyRatesCollection.insertOne(rateDto);
+            await this.collection.insertOne(rateDto);
             this.notifyDeferrerRequests();
-          } else {
-            throw new Error(`Can't get rates on ${date}`);
           }
-        } catch (_) {
+        } catch (err) {
           this.requestedTimestamp.delete(timestampKey);
+          this.notifyDeferrerRequests(err);
         }
-
       }
 
       return result;
@@ -70,7 +76,7 @@ export class CurrencyRatesService {
     return crossRate;
   }
 
-  private notifyDeferrerRequests(): void {
-    this.deferredRequests.forEach((handler) => handler());
+  private notifyDeferrerRequests(err?: unknown): void {
+    this.deferredRequests.forEach((handler) => handler(err));
   }
 }

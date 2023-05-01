@@ -6,4 +6,4 @@ const client = new DbClient({dbName: "currencies"});
 const db = client.db("currencies", {client, migrations: currenciesMigrations});
 db.open();
 
-export const currencyRatesCollection = db.collection<ICurrencyRateDto>("currencyRates");
+export const currencyRatesCollection = () => db.collection<ICurrencyRateDto>("currencyRates");
