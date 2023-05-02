@@ -9,7 +9,7 @@ import {ICurrencyRateDto} from "../dtos/currency-rate.dto";
 @injectable()
 export class CurrencyRatesService {
   private _provider: ICurrencyRatesProvider = new EmptyCurrencyRatesProvider();
-  private deferredRequests: ((err: unknown) => void)[] = [];
+  private deferredRequests: ((handlerTimestampKey: number, value: number, err?: unknown) => void)[] = [];
   private requestedTimestamp = new Map<number, boolean>();
   private collection: ICollection<ICurrencyRateDto>;
 
@@ -27,56 +27,66 @@ export class CurrencyRatesService {
 
   async getExchangeRate(props: { from: string, to: string, date?: Date }): Promise<number> {
     const {from, to, date} = props;
-
     // use timestamp as a key to find rates
     const timestampKey = parseToTimestamp(date);
 
-    // try to get rate from local db
+    // rates from local db
     let rateDto = await this.collection.findOne({timestamp: timestampKey});
+    if (rateDto) {
+      return rateDto.rates[to] / rateDto.rates[from];
+    }
 
-    // if there is no rates on date then return promise of exact rate
-    if (!rateDto) {
-      const result = new Promise<number>((resolve,reject) => {
-        const resolveHandler = (err?: unknown) => {
-          this.deferredRequests.splice(this.deferredRequests.indexOf(resolveHandler), 1);
+    const result = this.getDeferredResult(timestampKey);
 
-          if(err)
-            return reject(err);
-
-          return resolve(this.getExchangeRate(props));
-        }
-        this.deferredRequests.push(resolveHandler);
-      });
-
-      // try to obtain it from outer source
-      if (!this.requestedTimestamp.has(timestampKey)) {
-        this.requestedTimestamp.set(timestampKey, true);
-
-        try {
-          rateDto = await this.provider.getExchangeRates(date);
-
-          if (rateDto) {
-            // save or cache received rates
-            await this.collection.insertOne(rateDto);
-            this.notifyDeferrerRequests();
-          }
-        } catch (err) {
-          this.requestedTimestamp.delete(timestampKey);
-          this.notifyDeferrerRequests(err);
-        }
-      }
-
+    // prevent multiple request on the same date
+    if (this.requestedTimestamp.has(timestampKey)) {
       return result;
     }
 
-    const sourceRate = rateDto.rates[from];
-    const targetRate = rateDto.rates[to];
-    const crossRate = targetRate / sourceRate;
+    this.requestedTimestamp.set(timestampKey, true);
 
-    return crossRate;
+    let error;
+    try {
+      rateDto = await this.provider.getExchangeRates(date);
+      if (rateDto) {
+        await this.collection.insertOne(rateDto);
+      }
+    } catch (err) {
+      error = err;
+    }
+
+    let ratio = 1;
+    if(rateDto){
+      ratio = rateDto.rates[to] / rateDto.rates[from];
+    }
+
+    this.notifyDeferrerRequests(timestampKey, ratio , error);
+    this.requestedTimestamp.delete(timestampKey);
+    return result;
   }
 
-  private notifyDeferrerRequests(err?: unknown): void {
-    this.deferredRequests.forEach((handler) => handler(err));
+  async getDeferredResult(timestampKey: number): Promise<number>{
+    return new Promise<number>((resolve, reject) => {
+      const resolveHandler = (handlerTimestampKey: number, value: number, err?: unknown) => {
+        if (handlerTimestampKey !== timestampKey) {
+          return;
+        }
+
+        this.deferredRequests.splice(this.deferredRequests.indexOf(resolveHandler), 1);
+
+        if (err)
+          return reject(err);
+
+        return resolve(value);
+      }
+
+      this.deferredRequests.push(resolveHandler);
+    });
+  }
+
+  notifyDeferrerRequests(handlerTimestampKey: number, value: number, err?: unknown): void {
+    for (let i = this.deferredRequests.length - 1; i >= 0; i--) {
+      this.deferredRequests[i](handlerTimestampKey, value, err);
+    }
   }
 }

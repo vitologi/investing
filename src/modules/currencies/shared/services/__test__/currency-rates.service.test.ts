@@ -4,6 +4,7 @@ import {ICurrencyRatesProvider} from "../../interfaces/currency-rates.provider";
 import {ICollection} from "@vitologi/local-db";
 import {ICurrencyRateDto} from "../../dtos/currency-rate.dto";
 import {currencyRatesCollection} from "../../../offline/currencies.db";
+import {sleep} from "../../../../../shared/utils/sleep";
 
 
 jest.mock("../../../offline/currencies.db", () => {
@@ -31,7 +32,8 @@ describe('CurrencyRatesService', () => {
     base: 'USD',
     timestamp: date.getTime(),
     rates: {
-      USD: 1
+      USD: 1,
+      EUR: 2,
     }
   };
 
@@ -47,10 +49,6 @@ describe('CurrencyRatesService', () => {
     };
     mockCollection.findOne.mockReset();
     mockCollection.insertOne.mockReset();
-  });
-
-  test('created', () => {
-    expect(service).toBeTruthy();
   });
 
   test('provider (has default empty provider)', () => {
@@ -72,81 +70,65 @@ describe('CurrencyRatesService', () => {
   });
 
   test('getExchangeRate (should request rates from provider)', async () => {
-    mockProvider.getExchangeRates.mockResolvedValueOnce(mockDto);
-    mockCollection.insertOne.mockResolvedValueOnce({
-      insertedCount: 1,
-      insertedIds: {[0]: '_id'}
-    });
-    mockCollection.findOne
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(mockDto);
-
-    service.setProvider(mockProvider);
-
-    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date}))
-      .resolves
-      .toBe(1);
-
-    expect(mockProvider.getExchangeRates).toHaveBeenCalledTimes(1);
-    expect(mockProvider.getExchangeRates).toHaveBeenCalledWith(date);
-
-    expect(mockCollection.insertOne).toHaveBeenCalledTimes(1);
-    expect(mockCollection.insertOne).toHaveBeenCalledWith(mockDto);
-
-    expect(mockCollection.findOne).toHaveBeenCalledTimes(2);
-  });
-
-  test('getExchangeRate (shouldnt send multiple requests for one date)', async () => {
+    mockCollection.findOne.mockResolvedValue(null);
     mockProvider.getExchangeRates.mockResolvedValue(mockDto);
-    mockCollection.insertOne.mockResolvedValue({
-      insertedCount: 1,
-      insertedIds: {[0]: '_id'}
-    });
-    mockCollection.findOne
-      .mockResolvedValueOnce(null)
-      .mockResolvedValue(mockDto);
-
     service.setProvider(mockProvider);
 
-    const send = ()=> expect(service.getExchangeRate({from: 'USD', to: 'USD', date}))
-      .resolves
-      .toBe(1);
-
-    await send();
-    await send();
+    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date})).resolves.toBe(1);
 
     expect(mockProvider.getExchangeRates).toHaveBeenCalledTimes(1);
-    expect(mockCollection.insertOne).toHaveBeenCalledTimes(1);
+    expect(mockCollection.insertOne).toHaveBeenCalledWith(mockDto);
   });
 
-  test('getExchangeRate (should resend request if previous was failed)', async () => {
-    let isDtoPut = false;
-    mockProvider.getExchangeRates
-      .mockRejectedValueOnce(new Error())
-      .mockResolvedValue(mockDto);
-    mockCollection.insertOne.mockImplementation(async () => {
-      isDtoPut = true;
-      return {
-        insertedCount: 1,
-        insertedIds: {[0]: '_id'}
-      }
-    });
-
-    mockCollection.findOne.mockImplementation(async ()=> isDtoPut ? mockDto : null);
-
+  test('getExchangeRate (should use different dates)', async () => {
+    const date1 = new Date('2023-05-01');
+    const date2 = new Date('2023-05-02');
+    mockCollection.findOne.mockResolvedValue(null);
+    mockProvider.getExchangeRates.mockResolvedValue(mockDto);
     service.setProvider(mockProvider);
 
-    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date}))
-      .rejects
-      .toThrowError();
-
-    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date}))
-      .resolves
-      .toBe(1);
+    await Promise.all([
+      service.getExchangeRate({from: 'USD', to: 'USD', date: date1}),
+      service.getExchangeRate({from: 'USD', to: 'USD', date: date2}),
+    ]);
 
     expect(mockProvider.getExchangeRates).toHaveBeenCalledTimes(2);
-    expect(mockCollection.insertOne).toHaveBeenCalledTimes(1);
+    expect(mockProvider.getExchangeRates).toHaveBeenCalledWith(date1);
+    expect(mockProvider.getExchangeRates).toHaveBeenCalledWith(date2);
   });
 
-  // TODO: refactor method and write tests
+  test('getExchangeRate (should throw error if provider unavailable)', async () => {
+    mockCollection.findOne.mockResolvedValue(null);
+    mockProvider.getExchangeRates.mockRejectedValue(new Error());
+    service.setProvider(mockProvider);
+
+    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date})).rejects.toThrowError();
+
+    expect(mockProvider.getExchangeRates).toHaveBeenCalledTimes(1);
+    expect(mockCollection.insertOne).not.toHaveBeenCalled();
+  });
+
+  test('getExchangeRate (shouldnt send multiple requests)', async () => {
+    mockCollection.findOne.mockResolvedValue(null);
+    mockProvider.getExchangeRates.mockResolvedValue(mockDto);
+
+    service.setProvider(mockProvider);
+    const spy = jest.fn();
+    service.getExchangeRate({from: 'USD', to: 'USD', date}).then(spy);
+    service.getExchangeRate({from: 'USD', to: 'USD', date}).then(spy);
+    await sleep(10);
+
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(mockProvider.getExchangeRates).toHaveBeenCalledTimes(1);
+  });
+
+  test('getExchangeRate (shouldnt put in db empty values)', async () => {
+    mockCollection.findOne.mockResolvedValue(null);
+    mockProvider.getExchangeRates.mockResolvedValue(null);
+    service.setProvider(mockProvider);
+
+    await expect(service.getExchangeRate({from: 'USD', to: 'USD', date})).resolves.toBe(1);
+
+    expect(mockCollection.insertOne).not.toHaveBeenCalled();
+  });
 });
