@@ -12,9 +12,9 @@ import {parseToTimestamp} from "../shared/utils/parse-to-timestamp";
 import {CurrencyRateProvider} from "../shared/enums/currency-rate-provider";
 import {ICurrencyRatesProvider} from "../shared/interfaces/currency-rates.provider";
 
-const ENABLED_CURRENCIES = 'ENABLED_CURRENCIES';
-const RATE_PROVIDER = 'RATE_PROVIDER';
-const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
+export const ENABLED_CURRENCIES = 'ENABLED_CURRENCIES';
+export const RATE_PROVIDER = 'RATE_PROVIDER';
+export const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
 
 @injectable()
 export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
