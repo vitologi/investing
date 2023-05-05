@@ -1,4 +1,3 @@
-// import {Container} from "inversify";
 import {when} from "mobx";
 import {CurrenciesStore, ENABLED_CURRENCIES, OPEN_EXCHANGE_RATES_API_TOKEN, RATE_PROVIDER} from "../currencies.store";
 import {CurrenciesService} from "../../shared/services/currencies.service";
@@ -10,8 +9,8 @@ import {LanguageCode} from "../../../intl/shared/enums/language-code";
 import {ICurrencyDto} from "../../shared/dtos/currency.dto";
 import {Currency} from "../../shared/models/currency";
 import {sleep} from "../../../../shared/utils/sleep";
-
-// jest.mock("../../shared/services/asset-types.service");
+import {CurrencyRateProvider} from "../../shared/enums/currency-rate-provider";
+import {OpenexchangeratesProvider} from "../../shared/services/openexchangerates.provider";
 
 describe('CurrenciesStore', () => {
   // let container: Container;
@@ -32,8 +31,6 @@ describe('CurrenciesStore', () => {
   };
 
   beforeEach(() => {
-    // container = new Container();
-
     mockCurrenciesService = {
       currencyList: Promise.resolve({
         currencyList: {},
@@ -68,7 +65,7 @@ describe('CurrenciesStore', () => {
           case ENABLED_CURRENCIES:
             return [];
           case RATE_PROVIDER:
-            return 'provider';
+            return CurrencyRateProvider.Empty;
           case OPEN_EXCHANGE_RATES_API_TOKEN:
             return 'token';
         }
@@ -83,13 +80,6 @@ describe('CurrenciesStore', () => {
       mockStorageService,
     );
   });
-
-  // TODO: remove container, use mocked service directly through constructor
-  // beforeEach(() => {
-  //   mockStorageService.get.mockImplementation();
-  //
-  //
-  // });
 
   test('init (should use lazy initialization)', async () => {
     // automatically
@@ -122,6 +112,26 @@ describe('CurrenciesStore', () => {
     await when(() => store.isInit);
     expect(mockCurrenciesService.list).toHaveBeenCalledTimes(1);
     expect(store.list.length).toBe(1);
+  });
+
+  test('toggleEnabled (should enable currency and store it)', async () => {
+    expect(mockStorageService.set).toHaveBeenCalledTimes(0);
+    store.toggleEnabled('USD');
+    expect(mockStorageService.set).toHaveBeenCalledTimes(1);
+  });
+
+  test('setOpenExchangeRatesApiToken (should use OpenExchangeRatesApiToken and store it)', async () => {
+    expect(mockStorageService.set).toHaveBeenCalledTimes(0);
+    store.setOpenExchangeRatesApiToken('TOKEN');
+    expect(mockStorageService.set).toHaveBeenCalledTimes(1);
+  });
+
+  test('setRateProvider (should use Openexchangerates provider and store it)', async () => {
+    expect(mockStorageService.set).toHaveBeenCalledTimes(0);
+    store.setRateProvider(CurrencyRateProvider.Openexchangerates);
+    expect(mockStorageService.set).toHaveBeenCalledTimes(1);
+    expect(mockStorageService.set).toHaveBeenCalledWith(RATE_PROVIDER, CurrencyRateProvider.Openexchangerates);
+    expect(mockCurrencyRatesService.setProvider.mock.calls[1][0]).toBeInstanceOf(OpenexchangeratesProvider);
   });
 
 })
