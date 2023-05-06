@@ -19,12 +19,22 @@ describe('CurrenciesStore', () => {
   let mockIntlStore: jest.Mocked<IntlStore>;
   let mockStorageService: jest.Mocked<StorageService>;
   let store: CurrenciesStore;
-  const defaultDto: ICurrencyDto = {
-    _id: 'code',  // code is id
+  const usdDto: ICurrencyDto = {
+    _id: 'USD',  // code is id
     name: 'name',
     symbol_native: 'symbol_native',
     symbol: 'symbol',
-    code: 'code',
+    code: 'USD',
+    name_plural: 'name_plural',
+    rounding: 0,
+    decimal_digits: 0,
+  };
+  const eurDto: ICurrencyDto = {
+    _id: 'EUR',  // code is id
+    name: 'name',
+    symbol_native: 'symbol_native',
+    symbol: 'symbol',
+    code: 'EUR',
     name_plural: 'name_plural',
     rounding: 0,
     decimal_digits: 0,
@@ -39,7 +49,7 @@ describe('CurrenciesStore', () => {
       }),
       list: jest.fn(async ()=>{
         await sleep(100);
-        return [defaultDto];
+        return [usdDto, eurDto];
       }),
       create: jest.fn().mockRejectedValue('Error'),
       delete: jest.fn().mockRejectedValue('Error'),
@@ -101,9 +111,9 @@ describe('CurrenciesStore', () => {
   });
 
   test('createFromDto', () => {
-    const model = store.createFromDto(defaultDto);
+    const model = store.createFromDto(usdDto);
     expect(model).toBeInstanceOf(Currency);
-    expect(model.asDto).toEqual(defaultDto);
+    expect(model.asDto).toEqual(usdDto);
   });
 
   test('load (should load values)', async () => {
@@ -111,7 +121,7 @@ describe('CurrenciesStore', () => {
     expect(store.list.length).toBe(0);
     await when(() => store.isInit);
     expect(mockCurrenciesService.list).toHaveBeenCalledTimes(1);
-    expect(store.list.length).toBe(1);
+    expect(store.list.length).toBe(2);
   });
 
   test('toggleEnabled (should enable currency and store it)', async () => {
@@ -133,5 +143,28 @@ describe('CurrenciesStore', () => {
     expect(mockStorageService.set).toHaveBeenCalledWith(RATE_PROVIDER, CurrencyRateProvider.Openexchangerates);
     expect(mockCurrencyRatesService.setProvider.mock.calls[1][0]).toBeInstanceOf(OpenexchangeratesProvider);
   });
+
+  test('baseCurrency (should use USD)', async () => {
+    await when(() => store.isInit);
+    const baseCurrency = store.baseCurrency;
+    expect(baseCurrency?.code).toBe('USD');
+  });
+
+  test('baseCurrency (should return null if there is no such currency)', async () => {
+    await when(() => store.isInit);
+    const baseCurrency = store.baseCurrency;
+    expect(baseCurrency?.code).toBe('USD');
+    store.setBaseCurrency('UNDEFINED');
+    expect(store.baseCurrency).toBeNull();
+  });
+
+  test('setBaseCurrency (should change base currency)', async () => {
+    await when(() => store.isInit);
+    const baseCurrency = store.baseCurrency;
+    expect(baseCurrency?.code).toBe('USD');
+    store.setBaseCurrency('EUR');
+    expect(store.baseCurrency?.code).toBe('EUR');
+  });
+
 
 })
