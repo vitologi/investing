@@ -104,8 +104,6 @@ describe('CurrenciesStore', () => {
     expect(store.isInit).toBeTruthy();
   });
 
-
-
   test('createEmpty (should throw error)', () => {
     expect(()=> store.createEmpty()).toThrowError();
   });
@@ -124,10 +122,14 @@ describe('CurrenciesStore', () => {
     expect(store.list.length).toBe(2);
   });
 
-  test('toggleEnabled (should enable currency and store it)', async () => {
+  test('toggleEnabled (should enable/disabled currency and store it)', async () => {
     expect(mockStorageService.set).toHaveBeenCalledTimes(0);
     store.toggleEnabled('USD');
     expect(mockStorageService.set).toHaveBeenCalledTimes(1);
+    expect(store.enabled.includes('USD')).toBeTruthy();
+    store.toggleEnabled('USD');
+    expect(store.enabled.includes('USD')).toBeFalsy();
+    expect(mockStorageService.set).toHaveBeenCalledTimes(2);
   });
 
   test('setOpenExchangeRatesApiToken (should use OpenExchangeRatesApiToken and store it)', async () => {
@@ -142,6 +144,10 @@ describe('CurrenciesStore', () => {
     expect(mockStorageService.set).toHaveBeenCalledTimes(1);
     expect(mockStorageService.set).toHaveBeenCalledWith(RATE_PROVIDER, CurrencyRateProvider.Openexchangerates);
     expect(mockCurrencyRatesService.setProvider.mock.calls[1][0]).toBeInstanceOf(OpenexchangeratesProvider);
+  });
+
+  test('setRateProvider (should throw error if provider doesnt exist)', async () => {
+    expect(() => store.setRateProvider('UNKNOWN' as CurrencyRateProvider)).toThrowError(`Type of provider doesn't exist`);
   });
 
   test('baseCurrency (should use USD)', async () => {
@@ -164,6 +170,39 @@ describe('CurrenciesStore', () => {
     expect(baseCurrency?.code).toBe('USD');
     store.setBaseCurrency('EUR');
     expect(store.baseCurrency?.code).toBe('EUR');
+  });
+
+  test('enabledList (should show only enabled currencies)', async () => {
+    await when(() => store.isInit);
+    expect(store.enabledList.length).toBe(0);
+    store.toggleEnabled('USD');
+    store.toggleEnabled('EUR');
+    expect(store.enabledList.length).toBe(2);
+  });
+
+  test('isEnabled (should use shortcut for enabled currency)', async () => {
+    expect(store.isEnabled('USD')).toBeFalsy();
+    store.toggleEnabled('USD')
+    expect(store.isEnabled('USD')).toBeTruthy();
+  });
+
+  test('setStoredExchangeRate (should save exchange rates)', async () => {
+    expect(store.storedExchangeRates.has('USD')).toBeFalsy();
+    store.setStoredExchangeRate('USD', 1);
+    expect(store.storedExchangeRates.has('USD')).toBeTruthy();
+    expect(store.storedExchangeRates.get('USD')).toBe(1);
+  });
+
+  test('removeStoredExchangeRate (should remove exchange rates)', async () => {
+    store.setStoredExchangeRate('USD', 1);
+    expect(store.storedExchangeRates.has('USD')).toBeTruthy();
+    store.removeStoredExchangeRate('USD');
+    expect(store.storedExchangeRates.has('USD')).toBeFalsy();
+  });
+
+  test('convert (should return the same amount if currencies are the same)', async () => {
+    await when(() => store.isInit);
+    expect(store.convert(100, 'USD','USD')).toBe(100);
   });
 
 
