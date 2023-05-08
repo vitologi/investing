@@ -22,7 +22,7 @@ describe('CurrenciesStore', () => {
   const usdDto: ICurrencyDto = {
     _id: 'USD',  // code is id
     name: 'name',
-    symbol_native: 'symbol_native',
+    symbol_native: '$',
     symbol: 'symbol',
     code: 'USD',
     name_plural: 'name_plural',
@@ -205,5 +205,37 @@ describe('CurrenciesStore', () => {
     expect(store.convert(100, 'USD','USD')).toBe(100);
   });
 
+  test('convert (should return adjusted amount if rate already exists)', async () => {
+    await when(() => store.isInit);
+    store.setStoredExchangeRate('USD.EUR.1682884800000', 2);
+    expect(store.convert(100, 'USD','EUR', 1682884800000)).toBe(200);
+  });
 
+  test('convert (should request and save rates if there is no stored rate yet)', async () => {
+    await when(() => store.isInit);
+    const spy = jest.spyOn(store, 'setStoredExchangeRate');
+    mockCurrencyRatesService.getExchangeRate.mockResolvedValue(2);
+    expect(store.convert(100, 'USD','EUR', 1682884800000)).toBe(100);
+    expect(mockCurrencyRatesService.getExchangeRate).toHaveBeenCalledTimes(1);
+    expect(mockCurrencyRatesService.getExchangeRate).toHaveBeenCalledWith({from:'USD',to:'EUR',date: new Date(1682884800000)});
+    await sleep(10);
+    expect(spy).toHaveBeenCalledWith('USD.EUR.1682884800000', 2);
+  });
+
+  test('sortedByEnablingList (should put enabled currencies at the top of list)', async () => {
+    await when(() => store.isInit);
+    const list = store.list.map((item)=>item.id);
+    let sortedByEnablingList = store.sortedByEnablingList.map((item)=>item.id);
+    expect(list).toEqual(sortedByEnablingList);
+    const lastId = list[list.length-1];
+    store.toggleEnabled(lastId);
+    sortedByEnablingList = store.sortedByEnablingList.map((item)=>item.id);
+    expect(lastId).toEqual(sortedByEnablingList[0]);
+  });
+
+  test('symbol (should show native symbol of currency)', async () => {
+    await when(() => store.isInit);
+    expect(store.symbol(null)).toBe('');
+    expect(store.symbol('USD')).toBe('$');
+  });
 })
