@@ -8,7 +8,7 @@ import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {AssetTypesService} from "../../../shared/services/asset-types.service";
 import {AssetTypeForm} from "../asset-type-form";
 import userEvent from "@testing-library/user-event";
-import {IAssetTypeDto} from "../../../shared/interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../../shared/dtos/asset-type.dto";
 
 jest.mock("../../../shared/services/asset-types.service");
 jest.mock("../../../store/asset-types.store");

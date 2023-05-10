@@ -4,7 +4,7 @@ import {AssetTypesStore} from "../asset-types.store";
 import {AssetType} from "../../shared/models/asset-type";
 import defaultAssetTypes from "../../offline/asset-types.mocks.json";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
-import {IAssetTypeDto} from "../../shared/interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../shared/dtos/asset-type.dto";
 import {AssetTypesService} from "../../shared/services/asset-types.service";
 
 jest.mock("../../shared/services/asset-types.service");

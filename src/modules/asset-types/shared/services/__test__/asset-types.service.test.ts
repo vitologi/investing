@@ -1,7 +1,7 @@
 import {ICollection} from "@vitologi/local-db";
 import {AssetTypesService} from "../asset-types.service";
 import {assetTypesCollection} from "../../../offline/asset-type.db";
-import {IAssetTypeDto} from "../../interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../dtos/asset-type.dto";
 
 jest.mock("../../../offline/asset-type.db", ()=>{
   const mockCollection = {

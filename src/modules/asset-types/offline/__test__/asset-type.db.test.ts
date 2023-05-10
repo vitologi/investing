@@ -1,6 +1,6 @@
 import {DbClient, ICollection, IDb, IDbClient} from "@vitologi/local-db";
 import {assetTypesCollection} from "../asset-type.db";
-import {IAssetTypeDto} from "../../shared/interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../shared/dtos/asset-type.dto";
 
 jest.mock("@vitologi/local-db", ()=>{
   const mockDb = {

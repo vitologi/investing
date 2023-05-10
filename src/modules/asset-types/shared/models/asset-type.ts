@@ -1,5 +1,5 @@
 import {Model} from "../../../../shared/models/model";
-import {IAssetTypeDto} from "../interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../dtos/asset-type.dto";
 import {IDomainStore} from "../../../../shared/interfaces/domain-store";
 
 export class AssetType extends Model<IAssetTypeDto, IDomainStore<IAssetTypeDto, AssetType>>{

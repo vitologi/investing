@@ -1,7 +1,7 @@
 import defaultValues from '../asset-types.mocks.json';
 import {assetTypesMigrations} from "../asset-types.migrations";
 import {ICollection, IDb} from "@vitologi/local-db";
-import {IAssetTypeDto} from "../../shared/interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../shared/dtos/asset-type.dto";
 
 describe("asset-types.migrations", ()=>{
   let mockCollection: jest.Mocked<ICollection<IAssetTypeDto>>;
