@@ -57,7 +57,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Dictionaries
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="dictionaries-step" container={true} spacing={2}>
             <Grid2 xs={12} sm={4} sx={(theme: Theme) => ({
               [theme.breakpoints.down('sm')]: {
                 textAlign: 'center',
@@ -132,7 +132,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Choose a provider of currency quotes
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2  data-testid="currency-step" container={true} spacing={2}>
             <Grid2 xs={12} sm={4} sx={(theme: Theme) => ({
               [theme.breakpoints.down('sm')]: {
                 textAlign: 'center',
@@ -181,7 +181,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Transaction settings
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2  data-testid="setting-transaction-step" container={true} spacing={2}>
             <Grid2 xs={12} sx={{textAlign: 'center'}}>
               <Paper
                 component={'img'}
@@ -222,7 +222,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Adding a transaction
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="transaction-step" container={true} spacing={2}>
             <Grid2 xs={12} sx={{textAlign: 'center'}}>
               <Paper
                 component={'img'}
