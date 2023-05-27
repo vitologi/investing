@@ -9,7 +9,7 @@ jest.mock("file-saver", ()=>({
   saveAs: jest.fn(),
 }))
 
-describe('FirstStepEn', ()=>{
+describe('FirstStepRu', ()=>{
   let onFinish: jest.Mocked<() => void>;
 
   beforeEach(()=>{

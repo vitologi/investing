@@ -1,5 +1,6 @@
 import {injectable} from 'inversify';
 import {LanguageCode} from "../../shared/enums/language-code";
+import {makeObservable, observable} from "mobx";
 
 @injectable()
 export class IntlStore {
@@ -13,6 +14,12 @@ export class IntlStore {
 
   get formatDate() {
     return this._formatDate;
+  }
+
+  constructor() {
+    makeObservable(this, {
+      locale: observable,
+    })
   }
 
   setLanguage = jest.fn();
