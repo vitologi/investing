@@ -11,7 +11,6 @@ import {waitFor} from "@testing-library/react";
 
 
 jest.mock("../../../../intl/store/intl.store");
-jest.mock("../../../store/manual.store");
 jest.mock("../../../../../shared/services/storage.service");
 
 jest.mock('../../../components/first-steps-content/first-steps-content.ru', () => ({
