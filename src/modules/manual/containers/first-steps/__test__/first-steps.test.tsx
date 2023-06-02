@@ -49,10 +49,10 @@ describe('FirstSteps', () => {
     expect(navigate).not.toHaveBeenCalled();
     const {queryByTestId} = render(<DiProvider container={di}><FirstSteps/></DiProvider>);
 
-    mockIntlStore.locale = LanguageCode.En;
+    mockIntlStore.setLanguage(LanguageCode.En);
     await waitFor(() => expect(queryByTestId('first-steps-content.en')).toBeInTheDocument());
 
-    mockIntlStore.locale = LanguageCode.Ru;
+    mockIntlStore.setLanguage(LanguageCode.Ru);
     await waitFor(() => expect(queryByTestId('first-steps-content.ru')).toBeInTheDocument());
 
     await waitFor(()=> expect(mockManualStore.isInit).toBeTruthy());

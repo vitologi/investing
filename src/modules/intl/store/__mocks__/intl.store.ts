@@ -1,6 +1,6 @@
 import {injectable} from 'inversify';
 import {LanguageCode} from "../../shared/enums/language-code";
-import {makeObservable, observable} from "mobx";
+import {action, makeObservable, observable} from "mobx";
 
 @injectable()
 export class IntlStore {
@@ -19,10 +19,13 @@ export class IntlStore {
   constructor() {
     makeObservable(this, {
       locale: observable,
+      setLanguage: action,
     })
   }
 
-  setLanguage = jest.fn();
+  setLanguage(ln: LanguageCode){
+    this.locale = ln;
+  }
   switchToEnglish = jest.fn();
 
   switchToRussian = jest.fn();
