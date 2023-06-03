@@ -21,6 +21,7 @@ import {TickersService} from "../../../../tickers/shared/services/tickers.servic
 import {TransactionsTransferStore} from "../../../../transactions/store/transactions-transfer.store";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {DemoDialog} from "../demo-dialog";
+import {fireEvent} from "@testing-library/react";
 
 
 jest.mock("../../../../tickers/shared/services/tickers.service");
@@ -31,7 +32,6 @@ jest.mock("../../../../currencies/shared/services/currencies.service");
 jest.mock("../../../../currencies/shared/services/currency-rates.service");
 jest.mock("../../../../../shared/services/storage.service");
 jest.mock("../../../../portfolios/shared/services/portfolios.service");
-jest.mock("../../../../intl/store/intl.store");
 
 
 describe('DemoDialog', ()=>{
@@ -45,12 +45,12 @@ describe('DemoDialog', ()=>{
   const mockExchangeService = new ExchangeService();
   const mockAssetTypesService = new AssetTypesService();
   const mockTikersService = new TickersService();
-  const mockIntlStore = new IntlStore();
+  const intlStore = new IntlStore();
   const mockAssetTypesStore = new AssetTypesStore(mockAssetTypesService);
-  const mockExchangeStore = new ExchangeStore(mockExchangeService, mockIntlStore, mockStorageService);
+  const mockExchangeStore = new ExchangeStore(mockExchangeService, intlStore, mockStorageService);
   const mockTransactionsStore = new TransactionsStore(mockTransactionsService);
   const mockManualStore = new ManualStore(mockStorageService);
-  const mockCurrenciesStore = new CurrenciesStore(mockCurrenciesService, mockCurrencyRatesService, mockIntlStore, mockStorageService);
+  const mockCurrenciesStore = new CurrenciesStore(mockCurrenciesService, mockCurrencyRatesService, intlStore, mockStorageService);
   const mockPortfolioStore = new PortfoliosStore(mockPortfolioService);
   const mockTickersStore = new TickersStore(
     mockTikersService,
@@ -74,13 +74,14 @@ describe('DemoDialog', ()=>{
     new StorageService();
 
     di.bind<ManualStore>('ManualStore').toConstantValue(mockManualStore)
-    di.bind<IntlStore>('IntlStore').toConstantValue(mockIntlStore);
+    di.bind<IntlStore>('IntlStore').toConstantValue(intlStore);
     di.bind<TransactionsTransferStore>('TransactionsTransferStore').toConstantValue(mockTransferStore);
     di.bind<CurrenciesStore>('CurrenciesStore').toConstantValue(mockCurrenciesStore);
     di.bind<TransactionsStore>('TransactionsStore').toConstantValue(mockTransactionsStore);
   });
 
   beforeEach(() => {
+    di.snapshot();
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
   });
@@ -88,12 +89,22 @@ describe('DemoDialog', ()=>{
   afterEach(() => {
     clearTimers();
     cleanup();
+    di.restore();
   });
 
   test('', ()=>{
     const {getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
 
-    expect(getByRole("dialog")).toBeInTheDocument();
+    expect(getByRole("dialog")).toBeVisible();
+  });
+
+  test('', async ()=>{
+    const {getByText, getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
+
+
+    const rejectButton = getByText(intlStore.formatMessage("app.common.actions.reject"));
+    fireEvent.click(rejectButton);
+    expect(getByRole("dialog")).not.toBeVisible();
   });
 
 })
