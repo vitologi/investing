@@ -1,8 +1,7 @@
-import {cleanup, render} from "../../../../../test-utils";
+import {render} from "../../../../../test-utils";
 import {Container} from "inversify";
 import {IntlStore} from "../../../../intl/store/intl.store";
 import * as reactRouter from "react-router";
-import {clearTimers} from "mobx-react-lite";
 import {StorageService} from "../../../../../shared/services/storage.service";
 import {ManualStore} from "../../../store/manual.store";
 import {CurrenciesService} from "../../../../currencies/shared/services/currencies.service";
@@ -37,29 +36,29 @@ jest.mock("../../../../portfolios/shared/services/portfolios.service");
 describe('DemoDialog', ()=>{
   let di: Container;
   let navigate: jest.Mocked<ReturnType<typeof reactRouter.useNavigate>>;
-  const mockStorageService = new StorageService();
-  const mockCurrenciesService = new CurrenciesService();
-  const mockCurrencyRatesService = new CurrencyRatesService();
-  const mockPortfolioService = new PortfoliosService();
-  const mockTransactionsService = new TransactionsService();
-  const mockExchangeService = new ExchangeService();
-  const mockAssetTypesService = new AssetTypesService();
-  const mockTikersService = new TickersService();
-  const intlStore = new IntlStore();
-  const mockAssetTypesStore = new AssetTypesStore(mockAssetTypesService);
-  const mockExchangeStore = new ExchangeStore(mockExchangeService, intlStore, mockStorageService);
-  const mockTransactionsStore = new TransactionsStore(mockTransactionsService);
-  const mockManualStore = new ManualStore(mockStorageService);
-  const mockCurrenciesStore = new CurrenciesStore(mockCurrenciesService, mockCurrencyRatesService, intlStore, mockStorageService);
-  const mockPortfolioStore = new PortfoliosStore(mockPortfolioService);
-  const mockTickersStore = new TickersStore(
+  let mockStorageService = new StorageService();
+  let mockCurrenciesService = new CurrenciesService();
+  let mockCurrencyRatesService = new CurrencyRatesService();
+  let mockPortfolioService = new PortfoliosService();
+  let mockTransactionsService = new TransactionsService();
+  let mockExchangeService = new ExchangeService();
+  let mockAssetTypesService = new AssetTypesService();
+  let mockTikersService = new TickersService();
+  let intlStore = new IntlStore();
+  let mockAssetTypesStore = new AssetTypesStore(mockAssetTypesService);
+  let mockExchangeStore = new ExchangeStore(mockExchangeService, intlStore, mockStorageService);
+  let mockTransactionsStore = new TransactionsStore(mockTransactionsService);
+  let mockManualStore = new ManualStore(mockStorageService);
+  let mockCurrenciesStore = new CurrenciesStore(mockCurrenciesService, mockCurrencyRatesService, intlStore, mockStorageService);
+  let mockPortfolioStore = new PortfoliosStore(mockPortfolioService);
+  let mockTickersStore = new TickersStore(
     mockTikersService,
     mockTransactionsStore,
     mockCurrenciesStore,
     mockAssetTypesStore,
     mockPortfolioStore,
   );
-  const mockTransferStore = new TransactionsTransferStore(
+  let mockTransferStore = new TransactionsTransferStore(
     mockTransactionsStore,
     mockCurrenciesStore,
     mockPortfolioStore,
@@ -68,12 +67,45 @@ describe('DemoDialog', ()=>{
     mockTickersStore,
   );
 
-  beforeAll(() => {
+  beforeEach(() => {
+    mockStorageService = new StorageService();
+    mockCurrenciesService = new CurrenciesService();
+    mockCurrencyRatesService = new CurrencyRatesService();
+    mockPortfolioService = new PortfoliosService();
+    mockTransactionsService = new TransactionsService();
+    mockExchangeService = new ExchangeService();
+    mockAssetTypesService = new AssetTypesService();
+    mockTikersService = new TickersService();
+    intlStore = new IntlStore();
+    mockAssetTypesStore = new AssetTypesStore(mockAssetTypesService);
+    mockExchangeStore = new ExchangeStore(mockExchangeService, intlStore, mockStorageService);
+    mockTransactionsStore = new TransactionsStore(mockTransactionsService);
+    mockManualStore = new ManualStore(mockStorageService);
+    mockCurrenciesStore = new CurrenciesStore(mockCurrenciesService, mockCurrencyRatesService, intlStore, mockStorageService);
+    mockPortfolioStore = new PortfoliosStore(mockPortfolioService);
+
+    mockTickersStore = new TickersStore(
+      mockTikersService,
+      mockTransactionsStore,
+      mockCurrenciesStore,
+      mockAssetTypesStore,
+      mockPortfolioStore,
+    );
+    mockTransferStore = new TransactionsTransferStore(
+      mockTransactionsStore,
+      mockCurrenciesStore,
+      mockPortfolioStore,
+      mockExchangeStore,
+      mockAssetTypesStore,
+      mockTickersStore,
+    );
+
+
+
     // TODO: need to do di builder for tests, or maybe for app too
     di = new Container();
-    new StorageService();
 
-    di.bind<ManualStore>('ManualStore').toConstantValue(mockManualStore)
+    di.bind<ManualStore>('ManualStore').toConstantValue(mockManualStore);
     di.bind<IntlStore>('IntlStore').toConstantValue(intlStore);
     di.bind<TransactionsTransferStore>('TransactionsTransferStore').toConstantValue(mockTransferStore);
     di.bind<CurrenciesStore>('CurrenciesStore').toConstantValue(mockCurrenciesStore);
@@ -81,30 +113,41 @@ describe('DemoDialog', ()=>{
   });
 
   beforeEach(() => {
-    di.snapshot();
+    // di.snapshot();
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
   });
 
   afterEach(() => {
-    clearTimers();
-    cleanup();
-    di.restore();
+    // di.restore();
   });
 
-  test('', ()=>{
+  test('render dialog', ()=>{
     const {getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
 
     expect(getByRole("dialog")).toBeVisible();
   });
 
-  test('', async ()=>{
+  test('close dialog', async ()=>{
     const {getByText, getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
 
 
     const rejectButton = getByText(intlStore.formatMessage("app.common.actions.reject"));
     fireEvent.click(rejectButton);
     expect(getByRole("dialog")).not.toBeVisible();
+  });
+
+  test('confirm dialog', async ()=>{
+    mockManualStore.setIsInit(false);
+    const {getByText, getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
+    expect(getByRole('dialog')).toBeInTheDocument();
+    // const spy = jest.spyOn(mockManualStore, 'closeDemoDialog');
+    const confirmButton = getByText(intlStore.formatMessage("app.common.actions.confirm"));
+    fireEvent.click(confirmButton);
+
+    // expect(navigate).toHaveBeenCalled();
+    // expect(spy).toHaveBeenCalledTimes(1);
+    // expect(getByRole("dialog")).not.toBeVisible();
   });
 
 })
