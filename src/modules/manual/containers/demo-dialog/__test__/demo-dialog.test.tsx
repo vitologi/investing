@@ -20,7 +20,7 @@ import {TickersService} from "../../../../tickers/shared/services/tickers.servic
 import {TransactionsTransferStore} from "../../../../transactions/store/transactions-transfer.store";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {DemoDialog} from "../demo-dialog";
-import {fireEvent} from "@testing-library/react";
+import {fireEvent, waitFor} from "@testing-library/react";
 
 
 jest.mock("../../../../tickers/shared/services/tickers.service");
@@ -100,8 +100,6 @@ describe('DemoDialog', ()=>{
       mockTickersStore,
     );
 
-
-
     // TODO: need to do di builder for tests, or maybe for app too
     di = new Container();
 
@@ -138,16 +136,35 @@ describe('DemoDialog', ()=>{
   });
 
   test('confirm dialog', async ()=>{
-    mockManualStore.setIsInit(false);
     const {getByText, getByRole} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
     expect(getByRole('dialog')).toBeInTheDocument();
-    // const spy = jest.spyOn(mockManualStore, 'closeDemoDialog');
+    const spyCloseDialog = jest.spyOn(mockManualStore, 'closeDemoDialog').mockReturnValue();
+    const spyImportTransactions = jest.spyOn(mockTransferStore, 'importTransactions').mockResolvedValue();
+    const spyAlert = jest.spyOn(global.window, 'alert').mockReturnValue();
+    const spySetRateProvider = jest.spyOn(mockCurrenciesStore, 'setRateProvider').mockReturnValue();
+    const spySetExchangeApiToken = jest.spyOn(mockCurrenciesStore, 'setOpenExchangeRatesApiToken').mockReturnValue();
+
     const confirmButton = getByText(intlStore.formatMessage("app.common.actions.confirm"));
     fireEvent.click(confirmButton);
 
-    // expect(navigate).toHaveBeenCalled();
-    // expect(spy).toHaveBeenCalledTimes(1);
-    // expect(getByRole("dialog")).not.toBeVisible();
+    await waitFor(()=>expect(spyAlert).toHaveBeenCalled());
+    expect(spyCloseDialog).toHaveBeenCalled();
+    expect(spyImportTransactions).toHaveBeenCalled();
+    expect(spySetRateProvider).toHaveBeenCalled();
+    expect(spySetExchangeApiToken).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalled();
+  });
+
+  test('should alert if error confirmation was appeared', async ()=>{
+    const {getByText} = render(<DiProvider container={di}><DemoDialog/></DiProvider>)
+    const spyAlert = jest.spyOn(global.window, 'alert').mockReturnValue();
+    jest.spyOn(mockTransferStore, 'importTransactions').mockRejectedValue(new Error('Some error'));
+
+    const confirmButton = getByText(intlStore.formatMessage("app.common.actions.confirm"));
+    fireEvent.click(confirmButton);
+
+    await waitFor(()=>expect(spyAlert).toHaveBeenCalled());
+    expect(spyAlert).toHaveBeenCalledWith(intlStore.formatMessage("app.common.actions.error"));
   });
 
 })
