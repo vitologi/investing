@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 export const MobileMenu = (props: {
   id: string;
   isOpen: boolean;
+  label: string;
   anchorElement: HTMLElement | null;
   closeHandler: (event: MouseEvent) => void;
 }): JSX.Element => {
@@ -14,17 +15,21 @@ export const MobileMenu = (props: {
     isOpen,
     anchorElement,
     closeHandler,
+    label
   } = props;
 
   return (
     <Menu
       id={id}
+      aria-label={label}
+      aria-expanded={isOpen}
       open={isOpen}
       anchorEl={anchorElement}
       anchorOrigin={{vertical: 'top', horizontal: 'right'}}
       keepMounted
       transformOrigin={{vertical: 'top', horizontal: 'right'}}
       onClose={closeHandler}
+
     >
       {/* MESSAGES */}
       {/* <MenuItem> */}
@@ -56,7 +61,7 @@ export const MobileMenu = (props: {
           aria-haspopup="true"
           color="inherit"
           size="large">
-          <AccountCircleIcon />
+          <AccountCircleIcon/>
         </IconButton>
         <p>Profile</p>
       </MenuItem>

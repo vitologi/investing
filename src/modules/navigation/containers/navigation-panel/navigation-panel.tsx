@@ -138,6 +138,7 @@ export const NavigationPanel = observer((): JSX.Element => {
 
       <MobileMenu
         id="mobile-menu"
+        label={intlStore.formatMessage("app.navigation.navigationPanel.showMoreMenu.label")}
         isOpen={store.isOpen}
         anchorElement={document.getElementById('mobile-menu-anchor-id')}
         closeHandler={store.toggleOpen.bind(store)}

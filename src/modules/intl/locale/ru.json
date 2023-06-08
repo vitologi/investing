@@ -87,6 +87,7 @@
   "app.navigation.navigationPanel.login": "Войти",
   "app.navigation.navigationPanel.profileLink.label": "Аккаунт текущего пользователя",
   "app.navigation.navigationPanel.showMore.label": "Показать больше",
+  "app.navigation.navigationPanel.showMoreMenu.label": "Меню дополнительных пунктов",
   "app.assetTypes.title.list": "Список типов активов",
   "app.assetTypes.title.new": "Тип актива",
   "app.assetTypes.type.EQUITY": "Акция",

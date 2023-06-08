@@ -87,6 +87,7 @@
   "app.navigation.navigationPanel.login": "Login",
   "app.navigation.navigationPanel.profileLink.label": "Account of current user",
   "app.navigation.navigationPanel.showMore.label": "Show more",
+  "app.navigation.navigationPanel.showMoreMenu.label": "Show more menu",
   "app.assetTypes.title.list": "Asset type list",
   "app.assetTypes.title.new": "Asset type",
   "app.assetTypes.type.EQUITY": "Equity",
