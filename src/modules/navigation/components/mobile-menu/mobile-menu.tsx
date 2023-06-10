@@ -29,7 +29,6 @@ export const MobileMenu = (props: {
       keepMounted
       transformOrigin={{vertical: 'top', horizontal: 'right'}}
       onClose={closeHandler}
-
     >
       {/* MESSAGES */}
       {/* <MenuItem> */}
