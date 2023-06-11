@@ -2,6 +2,7 @@ import {render} from "../../../../../test-utils";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {MobileMenu} from "../mobile-menu";
 import {fireEvent} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 describe('MobileMenu',()=>{
   const mockProps = {
@@ -22,21 +23,20 @@ describe('MobileMenu',()=>{
     expect(menu).toHaveAttribute('aria-expanded', 'true');
   });
 
-  // test('calls the closeHandler when menu is closed', async () => {
-  //   const spy = jest.fn();
-  //   const {getByRole} = render(
-  //     <MemoryRouter>
-  //       <MobileMenu {...mockProps} closeHandler={spy}/>
-  //     </MemoryRouter>
-  //   );
-  //
-  //   const menu = getByRole('presentation');
-  //   const parent = menu.closest('body');
-  //   expect(parent).toBeInTheDocument();
-  //   console.log(parent)
-  //   await userEvent.click(parent as HTMLElement);
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
+  test('calls the closeHandler when menu is closed', async () => {
+    const spy = jest.fn();
+    const {getByRole} = render(
+      <MemoryRouter>
+        <MobileMenu {...mockProps} closeHandler={spy}/>
+      </MemoryRouter>
+    );
+
+    const menu = getByRole('presentation');
+    const backdrop = menu.querySelector('.MuiBackdrop-root');
+    expect(backdrop).toBeInTheDocument();
+    await userEvent.click(backdrop as HTMLElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 
   // TODO: change to localization keys
   test('renders the profile menu item with correct props and navigates to /profile', () => {
