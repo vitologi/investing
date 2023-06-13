@@ -1,4 +1,4 @@
-// import enLocale from '../../../../intl/locale/en.json';
+import enLocale from '../../../../intl/locale/en.json';
 import {NavigationProviderWrapper} from "../navigation-provider-wrapper";
 import {render} from "../../../../../test-utils";
 import {Container} from "inversify";
@@ -7,6 +7,7 @@ import {IntlStore} from "../../../../intl/store/intl.store";
 import {NavigationPanelStore} from "../../../store/navigation-panel.store";
 import {DrawersPanelStore} from "../../../store/drawers-panel.store";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
+import {waitFor} from "@testing-library/react";
 
 
 describe('NavigationProviderWrapper', () => {
@@ -16,10 +17,10 @@ describe('NavigationProviderWrapper', () => {
     di = buildIoc([IntlStore, NavigationPanelStore, DrawersPanelStore]);
   })
 
-  test('renders children and sets the document title', () => {
+  test('renders children and sets the document title', async () => {
     const children = <div>Test Children</div>;
     const store = di.get<NavigationPanelStore>(NavigationPanelStore.name);
-    store.title = "app.titles.main";
+    const title = store.title = "app.titles.main";
 
     const {getByText} = render(
       <DiProvider container={di}>
@@ -31,6 +32,7 @@ describe('NavigationProviderWrapper', () => {
     expect(getByText('Test Children')).toBeInTheDocument();
 
     // Verify that the document title is set correctly
-    // expect(document.title).toEqual(title); // Replace 'Expected Title' with the expected value
+    console.log(global.window.document);
+    await waitFor(()=>expect(global.window.document.title).toEqual(enLocale[title]));
   });
 });
