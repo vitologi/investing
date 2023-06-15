@@ -32,7 +32,6 @@ describe('NavigationProviderWrapper', () => {
     expect(getByText('Test Children')).toBeInTheDocument();
 
     // Verify that the document title is set correctly
-    console.log(global.window.document);
     await waitFor(()=>expect(global.window.document.title).toEqual(enLocale[title]));
   });
 });

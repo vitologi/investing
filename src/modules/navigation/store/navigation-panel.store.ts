@@ -1,16 +1,11 @@
-import {inject, injectable} from 'inversify';
+import {injectable} from 'inversify';
 import {action, makeObservable, observable} from 'mobx';
-
-import {DrawersPanelStore} from './drawers-panel.store';
 
 @injectable()
 export class NavigationPanelStore {
   isOpen = false;
   title = 'app.titles.main';
   path = '/';
-
-  @inject('DrawersPanelStore')
-  private drawersPanelStore!: DrawersPanelStore;
 
   constructor() {
     makeObservable(this, {
@@ -20,7 +15,6 @@ export class NavigationPanelStore {
       setTitle: action.bound,
       setPath: action.bound,
       toggleOpen: action.bound,
-      toggleDrawer: action.bound,
     });
   }
 
@@ -34,9 +28,5 @@ export class NavigationPanelStore {
 
   toggleOpen(): void {
     this.isOpen = !this.isOpen;
-  }
-
-  toggleDrawer(): void {
-    this.drawersPanelStore.toggleOpen();
   }
 }
