@@ -1,5 +1,5 @@
 import {Model} from "../../../../shared/models/model";
-import {IPortfolioDto} from "../interfaces/portfolio.dto";
+import {IPortfolioDto} from "../dtos/portfolio.dto";
 import {PortfoliosStore} from "../../store/portfolios.store";
 
 export class Portfolio extends Model<IPortfolioDto, PortfoliosStore>{

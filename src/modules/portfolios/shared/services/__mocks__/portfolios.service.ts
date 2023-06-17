@@ -1,7 +1,9 @@
 import {sleep} from "../../../../../shared/utils/sleep";
-import {IPortfolioDto} from "../../interfaces/portfolio.dto";
+import {IPortfolioDto} from "../../dtos/portfolio.dto";
+import {injectable} from "inversify";
 
 // TODO: replace returned values by mocks dto
+@injectable()
 export class PortfoliosService {
   list = jest.fn(async ()=>{
     await sleep(10);

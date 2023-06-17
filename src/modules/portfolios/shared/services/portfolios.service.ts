@@ -1,7 +1,9 @@
-import {IPortfolioDto} from "../interfaces/portfolio.dto";
+import {IPortfolioDto} from "../dtos/portfolio.dto";
 import {portfoliosCollection} from "../../offline/portfolios.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
+import {injectable} from "inversify";
 
+@injectable()
 export class PortfoliosService extends BaseApiService<IPortfolioDto>{
   async list(): Promise<IPortfolioDto[]> {
     return portfoliosCollection.find({});
