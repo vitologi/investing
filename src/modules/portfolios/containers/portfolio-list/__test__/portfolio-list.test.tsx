@@ -8,6 +8,7 @@ import {render} from "../../../../../test-utils";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {PortfolioList} from "../portfolio-list";
 import {mockedPortfolioDtos} from "../../../shared/dtos/__mocks__/portfolio.dto";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("../../../shared/services/portfolios.service");
 
@@ -19,10 +20,14 @@ describe('PortfolioList', () => {
     di = buildIoc([PortfoliosStore, IntlStore, PortfoliosService]);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     di.snapshot();
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
+    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const service = di.get<PortfoliosService>(PortfoliosService.name);
+    jest.spyOn(service, 'list').mockResolvedValue(mockedPortfolioDtos);
+    await store.load();
   });
 
   afterEach(() => {
@@ -40,11 +45,6 @@ describe('PortfolioList', () => {
   });
 
   test('should render list', async () => {
-    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
-    const service = di.get<PortfoliosService>(PortfoliosService.name);
-    jest.spyOn(service, 'list').mockResolvedValue(mockedPortfolioDtos);
-    await store.load();
-
     const {getAllByRole} = render(
       <DiProvider container={di}>
         <PortfolioList/>
@@ -54,4 +54,38 @@ describe('PortfolioList', () => {
     expect(getAllByRole('listitem').length).toBe(mockedPortfolioDtos.length);
   })
 
+  test('should redirect to add item page', async () => {
+    const {getByTestId} = render(
+      <DiProvider container={di}>
+        <PortfolioList/>
+      </DiProvider>
+    );
+    const addButton = getByTestId('AddIcon')
+    expect(addButton).toBeInTheDocument();
+
+    await userEvent.click(addButton);
+
+    expect(navigate).toHaveBeenCalledWith('new');
+  });
+
+  test('should delete item', async () => {
+    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const {getAllByRole} = render(
+      <DiProvider container={di}>
+        <PortfolioList/>
+      </DiProvider>
+    );
+
+    expect(store.list.length).toBe(mockedPortfolioDtos.length);
+    const firstDeleteButton = getAllByRole('button',{name: intlStore.formatMessage("app.common.actions.delete")})[0];
+    expect(firstDeleteButton).toBeInTheDocument();
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const deleteSpy = jest.spyOn(store, 'delete');
+    await userEvent.click(firstDeleteButton);
+
+    expect(confirmSpy).toBeCalled()
+    expect(deleteSpy).toHaveBeenCalled()
+    expect(store.list.length).toBe(mockedPortfolioDtos.length-1);
+  });
 });
