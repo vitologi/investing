@@ -9,6 +9,7 @@ import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {PortfolioList} from "../portfolio-list";
 import {mockedPortfolioDtos} from "../../../shared/dtos/__mocks__/portfolio.dto";
 import userEvent from "@testing-library/user-event";
+import {waitFor} from "@testing-library/react";
 
 jest.mock("../../../shared/services/portfolios.service");
 
@@ -25,9 +26,7 @@ describe('PortfolioList', () => {
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
     const store = di.get<PortfoliosStore>(PortfoliosStore.name);
-    const service = di.get<PortfoliosService>(PortfoliosService.name);
-    jest.spyOn(service, 'list').mockResolvedValue(mockedPortfolioDtos);
-    await store.load();
+    await waitFor(()=>expect(store.isInit).toBeTruthy());
   });
 
   afterEach(() => {

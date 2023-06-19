@@ -18,6 +18,7 @@ export const PortfolioForm = () => {
   const intlStore = useIntlStore();
   const store = usePortfoliosStore();
   const {handleSubmit, control} = useForm<IFormData>({
+    mode: 'onSubmit',
     defaultValues: {
       id: new ObjectId().toHexString(),
       name: '',
