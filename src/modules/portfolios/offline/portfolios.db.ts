@@ -6,4 +6,4 @@ const client = new DbClient({dbName: "portfolios"});
 const db = client.db("portfolios", {client, migrations: portfoliosMigrations});
 db.open();
 
-export const portfoliosCollection = db.collection<IPortfolioDto>("portfolios");
+export const portfoliosCollection = () => db.collection<IPortfolioDto>("portfolios");

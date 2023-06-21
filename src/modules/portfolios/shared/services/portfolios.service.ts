@@ -2,31 +2,39 @@ import {IPortfolioDto} from "../dtos/portfolio.dto";
 import {portfoliosCollection} from "../../offline/portfolios.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {injectable} from "inversify";
+import {ICollection} from "@vitologi/local-db";
 
 @injectable()
 export class PortfoliosService extends BaseApiService<IPortfolioDto>{
+  private _collection: ICollection<IPortfolioDto>;
+
+  constructor() {
+    super();
+    this._collection = portfoliosCollection();
+  }
+
   async list(): Promise<IPortfolioDto[]> {
-    return portfoliosCollection.find({});
+    return this._collection.find({});
   }
 
   async create(dto: IPortfolioDto): Promise<IPortfolioDto> {
-    await portfoliosCollection.insertOne(dto);
+    await this._collection.insertOne(dto);
 
     return dto;
   }
 
   async delete(id: string): Promise<void | IPortfolioDto> {
-    await portfoliosCollection.deleteOne({_id: id});
+    await this._collection.deleteOne({_id: id});
     return;
   }
 
   async get(id: string): Promise<IPortfolioDto | null> {
-    return portfoliosCollection.findOne({_id: id});
+    return this._collection.findOne({_id: id});
   }
 
   async update(dto: IPortfolioDto): Promise<IPortfolioDto| null> {
     const filter = {_id: dto._id};
-    const result = await portfoliosCollection.updateOne(filter, {$set:dto}, {});
+    const result = await this._collection.updateOne(filter, {$set:dto}, {});
 
     return result.upsertedCount ? dto : null;
   }
