@@ -69,6 +69,7 @@ describe('PortfolioList', () => {
 
   test('should delete item', async () => {
     const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const service = di.get<PortfoliosService>(PortfoliosService.name);
     const intlStore = di.get<IntlStore>(IntlStore.name);
     const {getAllByRole} = render(
       <DiProvider container={di}>
@@ -79,12 +80,19 @@ describe('PortfolioList', () => {
     expect(store.list.length).toBe(mockedPortfolioDtos.length);
     const firstDeleteButton = getAllByRole('button',{name: intlStore.formatMessage("app.common.actions.delete")})[0];
     expect(firstDeleteButton).toBeInTheDocument();
-    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
-    const deleteSpy = jest.spyOn(store, 'delete');
-    await userEvent.click(firstDeleteButton);
+    const confirmSpy = jest.spyOn(window, 'confirm')
+      .mockReturnValueOnce(false)
+      .mockReturnValue(true);
+    const deleteSpy = jest.spyOn(service, 'delete');
 
-    expect(confirmSpy).toBeCalled()
-    expect(deleteSpy).toHaveBeenCalled()
+    await userEvent.click(firstDeleteButton);
+    expect(confirmSpy).toBeCalled();
+    expect(deleteSpy).not.toHaveBeenCalled();
+    expect(store.list.length).toBe(mockedPortfolioDtos.length);
+
+    await userEvent.click(firstDeleteButton);
+    expect(confirmSpy).toBeCalled();
+    expect(deleteSpy).toHaveBeenCalled();
     expect(store.list.length).toBe(mockedPortfolioDtos.length-1);
   });
 });
