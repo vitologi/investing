@@ -7,7 +7,7 @@ import {render} from "../../../../../test-utils";
 import {DiProvider} from "../../../../../shared/components/di/di.provider";
 import {FirstSteps} from "../first-steps";
 import {LanguageCode} from "../../../../intl/shared/enums/language-code";
-import {waitFor} from "@testing-library/react";
+import {act, waitFor} from "@testing-library/react";
 
 
 jest.mock("../../../../intl/store/intl.store");
@@ -49,10 +49,11 @@ describe('FirstSteps', () => {
     expect(navigate).not.toHaveBeenCalled();
     const {queryByTestId} = render(<DiProvider container={di}><FirstSteps/></DiProvider>);
 
-    mockIntlStore.setLanguage(LanguageCode.En);
+    act(()=>mockIntlStore.setLanguage(LanguageCode.En));
+
     await waitFor(() => expect(queryByTestId('first-steps-content.en')).toBeInTheDocument());
 
-    mockIntlStore.setLanguage(LanguageCode.Ru);
+    act(()=>mockIntlStore.setLanguage(LanguageCode.Ru));
     await waitFor(() => expect(queryByTestId('first-steps-content.ru')).toBeInTheDocument());
 
     await waitFor(()=> expect(mockManualStore.isInit).toBeTruthy());
