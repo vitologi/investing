@@ -1,4 +1,4 @@
-import {IExchangeDto} from "../interfaces/exchange.dto";
+import {IExchangeDto} from "../dtos/exchange.dto";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {LanguageCode} from "../../../intl/shared/enums/language-code";
 

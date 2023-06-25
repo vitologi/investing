@@ -14,10 +14,10 @@ export const ThemeProviderWrapper = observer((props: PropsWithChildren<unknown>)
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={intlStore.theme}>
+      <ThemeProvider theme={themeStore.extendedTheme}>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={intlStore.pickersLocale}>
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={themeStore.extendedTheme}>{children}</ThemeProvider>
+            {children}
           </StyledEngineProvider>
         </LocalizationProvider>
       </ThemeProvider>

@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {DomainStore} from "../../../shared/models/domain-store";
-import {IPortfolioDto} from "../shared/interfaces/portfolio.dto";
+import {IPortfolioDto} from "../shared/dtos/portfolio.dto";
 import {Portfolio} from "../shared/models/portfolio";
 import {PortfoliosService} from "../shared/services/portfolios.service";
 import {action, computed, makeObservable, observable} from "mobx";

@@ -11,10 +11,11 @@ import {OpenexchangeratesProvider} from "../shared/services/openexchangerates.pr
 import {parseToTimestamp} from "../shared/utils/parse-to-timestamp";
 import {CurrencyRateProvider} from "../shared/enums/currency-rate-provider";
 import {ICurrencyRatesProvider} from "../shared/interfaces/currency-rates.provider";
+import {EmptyCurrencyRatesProvider} from "../shared/services/empty-currency-rates.provider";
 
-const ENABLED_CURRENCIES = 'ENABLED_CURRENCIES';
-const RATE_PROVIDER = 'RATE_PROVIDER';
-const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
+export const ENABLED_CURRENCIES = 'ENABLED_CURRENCIES';
+export const RATE_PROVIDER = 'RATE_PROVIDER';
+export const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
 
 @injectable()
 export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
@@ -140,7 +141,6 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
 
     switch (value) {
       case CurrencyRateProvider.Openexchangerates:
-      default:
         provider = new OpenexchangeratesProvider();
         when(
           () => !!this.openExchangeRatesApiToken,
@@ -149,6 +149,13 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
           },
         );
         break;
+
+      case CurrencyRateProvider.Empty:
+        provider = new EmptyCurrencyRatesProvider();
+        break;
+
+      default:
+        throw new Error(`Type of provider doesn't exist`);
     }
 
     this.rateProvider = value;

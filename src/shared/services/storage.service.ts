@@ -28,7 +28,7 @@ export class StorageService {
     return this.storage[key];
   }
 
-  sync():void {
+  private sync():void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.storage));
   }
 

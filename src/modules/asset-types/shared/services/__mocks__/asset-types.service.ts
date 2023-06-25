@@ -1,4 +1,4 @@
-import {IAssetTypeDto} from "../../interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../dtos/asset-type.dto";
 import {BaseApiService} from "../../../../../shared/interfaces/base-api.service";
 import {sleep} from "../../../../../shared/utils/sleep";
 import defaultAssetTypes from "../../../offline/asset-types.mocks.json";

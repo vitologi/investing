@@ -1,7 +1,7 @@
 import {injectable} from 'inversify';
 import {action, makeObservable, observable} from 'mobx';
 import {DomainStore} from "../../../../shared/models/__mocks__/domain-store";
-import {IAssetTypeDto} from "../../shared/interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../../shared/dtos/asset-type.dto";
 import {AssetType} from "../../shared/models/asset-type";
 
 @injectable()

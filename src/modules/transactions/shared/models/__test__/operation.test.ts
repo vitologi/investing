@@ -1,7 +1,7 @@
-import {Operation} from "./operation";
-import {OperationType} from "../enums/operation-type";
-import {OperationDirection} from "../enums/operation-direction";
-import {SystemAssetTypes} from "../../../asset-types/shared/enums/system-asset-types";
+import {Operation} from "../operation";
+import {OperationType} from "../../enums/operation-type";
+import {OperationDirection} from "../../enums/operation-direction";
+import {SystemAssetTypes} from "../../../../asset-types/shared/enums/system-asset-types";
 
 describe('Operation model', function (){
   let model: Operation;

@@ -1,12 +1,10 @@
-import DateFnsUtils from '@date-io/date-fns';
 import DateFnsAdapter from '@date-io/date-fns';
-import {createTheme, Theme} from '@mui/material';
 import {enUS, Localization, ruRU} from '@mui/material/locale';
 import {enUS as pickerEnUS, ru as pickerRuRu} from 'date-fns/locale';
 import {injectable} from 'inversify';
 import {computed, makeObservable, observable} from 'mobx';
 import {createIntl, createIntlCache, IntlShape} from 'react-intl';
-import {DateIOFormats} from '@date-io/core/IUtils';
+import {DateIOFormats, IUtils} from '@date-io/core/IUtils';
 
 import {IntlKey} from '../index';
 import enTranslation from '../locale/en.json';
@@ -24,8 +22,6 @@ export class IntlStore {
       formatDate: computed,
       intl: computed,
       dateAdapter: computed,
-      theme: computed,
-      pickersTheme: computed,
       appLocale: computed,
       themeLocale: computed,
       pickersLocale: computed
@@ -44,16 +40,8 @@ export class IntlStore {
     return createIntl({locale: this.locale, messages: this.appLocale}, this.cache);
   }
 
-  get dateAdapter(): DateFnsUtils {
+  get dateAdapter(): IUtils<Date> {
     return new DateFnsAdapter({locale: this.pickersLocale});
-  }
-
-  get theme(): Theme {
-    return createTheme({}, this.themeLocale);
-  }
-
-  get pickersTheme(): Theme {
-    return createTheme({}, this.pickersLocale);
   }
 
   get appLocale(): Record<string, string> {

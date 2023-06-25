@@ -71,15 +71,11 @@ export class ThemeStore {
     };
   }
 
-  get extendedTheme(): (outerTheme: Theme) => Theme {
-    console.log('Current theme: ', this.theme); // This line need for mobx understand that theme was patched
-
-    return (outerTheme: Theme): Theme => {
-      return createTheme(deepmerge(outerTheme, {
-        ...this.theme,
-        ...this.overrides,
-      }));
-    };
+  get extendedTheme(): Theme {
+    return createTheme({
+      ...this.theme,
+      ...this.overrides,
+    });
   }
 
   patchTheme(theme: ThemeOptions): void {

@@ -81,12 +81,10 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> imple
   }
 
   get forward() {
-    // return this.operations.find((item) => item.type === OperationType.Forward) || null;
     return this.operationByType(OperationType.Forward);
   }
 
   get backward() {
-    // return this.operations.find((item) => item.type === OperationType.Backward) || null;
     return this.operationByType(OperationType.Backward);
   }
 

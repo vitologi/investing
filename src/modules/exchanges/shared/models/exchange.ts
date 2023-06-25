@@ -1,5 +1,5 @@
 import {Model} from "../../../../shared/models/model";
-import {IExchangeDto} from "../interfaces/exchange.dto";
+import {IExchangeDto} from "../dtos/exchange.dto";
 import {ExchangeStore} from "../../store/exchange.store";
 import {makeObservable, observable} from "mobx";
 

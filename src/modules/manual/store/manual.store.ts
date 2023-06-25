@@ -2,13 +2,13 @@ import {inject, injectable} from 'inversify';
 import {action, makeObservable, observable} from 'mobx';
 import {StorageService} from "../../../shared/services/storage.service";
 
-const MANUAL_INIT = 'MANUAL_INIT';
-const DEMO_DIALOG_OPENED = 'DEMO_DIALOG_OPENED';
+export const MANUAL_INIT = 'MANUAL_INIT';
+export const DEMO_DIALOG_OPENED = 'DEMO_DIALOG_OPENED';
 
 @injectable()
 export class ManualStore {
   isInit = false;
-  isDemoDialogOpened = false;
+  isDemoDialogOpened = true;
   constructor(@inject('StorageService') private storageService: StorageService) {
     makeObservable(this, {
       isInit: observable,

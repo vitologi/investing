@@ -51,6 +51,9 @@ module.exports = {
           lines: 1,
         },
       };
+      config.coveragePathIgnorePatterns = [
+        "<rootDir>/src/modules/offline",  // TODO: find out how to test service worker interceptors
+      ];
       return config;
     }),
 };

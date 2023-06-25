@@ -11,13 +11,14 @@ import {DiProvider} from "./shared/components/di/di.provider";
 import {IntlProviderWrapper} from "./modules/intl";
 import {BrowserRouter} from "react-router-dom";
 import {ThemeProviderWrapper} from "./modules/theme";
+import {iocContainer} from "./store/ioc.container";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <StrictMode>
-    <DiProvider>
+    <DiProvider container={iocContainer}>
       <BrowserRouter>
         <ThemeProviderWrapper>
           <IntlProviderWrapper>

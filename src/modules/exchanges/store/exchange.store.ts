@@ -1,13 +1,13 @@
 import {inject, injectable} from 'inversify';
 import {action, computed, makeObservable, observable, reaction} from 'mobx';
 import {DomainStore} from "../../../shared/models/domain-store";
-import {IExchangeDto} from "../shared/interfaces/exchange.dto";
+import {IExchangeDto} from "../shared/dtos/exchange.dto";
 import {Exchange} from "../shared/models/exchange";
 import {ExchangeService} from "../shared/services/exchange.service";
 import {IntlStore} from "../../intl/store/intl.store";
 import {StorageService} from "../../../shared/services/storage.service";
 
-const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
+export const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
 @injectable()
 export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {

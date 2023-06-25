@@ -1,4 +1,4 @@
-import {IAssetTypeDto} from "../interfaces/asset-type.dto";
+import {IAssetTypeDto} from "../dtos/asset-type.dto";
 import {assetTypesCollection} from "../../offline/asset-type.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {ICollection} from "@vitologi/local-db";

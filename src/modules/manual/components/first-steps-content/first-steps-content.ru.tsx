@@ -57,7 +57,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Словари
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="dictionaries-step"  container={true} spacing={2}>
             <Grid2 xs={12} sm={4} sx={(theme: Theme) => ({
               [theme.breakpoints.down('sm')]: {
                 textAlign: 'center',
@@ -132,7 +132,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Выбрать провайдера котировок валют
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="currency-step" container={true} spacing={2}>
             <Grid2 xs={12} sm={4} sx={(theme: Theme) => ({
               [theme.breakpoints.down('sm')]: {
                 textAlign: 'center',
@@ -180,7 +180,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Настройки транзакций
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="setting-transaction-step" container={true} spacing={2}>
             <Grid2 xs={12} sx={{textAlign: 'center'}}>
               <Paper
                 component={'img'}
@@ -223,7 +223,7 @@ export default observer(function VerticalLinearStepper(props: { onFinish: () => 
           Добавление транзакции
         </StepLabel>
         <StepContent>
-          <Grid2 container={true} spacing={2}>
+          <Grid2 data-testid="transaction-step" container={true} spacing={2}>
             <Grid2 xs={12} sx={{textAlign: 'center'}}>
               <Paper
                 component={'img'}

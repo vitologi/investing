@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
-import {PortfolioList} from "../portfolio-list/portfolio-list";
 import {Route, Routes} from "react-router-dom";
 import {Titled} from "../../../navigation/containers/titled/titled";
+import {PortfolioList} from "../portfolio-list/portfolio-list";
 import {PortfolioForm} from "../portfolio-form/portfolio-form";
 import {NotFound} from "../../../../shared/components/not-found/not-found";
 

@@ -9,9 +9,13 @@ import {NavLink} from 'react-router-dom';
 
 import {MobileMenu} from '../../components/mobile-menu/mobile-menu';
 import {useNavigationPanelStore} from '../../store/navigation-panel.selector';
+import {useIntlStore} from "../../../intl/store/intl.selector";
+import {useDrawersPanelStore} from "../../store/drawers-panel.selector";
 
 export const NavigationPanel = observer((): JSX.Element => {
   const store = useNavigationPanelStore();
+  const drawerPanelStore = useDrawersPanelStore();
+  const intlStore = useIntlStore();
 
   return (
     <Box sx={{flexGrow: 1}}>
@@ -21,8 +25,11 @@ export const NavigationPanel = observer((): JSX.Element => {
             edge="start"
             sx={{mr: 2}}
             color="inherit"
-            aria-label="Open drawer"
-            onClick={store.toggleDrawer.bind(store)}
+            aria-label={intlStore.formatMessage("app.navigation.drawersToggle.title")}
+            aria-expanded={drawerPanelStore.isOpen}
+            aria-controls="drawer-panel"
+            aria-haspopup="true"
+            onClick={drawerPanelStore.toggleOpen.bind(drawerPanelStore)}
             size="large">
             <MenuIcon />
           </IconButton>
@@ -104,9 +111,7 @@ export const NavigationPanel = observer((): JSX.Element => {
             <NavLink to="profile" style={{textDecoration: 'none', color: 'white'}}>
               <IconButton
                 edge="end"
-                aria-label="Account of current user"
-                aria-controls="account-menu"
-                aria-haspopup="true"
+                aria-label={intlStore.formatMessage("app.navigation.navigationPanel.profileLink.label")}
                 color="inherit"
                 size="large">
                 <AccountCircleIcon />
@@ -118,9 +123,10 @@ export const NavigationPanel = observer((): JSX.Element => {
           <Box sx={{display: {xs: 'flex', md: 'none'}}}>
             <IconButton
               id="mobile-menu-anchor-id"
-              aria-label="Show more"
-              aria-controls="mobile-account-menu"
+              aria-label={intlStore.formatMessage("app.navigation.navigationPanel.showMore.label")}
+              aria-controls="mobile-menu"
               aria-haspopup="true"
+              aria-expanded={store.isOpen}
               onClick={store.toggleOpen.bind(store)}
               color="inherit"
               size="large">
@@ -132,6 +138,7 @@ export const NavigationPanel = observer((): JSX.Element => {
 
       <MobileMenu
         id="mobile-menu"
+        label={intlStore.formatMessage("app.navigation.navigationPanel.showMoreMenu.label")}
         isOpen={store.isOpen}
         anchorElement={document.getElementById('mobile-menu-anchor-id')}
         closeHandler={store.toggleOpen.bind(store)}

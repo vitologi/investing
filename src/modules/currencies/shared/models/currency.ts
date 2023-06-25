@@ -59,6 +59,6 @@ export class Currency extends Model<ICurrencyDto, CurrenciesStore> {
 
   // currency cant be deleted
   async delete(): Promise<void> {
-    return;
+    throw new Error(`Currency can't be deleted`);
   }
 }
