@@ -177,12 +177,13 @@ describe('CurrenciesStore', () => {
 
     const from = 'USD';
     const to = 'EUR';
-    const timestamp = 1682884800000;
-    const rateId = [from,to,parseToTimestamp(timestamp)].join('.');
+    const timestamp = 1682884800000; // 2023-04-30T20:00:00.000Z
+    const dayTimestamp = new Date(parseToTimestamp(timestamp)).getTime(); // 2023-04-30T00:00:00.000Z
+    const rateId = [from,to,dayTimestamp].join('.');
 
     expect(store.convert(100, from,to, timestamp)).toBe(100);
     expect(currencyRatesSpy).toHaveBeenCalledTimes(1);
-    expect(currencyRatesSpy).toHaveBeenCalledWith({from, to, date: new Date(timestamp)});
+    expect(currencyRatesSpy).toHaveBeenCalledWith({from, to, date: new Date(dayTimestamp)});
     await sleep(10);
     expect(spy).toHaveBeenCalledWith(rateId, 2);
   });

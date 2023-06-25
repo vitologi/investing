@@ -16,6 +16,7 @@ export class OpenexchangeratesProvider implements ICurrencyRatesProvider {
       throw new Error(`Token hasn't been set`);
     }
 
+    // here date.toISOString() is similar to UTC+0, so timestamp will be to day start
     const url = this.url
         .replace('DATE_VAR', date.toISOString().split('T')[0])
         .replace('TOKEN_VAR', this.token);

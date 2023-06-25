@@ -5,6 +5,7 @@ import {ICollection} from "@vitologi/local-db";
 import {ICurrencyRateDto} from "../../dtos/currency-rate.dto";
 import {currencyRatesCollection} from "../../../offline/currencies.db";
 import {sleep} from "../../../../../shared/utils/sleep";
+import {parseToTimestamp} from "../../utils/parse-to-timestamp";
 
 
 jest.mock("../../../offline/currencies.db", () => {
@@ -66,7 +67,7 @@ describe('CurrencyRatesService', () => {
     await expect(service.getExchangeRate({from: 'USD', to: 'USD', date}))
       .resolves.toBe(1);
     expect(mockCollection.findOne).toHaveBeenCalledTimes(1);
-    expect(mockCollection.findOne).toHaveBeenCalledWith({timestamp: 1682884800000});
+    expect(mockCollection.findOne).toHaveBeenCalledWith({timestamp: parseToTimestamp(date.getTime())});
   });
 
   test('getExchangeRate (should request rates from provider)', async () => {
