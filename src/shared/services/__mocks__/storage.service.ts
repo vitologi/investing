@@ -6,7 +6,9 @@ import {
 import {CurrencyRateProvider} from "../../../modules/currencies/shared/enums/currency-rate-provider";
 import {ENABLED_EXCHANGES} from "../../../modules/exchanges/store/exchange.store";
 import {DEMO_DIALOG_OPENED, MANUAL_INIT} from "../../../modules/manual/store/manual.store";
+import {injectable} from "inversify";
 
+@injectable()
 export class StorageService {
   get = jest.fn((key, defaultValue) => {
     if (defaultValue !== undefined) {
