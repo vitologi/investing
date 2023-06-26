@@ -98,6 +98,7 @@
   "app.assetTypes.type.MUTUALFUND": "Mutual fund",
   "app.assetTypes.form.form": "Asset type form",
   "app.assetTypes.form.name": "Asset type name",
+  "app.transactions.title.add": "Add transaction",
   "app.transactions.form.labels.date": "Transaction date",
   "app.transactions.form.labels.security": "Ticker",
   "app.transactions.form.labels.action": "Action",

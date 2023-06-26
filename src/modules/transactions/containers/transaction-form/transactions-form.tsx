@@ -48,7 +48,6 @@ export const TransactionsForm = observer(({id = null}: IProps) => {
   const {control, handleSubmit, watch, getFieldState, resetField} = methods;
   const {fields, remove, append} = useFieldArray({control, name: 'operations'})
 
-
   const saveHandler = useCallback(async (data: IFormTransaction) => {
     const dto = formDataToDto(data);
     if (store.editedId) {

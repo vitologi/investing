@@ -98,6 +98,7 @@
   "app.assetTypes.type.MUTUALFUND": "Фонд",
   "app.assetTypes.form.form": "Форма редактирования типа актива",
   "app.assetTypes.form.name": "Название типа актива",
+  "app.transactions.title.add": "Добавить операцию",
   "app.transactions.form.labels.date": "Дата операции",
   "app.transactions.form.labels.security": "Тикер",
   "app.transactions.form.labels.action": "Действие",
