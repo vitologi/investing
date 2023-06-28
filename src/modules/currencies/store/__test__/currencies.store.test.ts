@@ -25,7 +25,7 @@ describe('CurrenciesStore', () => {
 
   beforeEach(async ()=>{
     di.snapshot();
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     await when(()=>store.isInit);
   });
 
@@ -34,7 +34,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('init (should use lazy initialization)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     store.isInit = false;
     expect(store.isInit).toBeFalsy();
     store.init();
@@ -42,19 +42,19 @@ describe('CurrenciesStore', () => {
   });
 
   test('createEmpty (should throw error)', () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(()=> store.createEmpty()).toThrowError();
   });
 
   test('createFromDto', () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     const model = store.createFromDto(usdDto);
     expect(model).toBeInstanceOf(Currency);
     expect(model.asDto).toEqual(usdDto);
   });
 
   test('load (should load values)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     store.isInit = false;
     store.unload();
     expect(store.isInit).toBeFalsy();
@@ -64,8 +64,8 @@ describe('CurrenciesStore', () => {
   });
 
   test('toggleEnabled (should enable/disabled currency and store it)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
-    const service = di.get<StorageService>(StorageService.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
+    const service = di.get<StorageService>(StorageService.key);
     const spy = jest.spyOn(service, 'set');
     expect(spy).toHaveBeenCalledTimes(0);
     expect(store.enabled.includes('USD')).toBeTruthy();
@@ -75,8 +75,8 @@ describe('CurrenciesStore', () => {
   });
 
   test('setOpenExchangeRatesApiToken (should use OpenExchangeRatesApiToken and store it)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
-    const service = di.get<StorageService>(StorageService.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
+    const service = di.get<StorageService>(StorageService.key);
     const spy = jest.spyOn(service, 'set');
     expect(spy).toHaveBeenCalledTimes(0);
     store.setOpenExchangeRatesApiToken('TOKEN');
@@ -84,9 +84,9 @@ describe('CurrenciesStore', () => {
   });
 
   test('setRateProvider (should use Openexchangerates provider and store it)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
-    const service = di.get<StorageService>(StorageService.name);
-    const currencyRatesService = di.get<CurrencyRatesService>(CurrencyRatesService.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
+    const service = di.get<StorageService>(StorageService.key);
+    const currencyRatesService = di.get<CurrencyRatesService>(CurrencyRatesService.key);
     const ratesSpy = jest.spyOn(currencyRatesService, "setProvider");
     const spy = jest.spyOn(service, 'set');
     expect(spy).toHaveBeenCalledTimes(0);
@@ -97,18 +97,18 @@ describe('CurrenciesStore', () => {
   });
 
   test('setRateProvider (should throw error if provider doesnt exist)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(() => store.setRateProvider('UNKNOWN' as CurrencyRateProvider)).toThrowError(`Type of provider doesn't exist`);
   });
 
   test('baseCurrency (should use USD)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     const baseCurrency = store.baseCurrency;
     expect(baseCurrency?.code).toBe('USD');
   });
 
   test('baseCurrency (should return null if there is no such currency)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     const baseCurrency = store.baseCurrency;
     expect(baseCurrency?.code).toBe('USD');
     store.setBaseCurrency('UNDEFINED');
@@ -116,7 +116,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('setBaseCurrency (should change base currency)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     const baseCurrency = store.baseCurrency;
     expect(baseCurrency?.code).toBe('USD');
     store.setBaseCurrency('EUR');
@@ -124,7 +124,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('enabledList (should show only enabled currencies)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(store.enabledList.length).toBe(2);
     store.toggleEnabled('USD');
     store.toggleEnabled('EUR');
@@ -132,14 +132,14 @@ describe('CurrenciesStore', () => {
   });
 
   test('isEnabled (should use shortcut for enabled currency)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(store.isEnabled('USD')).toBeTruthy();
     store.toggleEnabled('USD')
     expect(store.isEnabled('USD')).toBeFalsy();
   });
 
   test('setStoredExchangeRate (should save exchange rates)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(store.storedExchangeRates.has('USD')).toBeFalsy();
     store.setStoredExchangeRate('USD', 1);
     expect(store.storedExchangeRates.has('USD')).toBeTruthy();
@@ -147,7 +147,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('removeStoredExchangeRate (should remove exchange rates)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     store.setStoredExchangeRate('USD', 1);
     expect(store.storedExchangeRates.has('USD')).toBeTruthy();
     store.removeStoredExchangeRate('USD');
@@ -155,12 +155,12 @@ describe('CurrenciesStore', () => {
   });
 
   test('convert (should return the same amount if currencies are the same)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(store.convert(100, 'USD','USD')).toBe(100);
   });
 
   test('convert (should return adjusted amount if rate already exists)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     const from = 'USD';
     const to = 'EUR';
     const timestamp = 1682884800000;
@@ -170,8 +170,8 @@ describe('CurrenciesStore', () => {
   });
 
   test('convert (should request and save rates if there is no stored rate yet)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
-    const service = di.get<CurrencyRatesService>(CurrencyRatesService.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
+    const service = di.get<CurrencyRatesService>(CurrencyRatesService.key);
     const spy = jest.spyOn(store, 'setStoredExchangeRate');
     const currencyRatesSpy = jest.spyOn(service, 'getExchangeRate').mockResolvedValue(2);
 
@@ -189,7 +189,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('sortedByEnablingList (should put enabled currencies at the top of list)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
 
     // disable all currencies
     for(let i = store.enabled.length-1; i >=0 ; i--){
@@ -207,7 +207,7 @@ describe('CurrenciesStore', () => {
   });
 
   test('symbol (should show native symbol of currency)', async () => {
-    const store = di.get<CurrenciesStore>(CurrenciesStore.name);
+    const store = di.get<CurrenciesStore>(CurrenciesStore.key);
     expect(store.symbol(null)).toBe('');
     expect(store.symbol('USD')).toBe('$');
   });

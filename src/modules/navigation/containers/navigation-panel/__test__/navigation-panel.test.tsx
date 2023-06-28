@@ -36,8 +36,8 @@ describe('NavigationPanel', () => {
   });
 
   test('should open drawer panel', () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
-    const drawerPanelStore = di.get<DrawersPanelStore>(DrawersPanelStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
+    const drawerPanelStore = di.get<DrawersPanelStore>(DrawersPanelStore.key);
     const {getByRole} = render(
       <MemoryRouter>
         <DiProvider container={di}>
@@ -55,7 +55,7 @@ describe('NavigationPanel', () => {
   });
 
   test('should go to profile page', () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
     const {getByRole, getByTestId} = render(
       <DiProvider container={di}>
         <MemoryRouter>
@@ -77,7 +77,7 @@ describe('NavigationPanel', () => {
   });
 
   test('should open mobile menu', () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
 
     const {getByRole, queryByRole} = render(
       <DiProvider container={di}>

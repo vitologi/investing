@@ -18,13 +18,14 @@ import {OperationType} from "../../transactions/shared/enums/operation-type";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
+  static key = Symbol('TickersStore');
 
   constructor(
-    @inject('TickersService') tickersService: TickersService,
-    @inject('TransactionsStore') public readonly transactionsStore: TransactionsStore,
-    @inject('CurrenciesStore') public readonly currenciesStore: CurrenciesStore,
-    @inject('AssetTypesStore') public readonly assetTypesStore: AssetTypesStore,
-    @inject('PortfoliosStore') public readonly portfoliosStore: PortfoliosStore,
+    @inject(TickersService.key) tickersService: TickersService,
+    @inject(TransactionsStore.key) public readonly transactionsStore: TransactionsStore,
+    @inject(CurrenciesStore.key) public readonly currenciesStore: CurrenciesStore,
+    @inject(AssetTypesStore.key) public readonly assetTypesStore: AssetTypesStore,
+    @inject(PortfoliosStore.key) public readonly portfoliosStore: PortfoliosStore,
   ) {
     super(tickersService);
     makeObservable(this, {

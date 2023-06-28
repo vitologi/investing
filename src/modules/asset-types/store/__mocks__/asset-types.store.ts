@@ -6,6 +6,7 @@ import {AssetType} from "../../shared/models/asset-type";
 
 @injectable()
 export class AssetTypesStore extends DomainStore<IAssetTypeDto, AssetType> {
+  static key = Symbol('AssetTypesStore');
   isInit = false;
 
   constructor() {

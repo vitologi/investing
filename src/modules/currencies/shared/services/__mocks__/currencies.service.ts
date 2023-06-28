@@ -5,12 +5,13 @@ import {injectable} from "inversify";
 
 @injectable()
 export class CurrenciesService {
+  static key = Symbol('CurrenciesService');
   list = jest.fn(async (): Promise<ICurrencyDto[]> => {
     await sleep(10);
     return mockedList;
   });
-  create = jest.fn().mockRejectedValue(new Error(`${this.constructor.name} haven't method create implementation`));
-  delete = jest.fn().mockRejectedValue(new Error(`${this.constructor.name} haven't method delete implementation`));
-  get = jest.fn().mockRejectedValue(new Error(`${this.constructor.name} haven't method get implementation`));
-  update = jest.fn().mockRejectedValue(new Error(`${this.constructor.name} haven't method update implementation`));
+  create = jest.fn().mockRejectedValue(new Error(`CurrenciesService haven't method create implementation`));
+  delete = jest.fn().mockRejectedValue(new Error(`CurrenciesService haven't method delete implementation`));
+  get = jest.fn().mockRejectedValue(new Error(`CurrenciesService haven't method get implementation`));
+  update = jest.fn().mockRejectedValue(new Error(`CurrenciesService haven't method update implementation`));
 }

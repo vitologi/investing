@@ -7,11 +7,12 @@ import {TransactionsService} from "../shared/services/transactions.service";
 
 @injectable()
 export class TransactionsStore extends DomainStore<ITransactionDto, Transaction> {
+  static key = Symbol('TransactionsStore');
   isInit = false;
   isDetailsMode = false;
   editedId: string | null = null
 
-  constructor(@inject('TransactionsService') transactionsService: TransactionsService) {
+  constructor(@inject(TransactionsService.key) transactionsService: TransactionsService) {
     super(transactionsService);
     makeObservable(this, {
       isInit: observable,

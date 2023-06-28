@@ -103,11 +103,11 @@ describe('DemoDialog', ()=>{
     // TODO: need to do di builder for tests, or maybe for app too
     di = new Container();
 
-    di.bind<ManualStore>('ManualStore').toConstantValue(mockManualStore);
-    di.bind<IntlStore>('IntlStore').toConstantValue(intlStore);
-    di.bind<TransactionsTransferStore>('TransactionsTransferStore').toConstantValue(mockTransferStore);
-    di.bind<CurrenciesStore>('CurrenciesStore').toConstantValue(mockCurrenciesStore);
-    di.bind<TransactionsStore>('TransactionsStore').toConstantValue(mockTransactionsStore);
+    di.bind<ManualStore>(ManualStore.key).toConstantValue(mockManualStore);
+    di.bind<IntlStore>(IntlStore.key).toConstantValue(intlStore);
+    di.bind<TransactionsTransferStore>(TransactionsTransferStore.key).toConstantValue(mockTransferStore);
+    di.bind<CurrenciesStore>(CurrenciesStore.key).toConstantValue(mockCurrenciesStore);
+    di.bind<TransactionsStore>(TransactionsStore.key).toConstantValue(mockTransactionsStore);
   });
 
   beforeEach(() => {

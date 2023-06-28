@@ -30,7 +30,7 @@ describe('Titled', () => {
   });
 
   test('should set title and current location path to store', async () => {
-    const store = di.get<NavigationPanelStore>(NavigationPanelStore.name);
+    const store = di.get<NavigationPanelStore>(NavigationPanelStore.key);
 
     // check on defaults
     expect(store.title).toBe('app.titles.main');

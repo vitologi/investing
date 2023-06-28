@@ -2,9 +2,11 @@ import {IAssetTypeDto} from "../../dtos/asset-type.dto";
 import {BaseApiService} from "../../../../../shared/interfaces/base-api.service";
 import {sleep} from "../../../../../shared/utils/sleep";
 import defaultAssetTypes from "../../../offline/asset-types.mocks.json";
+import {injectable} from "inversify";
 
+@injectable()
 export class AssetTypesService extends BaseApiService<IAssetTypeDto> {
-
+  static key = Symbol('AssetTypesService');
   create = jest.fn(async (dto) => dto);
   get = jest.fn(async (_) => ({
     _id: '_id',

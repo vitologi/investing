@@ -13,6 +13,7 @@ import {LanguageCode} from "../shared/enums/language-code";
 
 @injectable()
 export class IntlStore {
+  static key = Symbol('IntlStore');
   locale: LanguageCode = LanguageCode.En;
 
   constructor() {

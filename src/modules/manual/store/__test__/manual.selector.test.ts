@@ -1,6 +1,7 @@
 import {Container} from "inversify";
 import * as iocSelector from "../../../../store/ioc.selector";
 import {useManualStore} from "../manual.selector";
+import {ManualStore} from "../manual.store";
 
 jest.mock("../../../../store/ioc.selector");
 
@@ -14,7 +15,7 @@ describe('useManualStore', () => {
 
   beforeEach(() => {
     di.unbindAll();
-    di.bind<boolean>('ManualStore').toConstantValue(true);
+    di.bind<boolean>(ManualStore.key).toConstantValue(true);
     spy = jest.spyOn(iocSelector, 'useIocContainer').mockReturnValue(di);
   });
 

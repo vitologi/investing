@@ -7,9 +7,10 @@ import {action, computed, makeObservable, observable} from "mobx";
 
 @injectable()
 export class PortfoliosStore extends DomainStore<IPortfolioDto, Portfolio> {
+  static key = Symbol('PortfoliosStore');
   isInit = false;
 
-  constructor(@inject('PortfoliosService') portfoliosService: PortfoliosService) {
+  constructor(@inject(PortfoliosService.key) portfoliosService: PortfoliosService) {
     super(portfoliosService);
 
     makeObservable(this, {

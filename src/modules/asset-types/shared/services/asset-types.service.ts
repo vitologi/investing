@@ -2,8 +2,11 @@ import {IAssetTypeDto} from "../dtos/asset-type.dto";
 import {assetTypesCollection} from "../../offline/asset-type.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {ICollection} from "@vitologi/local-db";
+import {injectable} from "inversify";
 
+@injectable()
 export class AssetTypesService extends BaseApiService<IAssetTypeDto>{
+  static key = Symbol('AssetTypesService');
   private _collection: ICollection<IAssetTypeDto>;
   constructor() {
     super();

@@ -1,7 +1,10 @@
 import {ITickerDto} from "../dtos/ticker.dto";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
+import {injectable} from "inversify";
 
+@injectable()
 export class TickersService extends BaseApiService<ITickerDto>{
+  static key = Symbol('TickersService');
   async list(): Promise<ITickerDto[]> {
     return [];
   }

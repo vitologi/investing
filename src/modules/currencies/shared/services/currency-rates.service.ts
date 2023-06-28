@@ -8,6 +8,7 @@ import {ICurrencyRateDto} from "../dtos/currency-rate.dto";
 
 @injectable()
 export class CurrencyRatesService {
+  static key = Symbol('CurrencyRatesService');
   private _provider: ICurrencyRatesProvider = new EmptyCurrencyRatesProvider();
   private deferredRequests: ((handlerTimestampKey: number, value: number, err?: unknown) => void)[] = [];
   private requestedTimestamp = new Map<number, boolean>();

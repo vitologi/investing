@@ -25,7 +25,7 @@ describe('PortfolioList', () => {
     di.snapshot();
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
-    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const store = di.get<PortfoliosStore>(PortfoliosStore.key);
     await waitFor(()=>expect(store.isInit).toBeTruthy());
   });
 
@@ -68,9 +68,9 @@ describe('PortfolioList', () => {
   });
 
   test('should delete item', async () => {
-    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
-    const service = di.get<PortfoliosService>(PortfoliosService.name);
-    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const store = di.get<PortfoliosStore>(PortfoliosStore.key);
+    const service = di.get<PortfoliosService>(PortfoliosService.key);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
     const {getAllByRole} = render(
       <DiProvider container={di}>
         <PortfolioList/>

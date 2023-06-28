@@ -19,6 +19,7 @@ export const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
 
 @injectable()
 export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
+  static key = Symbol('CurrenciesStore');
   isInit = false;
   _baseCurrencyCode = 'USD';
 
@@ -29,10 +30,10 @@ export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
   storedExchangeRates = new Map<string, number>();
 
   constructor(
-    @inject('CurrenciesService') currenciesService: CurrenciesService,
-    @inject('CurrencyRatesService') private currencyRatesService: CurrencyRatesService,
-    @inject('IntlStore') private intlStore: IntlStore,
-    @inject('StorageService') private storageService: StorageService,
+    @inject(CurrenciesService.key) currenciesService: CurrenciesService,
+    @inject(CurrencyRatesService.key) private currencyRatesService: CurrencyRatesService,
+    @inject(IntlStore.key) private intlStore: IntlStore,
+    @inject(StorageService.key) private storageService: StorageService,
   ) {
     super(currenciesService);
     makeObservable(this, {

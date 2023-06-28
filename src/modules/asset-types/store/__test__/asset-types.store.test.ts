@@ -27,9 +27,9 @@ describe('AssetTypesStore', () => {
   beforeEach(() => {
     assetTypesServiceMock = new AssetTypesService() as jest.Mocked<AssetTypesService>;
     container.unbindAll();
-    container.bind<BaseApiService<IAssetTypeDto>>('AssetTypesService').toConstantValue(assetTypesServiceMock);
-    container.bind<AssetTypesStore>('AssetTypesStore').to(AssetTypesStore);
-    store = container.get<AssetTypesStore>('AssetTypesStore');
+    container.bind<BaseApiService<IAssetTypeDto>>(AssetTypesService.key).toConstantValue(assetTypesServiceMock);
+    container.bind<AssetTypesStore>(AssetTypesStore.key).to(AssetTypesStore);
+    store = container.get<AssetTypesStore>(AssetTypesStore.key);
   });
 
   test('created', () => {

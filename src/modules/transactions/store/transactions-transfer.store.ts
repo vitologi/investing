@@ -23,15 +23,16 @@ import {Ticker} from "../../tickers/shared/models/ticker";
 
 @injectable()
 export class TransactionsTransferStore {
+  static key = Symbol('TransactionsTransferStore');
   process = 0;
 
   constructor(
-    @inject('TransactionsStore') private transactionsStore: TransactionsStore,
-    @inject('CurrenciesStore') private currenciesStore: CurrenciesStore,
-    @inject('PortfoliosStore') private portfoliosStore: PortfoliosStore,
-    @inject('ExchangeStore') private exchangeStore: ExchangeStore,
-    @inject('AssetTypesStore') private assetTypesStore: AssetTypesStore,
-    @inject('TickersStore') private tickersStore: TickersStore,
+    @inject(TransactionsStore.key) private transactionsStore: TransactionsStore,
+    @inject(CurrenciesStore.key) private currenciesStore: CurrenciesStore,
+    @inject(PortfoliosStore.key) private portfoliosStore: PortfoliosStore,
+    @inject(ExchangeStore.key) private exchangeStore: ExchangeStore,
+    @inject(AssetTypesStore.key) private assetTypesStore: AssetTypesStore,
+    @inject(TickersStore.key) private tickersStore: TickersStore,
   ) {
     makeObservable(this, {
       process: observable,

@@ -7,9 +7,10 @@ export const DEMO_DIALOG_OPENED = 'DEMO_DIALOG_OPENED';
 
 @injectable()
 export class ManualStore {
+  static key = Symbol('ManualStore');
   isInit = false;
   isDemoDialogOpened = true;
-  constructor(@inject('StorageService') private storageService: StorageService) {
+  constructor(@inject(StorageService.key) private storageService: StorageService) {
     makeObservable(this, {
       isInit: observable,
       isDemoDialogOpened: observable,

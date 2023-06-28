@@ -10,6 +10,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class StorageService {
+  static key = Symbol('StorageService');
   get = jest.fn((key, defaultValue) => {
     if (defaultValue !== undefined) {
       return defaultValue;

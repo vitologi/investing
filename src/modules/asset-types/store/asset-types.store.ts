@@ -4,12 +4,14 @@ import {DomainStore} from "../../../shared/models/domain-store";
 import {IAssetTypeDto} from "../shared/dtos/asset-type.dto";
 import {AssetType} from "../shared/models/asset-type";
 import {BaseApiService} from "../../../shared/interfaces/base-api.service";
+import {AssetTypesService} from "../shared/services/asset-types.service";
 
 @injectable()
 export class AssetTypesStore extends DomainStore<IAssetTypeDto, AssetType> {
+  static key = Symbol('AssetTypesStore');
   isInit = false;
 
-  constructor(@inject('AssetTypesService') assetTypesService: BaseApiService<IAssetTypeDto>) {
+  constructor(@inject(AssetTypesService.key) assetTypesService: BaseApiService<IAssetTypeDto>) {
     super(assetTypesService);
     makeObservable(this, {
       isInit: observable,
