@@ -24,7 +24,7 @@ describe('PortfolioForm', () => {
     di.snapshot();
     navigate = jest.fn();
     jest.spyOn(reactRouter, 'useNavigate').mockReturnValue(navigate);
-    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const store = di.get<PortfoliosStore>(PortfoliosStore.key);
     await waitFor(() => store.isInit);
   });
 
@@ -33,7 +33,7 @@ describe('PortfolioForm', () => {
   });
 
   test('should render all fields', () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
     const {getByRole} = render(
       <DiProvider container={di}>
         <PortfolioForm/>
@@ -48,7 +48,7 @@ describe('PortfolioForm', () => {
   });
 
   test('should show errors if fields were not filled', async () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
     const {getByRole, queryAllByText} = render(
       <DiProvider container={di}>
         <PortfolioForm/>
@@ -64,8 +64,8 @@ describe('PortfolioForm', () => {
   });
 
   test('should add new item', async () => {
-    const intlStore = di.get<IntlStore>(IntlStore.name);
-    const store = di.get<PortfoliosStore>(PortfoliosStore.name);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
+    const store = di.get<PortfoliosStore>(PortfoliosStore.key);
     await waitFor(()=>expect(store.isInit).toBeTruthy());
     const len = store.list.length;
 

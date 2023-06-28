@@ -1,8 +1,11 @@
 import {sleep} from "../../../../../shared/utils/sleep";
 import {ITransactionDto} from "../../dtos/transaction.dto";
 import {transactionDto} from "../../dtos/__mocks__/transaction.dto";
+import {injectable} from "inversify";
 
+@injectable()
 export class TransactionsService {
+  static key = Symbol('TransactionsService');
   list = jest.fn(async ()=>{
     await sleep(10);
     return [];

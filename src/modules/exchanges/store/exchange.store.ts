@@ -11,13 +11,14 @@ export const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
 @injectable()
 export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
+  static key = Symbol('ExchangeStore');
   isInit = false;
   enabled: string[];
 
   constructor(
-    @inject('ExchangeService') exchangeService: ExchangeService,
-    @inject('IntlStore') private intlStore: IntlStore,
-    @inject('StorageService') private storageService: StorageService,
+    @inject(ExchangeService.key) exchangeService: ExchangeService,
+    @inject(IntlStore.key) private intlStore: IntlStore,
+    @inject(StorageService.key) private storageService: StorageService,
   ) {
     super(exchangeService);
     makeObservable(this, {

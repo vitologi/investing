@@ -1,8 +1,11 @@
 import {ICurrencyDto} from "../dtos/currency.dto";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
 import {LanguageCode} from "../../../intl/shared/enums/language-code";
+import {injectable} from "inversify";
 
+@injectable()
 export class CurrenciesService extends BaseApiService<ICurrencyDto, string | undefined> {
+  static key = Symbol('CurrenciesService');
   // TODO: need to refactor this library for partially load dictionaries
   currencyList = import("currency-list").then((currencyList)=>currencyList.default);
 
@@ -13,18 +16,18 @@ export class CurrenciesService extends BaseApiService<ICurrencyDto, string | und
   }
 
   async create(_: ICurrencyDto): Promise<ICurrencyDto> {
-   throw new Error(`${this.constructor.name} haven't method create implementation`);
+   throw new Error(`CurrenciesService haven't method create implementation`);
   }
 
   async delete(_: string): Promise<void | ICurrencyDto> {
-    throw new Error(`${this.constructor.name} haven't method delete implementation`);
+    throw new Error(`CurrenciesService haven't method delete implementation`);
   }
 
   async get(_: string): Promise<ICurrencyDto | null> {
-    throw new Error(`${this.constructor.name} haven't method get implementation`);
+    throw new Error(`CurrenciesService haven't method get implementation`);
   }
 
   async update(_: ICurrencyDto): Promise<ICurrencyDto | null> {
-    throw new Error(`${this.constructor.name} haven't method update implementation`);
+    throw new Error(`CurrenciesService haven't method update implementation`);
   }
 }

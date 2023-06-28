@@ -36,8 +36,8 @@ describe('Currencies', () => {
     );
 
     di = new Container();
-    di.bind<IntlStore>('IntlStore').toConstantValue(mockIntlStore);
-    di.bind<CurrenciesStore>('CurrenciesStore').toConstantValue(mockStore);
+    di.bind<IntlStore>(IntlStore.key).toConstantValue(mockIntlStore);
+    di.bind<CurrenciesStore>(CurrenciesStore.key).toConstantValue(mockStore);
   });
 
   // TODO: find out needs

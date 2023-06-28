@@ -35,8 +35,8 @@ describe('FirstSteps', () => {
 
   beforeAll(() => {
     di = new Container();
-    di.bind('IntlStore').toConstantValue(mockIntlStore);
-    di.bind('ManualStore').toConstantValue(mockManualStore);
+    di.bind<IntlStore>(IntlStore.key).toConstantValue(mockIntlStore);
+    di.bind<ManualStore>(ManualStore.key).toConstantValue(mockManualStore);
   })
 
   beforeEach(() => {

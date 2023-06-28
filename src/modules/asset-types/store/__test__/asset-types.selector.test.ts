@@ -1,6 +1,7 @@
 import {Container} from "inversify";
 import {useAssetTypesStore} from "../asset-types.selector";
 import * as iocSelector from "../../../../store/ioc.selector";
+import {AssetTypesStore} from "../asset-types.store";
 jest.mock<typeof import("../../../../store/ioc.selector")>("../../../../store/ioc.selector", ()=>({
   useIocContainer: jest.fn(),
 }))
@@ -14,7 +15,7 @@ describe('useAssetTypesStore', ()=>{
 
   beforeEach(() => {
     container.unbindAll();
-    container.bind<boolean>('AssetTypesStore').toConstantValue(true);
+    container.bind<boolean>(AssetTypesStore.key).toConstantValue(true);
     (iocSelector as jest.Mocked<typeof import("../../../../store/ioc.selector")>).useIocContainer.mockReturnValue(container);
   });
 

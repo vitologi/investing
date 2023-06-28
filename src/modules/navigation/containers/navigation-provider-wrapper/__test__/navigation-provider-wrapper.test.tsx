@@ -19,7 +19,7 @@ describe('NavigationProviderWrapper', () => {
 
   test('renders children and sets the document title', async () => {
     const children = <div>Test Children</div>;
-    const store = di.get<NavigationPanelStore>(NavigationPanelStore.name);
+    const store = di.get<NavigationPanelStore>(NavigationPanelStore.key);
     const title = store.title = "app.titles.main";
 
     const {getByText} = render(

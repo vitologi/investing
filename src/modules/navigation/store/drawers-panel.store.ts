@@ -3,6 +3,7 @@ import {action, makeObservable, observable} from 'mobx';
 
 @injectable()
 export class DrawersPanelStore {
+  static key = Symbol('DrawersPanelStore');
   isOpen = false;
 
   constructor() {

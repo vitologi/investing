@@ -20,8 +20,8 @@ describe('AssetTypeList', () => {
 
   beforeAll(() => {
     container = new Container();
-    container.bind<IntlStore>('IntlStore').toConstantValue(mockIntlStore);
-    container.bind<AssetTypesStore>('AssetTypesStore').toConstantValue(mockAssetTypesStore)
+    container.bind<IntlStore>(IntlStore.key).toConstantValue(mockIntlStore);
+    container.bind<AssetTypesStore>(AssetTypesStore.key).toConstantValue(mockAssetTypesStore)
   });
 
   beforeEach(() => {

@@ -28,8 +28,8 @@ describe('Exchanges', ()=>{
 
   beforeAll(()=>{
     container = new Container();
-    container.bind('ExchangeStore').toConstantValue(mockExchangesStore);
-    container.bind('IntlStore').toConstantValue(mockIntlStore);
+    container.bind<ExchangeStore>(ExchangeStore.key).toConstantValue(mockExchangesStore);
+    container.bind<IntlStore>(IntlStore.key).toConstantValue(mockIntlStore);
   });
 
   test('should be instantiated', ()=>{

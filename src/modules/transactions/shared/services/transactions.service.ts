@@ -1,8 +1,11 @@
 import {ITransactionDto} from "../dtos/transaction.dto";
 import {transactionsCollection} from "../../offline/transactions.db";
 import {BaseApiService} from "../../../../shared/interfaces/base-api.service";
+import {injectable} from "inversify";
 
+@injectable()
 export class TransactionsService extends BaseApiService<ITransactionDto>{
+  static key = Symbol('TransactionsService');
   async list(): Promise<ITransactionDto[]> {
     return transactionsCollection.find({});
   }

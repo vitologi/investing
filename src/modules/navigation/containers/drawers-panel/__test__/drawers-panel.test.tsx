@@ -30,7 +30,7 @@ describe('DrawersPanel', () => {
   });
 
   test('should be visible if active', () => {
-    const store = di.get(DrawersPanelStore.name) as DrawersPanelStore;
+    const store = di.get(DrawersPanelStore.key) as DrawersPanelStore;
     store.toggleOpen();
     const {getByRole} = render(<MemoryRouter><DiProvider container={di}><DrawersPanel/></DiProvider></MemoryRouter>);
 
@@ -38,9 +38,9 @@ describe('DrawersPanel', () => {
   });
 
   test('should contains dictionaries menu', async () => {
-    const store = di.get<DrawersPanelStore>(DrawersPanelStore.name);
-    const intlStore = di.get<IntlStore>(IntlStore.name);
-    const navStore = di.get<NavigationPanelStore>(NavigationPanelStore.name);
+    const store = di.get<DrawersPanelStore>(DrawersPanelStore.key);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
+    const navStore = di.get<NavigationPanelStore>(NavigationPanelStore.key);
     store.toggleOpen();
     navStore.setPath('/dictionaries');
     const {getByText} = render(
@@ -54,9 +54,9 @@ describe('DrawersPanel', () => {
   });
 
   test('should contains settings menu', async () => {
-    const store = di.get<DrawersPanelStore>(DrawersPanelStore.name);
-    const intlStore = di.get<IntlStore>(IntlStore.name);
-    const navStore = di.get<NavigationPanelStore>(NavigationPanelStore.name);
+    const store = di.get<DrawersPanelStore>(DrawersPanelStore.key);
+    const intlStore = di.get<IntlStore>(IntlStore.key);
+    const navStore = di.get<NavigationPanelStore>(NavigationPanelStore.key);
     store.toggleOpen();
     navStore.setPath('/settings');
     const {getByText} = render(

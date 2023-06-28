@@ -5,6 +5,7 @@ import { action, computed, observable, makeObservable } from 'mobx';
 
 @injectable()
 export class ThemeStore {
+  static key = Symbol('ThemeStore');
   THEME_SPACING = 8;
 
   theme: ThemeOptions = {

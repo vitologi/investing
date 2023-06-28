@@ -5,6 +5,7 @@ type TStorableData = { [key: string]: any };
 const  STORAGE_KEY = "@investing.vitologi.com/setting"
 @injectable()
 export class StorageService {
+  static key = Symbol('StorageService');
   storage: TStorableData = {};
 
   constructor() {
