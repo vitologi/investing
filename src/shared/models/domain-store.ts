@@ -41,7 +41,7 @@ export abstract class DomainStore<TDto extends IModelDto, TDomainModel extends M
 
   abstract createFromDto(dto: TDto): TDomainModel;
 
-  abstract createEmpty(): TDomainModel;
+  abstract createEmpty(props?: unknown): TDomainModel;
 
   create(dto: TDto): Promise<TDto> {
     this.isLoading = true;
