@@ -1,3 +1,4 @@
 export enum EventType {
-  TransferBetweenPortfolio= 'TransferBetweenPortfolio'
+  Unknown= 'Unknown',
+  TransferBetweenPortfolio= 'TransferBetweenPortfolio',
 }
