@@ -43,6 +43,8 @@
   "app.common.form.rules.minmax": "Значение от {min} до {max}",
   "app.common.form.rules.min": "Поле {name} должно быть больше {min}",
   "app.common.form.rules.max": "Поле {name} должно быть меньше {max}",
+  "app.common.form.rules.minDate": "Выбранная дата должна быть позднее чем {minDate}",
+  "app.common.form.rules.maxDate": "Выбранная дата должна быть ранее чем {maxDate}",
   "app.common.found": "Найдено: {value}",
   "app.common.form.labels.name": "Название",
   "app.common.form.labels.description": "Описание",
@@ -77,6 +79,7 @@
   "app.titles.transactions": "Транзакции",
   "app.titles.tickers": "Тикеры",
   "app.titles.settings": "Настройки",
+  "app.titles.events": "События",
   "app.titles.error": "страница не найдена",
   "app.errors.404": "запрошенная страница не существует",
   "app.errors.inDevelop": "страница {pageName} в настоящее время находится в разработке",
@@ -134,5 +137,11 @@
   "app.settings.rateProvider": "Провайдер валютных котировок",
   "app.settings.securityKey": "Ключ безопасности",
   "app.manual.demoDialog.title": "Заполнить приложение демонстрационными данными",
-  "app.manual.demoDialog.content": "Прежде чем мы продолжим, хотите ли вы заполнить приложение демонстрационными данными и пропустить руководство, или вы предпочитаете просмотреть основные функции приложения и начать с нуля?"
+  "app.manual.demoDialog.content": "Прежде чем мы продолжим, хотите ли вы заполнить приложение демонстрационными данными и пропустить руководство, или вы предпочитаете просмотреть основные функции приложения и начать с нуля?",
+  "app.events.changePortfolio.labels.eventDate": "Дата перевода бумаг",
+  "app.events.changePortfolio.labels.from": "Из портфеля",
+  "app.events.changePortfolio.labels.to": "В портфель",
+  "app.events.changePortfolio.labels.selectFrom": "Выберите портфель изьятия",
+  "app.events.changePortfolio.labels.selectTo": "Выберите портфель назначения",
+  "app.events.changePortfolio.rules.same": "Портфели не могут быть одинаковыми"
 }
