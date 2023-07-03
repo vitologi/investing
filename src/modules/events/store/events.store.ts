@@ -15,8 +15,8 @@ export class EventsStore {
   ) {
   }
 
-  create(type: EventType.TransferBetweenPortfolio, payload: ITransferBetweenPortfolioPayloadDto): TransferBetweenPortfolioEvent
-  create(type: EventType, payload: unknown): IBaseEvent {
+  createEmpty(type: EventType.TransferBetweenPortfolio, payload: ITransferBetweenPortfolioPayloadDto): TransferBetweenPortfolioEvent
+  createEmpty(type: EventType, payload: unknown): IBaseEvent {
     let model: IBaseEvent;
     switch (type){
       case EventType.TransferBetweenPortfolio:
@@ -42,7 +42,7 @@ export class EventsStore {
     }
   }
 
-  async save(model: IBaseEvent): Promise<void> {
-    await this.service.update(model.asDto); // TODO: handle exceptions
+  async create(model: IBaseEvent): Promise<void> {
+    await this.service.create(model.asDto); // TODO: handle exceptions
   }
 }
