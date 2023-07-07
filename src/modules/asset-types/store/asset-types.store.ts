@@ -8,7 +8,7 @@ import {AssetTypesService} from "../shared/services/asset-types.service";
 
 @injectable()
 export class AssetTypesStore extends DomainStore<IAssetTypeDto, AssetType> {
-  static key = Symbol('AssetTypesStore');
+  static key = Symbol.for('AssetTypesStore');
   isInit = false;
 
   constructor(@inject(AssetTypesService.key) assetTypesService: BaseApiService<IAssetTypeDto>) {
