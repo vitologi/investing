@@ -6,7 +6,7 @@ import {mockedPortfolioDtos} from "../../dtos/__mocks__/portfolio.dto";
 // TODO: replace returned values by mocks dto
 @injectable()
 export class PortfoliosService {
-  static key = Symbol('PortfoliosService');
+  static key = Symbol.for('PortfoliosService');
   list = jest.fn(async ()=>{
     await sleep(10);
     return mockedPortfolioDtos;
