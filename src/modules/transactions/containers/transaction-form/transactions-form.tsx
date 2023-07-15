@@ -1,4 +1,4 @@
-import {Button, FormControl, FormHelperText, InputLabel, MenuItem, Paper, Select, TextField} from "@mui/material";
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import {Controller, FormProvider, useFieldArray, useForm} from "react-hook-form";
 import {useCallback, useEffect, useMemo} from "react";
 import {useTransactionsStore} from "../../store/transactions.selector";
@@ -20,6 +20,8 @@ import {BackwardOperation} from "../backward-operation/backward-operation";
 import {CommissionOperation} from "../commission-operation/commission-operation";
 import {getDefaultOperations} from "../../shared/utils/get-default-operations";
 import {operationDto2OperationForm} from "../../shared/utils/operation-dto-2-operation-form";
+import {DetailsLayout} from "../../../../shared/containers/details-layout/details-layout";
+import {DetailsWrapper} from "../../../../shared/components/details-wrapper/details-wrapper";
 
 interface IProps {
   id?: string | null;
@@ -45,7 +47,7 @@ export const TransactionsForm = observer(({id = null}: IProps) => {
     defaultValues,
 
   });
-  const {control, handleSubmit, watch, getFieldState, resetField} = methods;
+  const {control, handleSubmit, watch, getFieldState, resetField, formState:{isValid}} = methods;
   const {fields, remove, append} = useFieldArray({control, name: 'operations'})
 
   const saveHandler = useCallback(async (data: IFormTransaction) => {
@@ -76,181 +78,172 @@ export const TransactionsForm = observer(({id = null}: IProps) => {
   }, [typeWatch, remove, append, isDirty, resetField]);
 
   return (
-    <Paper sx={{m: 2, p: 2}}>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(saveHandler)}>
 
-      {process.env.NODE_ENV === 'development' ? <DevTool control={control}/> : null}
+        {process.env.NODE_ENV === 'development' ? <DevTool control={control}/> : null}
 
-      <FormProvider {...methods}>
-        <Grid2
-          component="form"
-          onSubmit={handleSubmit(saveHandler)}
-          container
-          spacing={{xs: 2, md: 3}}
-        >
-          {/*date*/}
-          <Grid2 xs={6} sm={4} md={4}>
-            <Controller
-              name={"date"}
-              control={control}
-              rules={{
-                required: "app.common.form.rules.required",
-                validate: (value) => (Date.parse(value) > 0)
-              }}
-              render={({field, fieldState: {error}}) => (
-                <Observer>{() => (
-                  <DatePicker
-                    disableFuture={true}
-                    label={intlStore.formatMessage("app.transactions.form.labels.date")}
-                    openTo="day"
-                    views={['year', 'month', 'day']}
-                    renderInput={(params) => (
-                      <TextField
-                        fullWidth={true}
-                        {...params}
+        <DetailsLayout isActionDisabled={!isValid}>
+          <DetailsWrapper>
+            {/*date*/}
+            <Grid2 xs={6} sm={4} md={4}>
+              <Controller
+                name={"date"}
+                control={control}
+                rules={{
+                  required: "app.common.form.rules.required",
+                  validate: (value) => (Date.parse(value) > 0)
+                }}
+                render={({field, fieldState: {error}}) => (
+                  <Observer>{() => (
+                    <DatePicker
+                      disableFuture={true}
+                      label={intlStore.formatMessage("app.transactions.form.labels.date")}
+                      openTo="day"
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <TextField
+                          fullWidth={true}
+                          {...params}
+                          error={!!error}
+                          helperText={error && intlStore.formatMessage("app.common.form.rules.pattern")}
+                        />
+                      )}
+                      {...field}
+                    />
+                  )}</Observer>
+                )
+                }
+              />
+            </Grid2>
+
+            {/*type*/}
+            <Grid2 xs={6} sm={4} md={4}>
+              <Controller
+                name={"type"}
+                control={control}
+                rules={{
+                  required: "app.common.form.rules.required",
+                }}
+                render={({field, fieldState: {error}}) => (
+                  <Observer>{() => (
+                    <FormControl fullWidth={true}>
+                      <InputLabel id="action-label">
+                        <FormattedMessage id={"app.transactions.form.labels.action"}/>
+                      </InputLabel>
+
+                      <Select
+                        labelId="action-label"
+                        label={<FormattedMessage id={"app.transactions.form.labels.action"}/>}
+                        {...field}
                         error={!!error}
-                        helperText={error && intlStore.formatMessage("app.common.form.rules.pattern")}
-                      />
-                    )}
-                    {...field}
-                  />
-                )}</Observer>
-              )
+                      >
+                        {Object.values(TransactionType).map((item) => (
+                          <MenuItem key={item} value={item}>
+                            <FormattedMessage id={`app.transactions.actions.${item}`}/>
+                          </MenuItem>
+                        ))
+                        }
+                      </Select>
+
+                      <FormHelperText error={true}>
+                        <FormattedMessage id={error ? error.message : "app.empty"}/>
+                      </FormHelperText>
+                    </FormControl>
+                  )}</Observer>
+                )}
+              />
+            </Grid2>
+
+            {/*portfolio*/}
+            <Grid2 xs={6} sm={4} md={4}>
+              <Controller
+                name={"portfolio"}
+                control={control}
+                rules={{
+                  required: "app.common.form.rules.required",
+                }}
+                render={({field, fieldState: {error}}) => (
+                  <Observer>{() => (
+                    <FormControl fullWidth={true}>
+                      <InputLabel id="portfolio-label">
+                        <FormattedMessage id={"app.transactions.form.labels.portfolio"}/>
+                      </InputLabel>
+
+                      <Select
+                        labelId="portfolio-label"
+                        label={<FormattedMessage id={"app.transactions.form.labels.portfolio"}/>}
+                        {...field}
+                        error={!!error}
+                      >
+                        {portfolioStore.list.map((item) => (
+                          <MenuItem key={item.id} value={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+
+                      <FormHelperText error={true}>
+                        <FormattedMessage id={error ? error.message : "app.empty"}/>
+                      </FormHelperText>
+                    </FormControl>
+                  )}</Observer>
+                )}
+              />
+            </Grid2>
+
+            {/*exchange*/}
+            <Grid2 xs={6} sm={4} md={8}>
+              <Controller
+                name={"exchange"}
+                control={control}
+                render={({field, fieldState: {error}}) => (
+                  <Observer>{() => (
+                    <FormControl fullWidth={true}>
+                      <InputLabel id="exchange-label">
+                        <FormattedMessage id={"app.transactions.form.labels.exchange"}/>
+                      </InputLabel>
+
+                      <Select
+                        labelId="exchange-label"
+                        label={<FormattedMessage id={"app.transactions.form.labels.exchange"}/>}
+                        {...field}
+                        error={!!error}
+                      >
+                        {exchangeStore.enabledList.map((item) => (
+                          <MenuItem key={item.id} value={item.id}>
+                            ({item.mic}) {item.country}
+                          </MenuItem>
+                        ))}
+                      </Select>
+
+                      <FormHelperText error={true}>
+                        <FormattedMessage id={error ? error.message : "app.empty"}/>
+                      </FormHelperText>
+                    </FormControl>
+                  )}</Observer>
+                )}
+              />
+            </Grid2>
+
+            {fields.map((field, index) => {
+              switch (field.type) {
+                case OperationType.Forward:
+                  return (<ForwardOperation key={field.id} index={index}/>);
+
+                case OperationType.Backward:
+                  return (<BackwardOperation key={field.id} index={index}/>);
+
+                case OperationType.Commission:
+                  return (<CommissionOperation key={field.id} index={index}/>);
+
+                default:
+                  return null;
               }
-            />
-          </Grid2>
-
-          {/*type*/}
-          <Grid2 xs={6} sm={4} md={4}>
-            <Controller
-              name={"type"}
-              control={control}
-              rules={{
-                required: "app.common.form.rules.required",
-              }}
-              render={({field, fieldState: {error}}) => (
-                <Observer>{() => (
-                  <FormControl fullWidth={true}>
-                    <InputLabel id="action-label">
-                      <FormattedMessage id={"app.transactions.form.labels.action"}/>
-                    </InputLabel>
-
-                    <Select
-                      labelId="action-label"
-                      label={<FormattedMessage id={"app.transactions.form.labels.action"}/>}
-                      {...field}
-                      error={!!error}
-                    >
-                      {Object.values(TransactionType).map((item) => (
-                        <MenuItem key={item} value={item}>
-                          <FormattedMessage id={`app.transactions.actions.${item}`}/>
-                        </MenuItem>
-                      ))
-                      }
-                    </Select>
-
-                    <FormHelperText error={true}>
-                      <FormattedMessage id={error ? error.message : "app.empty"}/>
-                    </FormHelperText>
-                  </FormControl>
-                )}</Observer>
-              )}
-            />
-          </Grid2>
-
-          {/*portfolio*/}
-          <Grid2 xs={6} sm={4} md={4}>
-            <Controller
-              name={"portfolio"}
-              control={control}
-              rules={{
-                required: "app.common.form.rules.required",
-              }}
-              render={({field, fieldState: {error}}) => (
-                <Observer>{() => (
-                  <FormControl fullWidth={true}>
-                    <InputLabel id="portfolio-label">
-                      <FormattedMessage id={"app.transactions.form.labels.portfolio"}/>
-                    </InputLabel>
-
-                    <Select
-                      labelId="portfolio-label"
-                      label={<FormattedMessage id={"app.transactions.form.labels.portfolio"}/>}
-                      {...field}
-                      error={!!error}
-                    >
-                      {portfolioStore.list.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-
-                    <FormHelperText error={true}>
-                      <FormattedMessage id={error ? error.message : "app.empty"}/>
-                    </FormHelperText>
-                  </FormControl>
-                )}</Observer>
-              )}
-            />
-          </Grid2>
-
-          {/*exchange*/}
-          <Grid2 xs={6} sm={4} md={8}>
-            <Controller
-              name={"exchange"}
-              control={control}
-              render={({field, fieldState: {error}}) => (
-                <Observer>{() => (
-                  <FormControl fullWidth={true}>
-                    <InputLabel id="exchange-label">
-                      <FormattedMessage id={"app.transactions.form.labels.exchange"}/>
-                    </InputLabel>
-
-                    <Select
-                      labelId="exchange-label"
-                      label={<FormattedMessage id={"app.transactions.form.labels.exchange"}/>}
-                      {...field}
-                      error={!!error}
-                    >
-                      {exchangeStore.enabledList.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                          ({item.mic}) {item.country}
-                        </MenuItem>
-                      ))}
-                    </Select>
-
-                    <FormHelperText error={true}>
-                      <FormattedMessage id={error ? error.message : "app.empty"}/>
-                    </FormHelperText>
-                  </FormControl>
-                )}</Observer>
-              )}
-            />
-          </Grid2>
-
-          {fields.map((field, index) => {
-            switch (field.type) {
-              case OperationType.Forward:
-                return (<ForwardOperation key={field.id} index={index}/>);
-
-              case OperationType.Backward:
-                return (<BackwardOperation key={field.id} index={index}/>);
-
-              case OperationType.Commission:
-                return (<CommissionOperation key={field.id} index={index}/>);
-
-              default:
-                return null;
-            }
-          })}
-
-          <Grid2 xs={12} sm={8} md={4}>
-            <Button fullWidth={true} type="submit" sx={{p: 2}} color={"primary"} variant={"contained"}>
-              <FormattedMessage id="app.common.actions.save"/>
-            </Button>
-          </Grid2>
-        </Grid2>
-      </FormProvider>
-    </Paper>
+            })}
+          </DetailsWrapper>
+        </DetailsLayout>
+      </form>
+    </FormProvider>
   );
 });
