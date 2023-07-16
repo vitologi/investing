@@ -18,7 +18,7 @@ import {OperationType} from "../../transactions/shared/enums/operation-type";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
-  static key = Symbol('TickersStore');
+  static key = Symbol.for('TickersStore');
 
   constructor(
     @inject(TickersService.key) tickersService: TickersService,

@@ -4,7 +4,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class TickersService extends BaseApiService<ITickerDto>{
-  static key = Symbol('TickersService');
+  static key = Symbol.for('TickersService');
   async list(): Promise<ITickerDto[]> {
     return [];
   }

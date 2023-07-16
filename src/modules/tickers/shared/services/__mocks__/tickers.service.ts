@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class TickersService {
-  static key = Symbol('TickersService');
+  static key = Symbol.for('TickersService');
   list = jest.fn(async ()=>{
     await sleep(10);
     return [];
