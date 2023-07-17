@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class TransactionsService extends BaseApiService<ITransactionDto>{
-  static key = Symbol('TransactionsService');
+  static key = Symbol.for('TransactionsService');
   async list(): Promise<ITransactionDto[]> {
     return transactionsCollection.find({});
   }
