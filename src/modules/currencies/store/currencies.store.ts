@@ -19,7 +19,7 @@ export const OPEN_EXCHANGE_RATES_API_TOKEN = 'OPEN_EXCHANGE_RATES_API_TOKEN';
 
 @injectable()
 export class CurrenciesStore extends DomainStore<ICurrencyDto, Currency> {
-  static key = Symbol('CurrenciesStore');
+  static key = Symbol.for('CurrenciesStore');
   isInit = false;
   _baseCurrencyCode = 'USD';
 
