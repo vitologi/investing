@@ -6,7 +6,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class EventsService extends BaseApiService<IBaseEventDto> {
-  static key = Symbol('EventsService');
+  static key = Symbol.for('EventsService');
   private _collection: ICollection<IBaseEventDto>;
 
   constructor() {
