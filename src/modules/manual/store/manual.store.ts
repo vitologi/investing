@@ -7,7 +7,7 @@ export const DEMO_DIALOG_OPENED = 'DEMO_DIALOG_OPENED';
 
 @injectable()
 export class ManualStore {
-  static key = Symbol('ManualStore');
+  static key = Symbol.for('ManualStore');
   isInit = false;
   isDemoDialogOpened = true;
   constructor(@inject(StorageService.key) private storageService: StorageService) {
