@@ -1,7 +1,7 @@
-import {IBaseEventDto} from "../dtos/base-event.dto";
-import {ITransferBetweenPortfolioPayloadDto} from "../dtos/transfer-between-portfolio-payload.dto";
-import {BaseEvent} from "./base-event";
-import {EventType} from "../enums/event-type";
+import {IBaseEventDto} from "../../../events/shared/dtos/base-event.dto";
+import {ITransferBetweenPortfolioPayloadDto} from "../../../events/shared/dtos/transfer-between-portfolio-payload.dto";
+import {BaseEvent} from "../../../events/shared/models/base-event";
+import {EventType} from "../../../events/shared/enums/event-type";
 
 export class TransferBetweenPortfolioEvent extends BaseEvent<ITransferBetweenPortfolioPayloadDto> {
   type = EventType.TransferBetweenPortfolio;
