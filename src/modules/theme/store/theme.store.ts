@@ -5,7 +5,7 @@ import { action, computed, observable, makeObservable } from 'mobx';
 
 @injectable()
 export class ThemeStore {
-  static key = Symbol('ThemeStore');
+  static key = Symbol.for('ThemeStore');
   THEME_SPACING = 8;
 
   theme: ThemeOptions = {
@@ -47,6 +47,10 @@ export class ThemeStore {
         light: '#bc6363',
         contrastText: '#ffffff',
       },
+      background: {
+        default: '#eeeeee',
+        paper: '#ffffff',
+      }
     }
   };
 
