@@ -102,6 +102,8 @@
   "app.assetTypes.form.form": "Asset type form",
   "app.assetTypes.form.name": "Asset type name",
   "app.transactions.title.add": "Add transaction",
+  "app.transactions.title.edit": "Edit transaction",
+  "app.transactions.title.changePortfolio": "Transfer between portfolios",
   "app.transactions.form.labels.date": "Transaction date",
   "app.transactions.form.labels.security": "Ticker",
   "app.transactions.form.labels.action": "Action",
@@ -143,5 +145,11 @@
   "app.events.changePortfolio.labels.to": "To portfolio",
   "app.events.changePortfolio.labels.selectFrom": "Select portfolio from",
   "app.events.changePortfolio.labels.selectTo": "Select portfolio to",
-  "app.events.changePortfolio.rules.same": "Selected portfolios can't be the same"
+  "app.events.changePortfolio.rules.same": "Selected portfolios can't be the same",
+  "app.events.list.columns.event": "Event",
+  "app.events.list.columns.date": "Date",
+  "app.events.list.columns.details": "Details",
+  "app.events.list.changePortfolio.details": "Change portfolio for {asset} from {oldName} to {newName}",
+  "app.events.list.changePortfolio.tooltip": "Transfer between portfolios",
+  "app.events.actions": "Revert event"
 }

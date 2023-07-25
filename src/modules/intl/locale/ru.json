@@ -102,6 +102,8 @@
   "app.assetTypes.form.form": "Форма редактирования типа актива",
   "app.assetTypes.form.name": "Название типа актива",
   "app.transactions.title.add": "Добавить операцию",
+  "app.transactions.title.edit": "Редактировать операцию",
+  "app.transactions.title.changePortfolio": "Перевод между портфелями",
   "app.transactions.form.labels.date": "Дата операции",
   "app.transactions.form.labels.security": "Тикер",
   "app.transactions.form.labels.action": "Действие",
@@ -143,5 +145,11 @@
   "app.events.changePortfolio.labels.to": "В портфель",
   "app.events.changePortfolio.labels.selectFrom": "Выберите портфель изьятия",
   "app.events.changePortfolio.labels.selectTo": "Выберите портфель назначения",
-  "app.events.changePortfolio.rules.same": "Портфели не могут быть одинаковыми"
+  "app.events.changePortfolio.rules.same": "Портфели не могут быть одинаковыми",
+  "app.events.list.columns.event": "Событие",
+  "app.events.list.columns.date": "Дата",
+  "app.events.list.columns.details": "Детали",
+  "app.events.list.changePortfolio.details": "Смена портфеля для {asset} с {oldName} на {newName}",
+  "app.events.list.changePortfolio.tooltip": "Перевод между портфелями",
+  "app.events.actions": "Откатить событие"
 }
