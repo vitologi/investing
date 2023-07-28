@@ -1,7 +1,6 @@
 import {observer} from "mobx-react-lite";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {FormattedMessage} from "react-intl";
-import {useNavigate} from "react-router-dom";
 import {useManualStore} from "../../store/manual.selector";
 import {useCallback} from "react";
 import {SelectSwitcher} from "../../../intl/containers/select-switcher/select-switcher";
@@ -12,7 +11,6 @@ import {useCurrenciesStore} from "../../../currencies/store/currencies.selector"
 import {CurrencyRateProvider} from "../../../currencies/shared/enums/currency-rate-provider";
 
 export const DemoDialog = observer(() => {
-  const navigate = useNavigate();
   const store = useManualStore();
   const transferStore = useTransactionsTransferStore();
   const intlStore = useIntlStore();
@@ -26,17 +24,14 @@ export const DemoDialog = observer(() => {
       // TODO: implement notification
       alert(intlStore.formatMessage("app.common.actions.success"));
       store.closeDemoDialog();
-      store.setIsInit(true);
 
       // TODO: temp values
       currenciesStore.setRateProvider(CurrencyRateProvider.Openexchangerates);
       currenciesStore.setOpenExchangeRatesApiToken('adbf602f8d4a4e71902d6da14647a470');
-
-      navigate('/');
     } catch (e) {
       alert(intlStore.formatMessage("app.common.actions.error"));
     }
-  }, [store, navigate, intlStore, transferStore, currenciesStore]);
+  }, [store, intlStore, transferStore, currenciesStore]);
 
   return (
     <Dialog
