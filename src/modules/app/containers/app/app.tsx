@@ -3,7 +3,7 @@ import {lazy, Suspense, useEffect} from "react";
 import {
   NavigationProviderWrapper
 } from "../../../navigation/containers/navigation-provider-wrapper/navigation-provider-wrapper";
-import {Box} from "@mui/material";
+import {Box, Theme} from "@mui/material";
 import {DrawersPanel} from "../../../navigation/containers/drawers-panel/drawers-panel";
 import {NavigationPanel} from "../../../navigation/containers/navigation-panel/navigation-panel";
 import {Routes, Route, useNavigate} from "react-router-dom";
@@ -14,6 +14,7 @@ import {Transactions} from "../../../transactions/containers/transactions/transa
 import {Settings} from "../../../settings/containers/settings/settings";
 import {Manual} from "../../../manual/containers/manual/manual";
 import {useManualStore} from "../../../manual/store/manual.selector";
+import {Events} from "../../../events/containers/events/events";
 
 const Dictionaries = lazy(() => import("../../../dictionaries/containers/dictionaries/dictionaries"));
 const Dashboard = lazy(() => import("../../../dashboard/containers/dashboard/dashboard"));
@@ -33,7 +34,11 @@ export const App = observer(() => {
 
   return (
     <NavigationProviderWrapper>
-      <Box sx={{pb: {xs: 8, md: 0}}}>
+      <Box sx={{
+        pb: {xs: 8, md: 0},
+        minHeight: '100vh',
+        backgroundColor: (theme: Theme)=>theme.palette.background.default,
+      }}>
         <DrawersPanel/>
 
         <NavigationPanel/>
@@ -69,8 +74,16 @@ export const App = observer(() => {
 
             <Route
               path="manual/*"
+              // TODO: change manual title
               element={<Titled title="app.titles.settings">
                 <Manual />
+              </Titled>}
+            />
+
+            <Route
+              path="events/*"
+              element={<Titled title="app.titles.events">
+                <Events />
               </Titled>}
             />
 

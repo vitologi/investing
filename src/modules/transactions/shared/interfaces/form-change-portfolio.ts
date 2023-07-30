@@ -1,5 +1,5 @@
 export interface IFormChangePortfolio {
-  eventDate: Date;
+  date: Date;
   from: string;
   to: string;
 }

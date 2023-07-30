@@ -44,11 +44,11 @@ describe('AssetTypeForm', () => {
     const spy = jest.spyOn(mockAssetTypesStore, "create");
     const {getByRole, findByRole} = render(<DiProvider container={container}><AssetTypeForm/></DiProvider>);
     const save = () => userEvent.click(getByRole('button', {name: /app.common.actions.save/i}));
-    const alert = () => findByRole('alert', {name: /app.common.form.alert/i})
+    const alertElement = () => findByRole('alert', {name: /app.common.form.alert/i})
 
     // empty value
     await save();
-    expect(await alert()).toHaveTextContent("Field is required");
+    expect(await alertElement()).toHaveTextContent("Field is required");
     expect(spy).not.toHaveBeenCalled();
 
     // min length
@@ -56,7 +56,7 @@ describe('AssetTypeForm', () => {
       getByRole("textbox", {name: /app.assetTypes.form.name/i}),
       "AA"
     );
-    expect(await alert()).toHaveTextContent("Field use length from 3 to 12 characters");
+    expect(await alertElement()).toHaveTextContent("Field use length from 3 to 12 characters");
     expect(spy).not.toHaveBeenCalled();
 
     // max length
@@ -64,7 +64,7 @@ describe('AssetTypeForm', () => {
       getByRole("textbox", {name: /app.assetTypes.form.name/i}),
       "abcdefghijklmnop"
     );
-    expect(await alert()).toHaveTextContent("Field use length from 3 to 12 characters");
+    expect(await alertElement()).toHaveTextContent("Field use length from 3 to 12 characters");
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -72,14 +72,14 @@ describe('AssetTypeForm', () => {
     const spy = jest.spyOn(mockAssetTypesStore, "create");
     const {getByRole, queryByRole} = render(<DiProvider container={container}><AssetTypeForm/></DiProvider>);
     const save = () => userEvent.click(getByRole('button', {name: /app.common.actions.save/i}));
-    const alert = () => queryByRole('alert', {name: /app.common.form.alert/i});
+    const alertElement = () => queryByRole('alert', {name: /app.common.form.alert/i});
 
     await userEvent.type(
       getByRole("textbox", {name: /app.assetTypes.form.name/i}),
       "validName"
     );
     await save();
-    expect(await alert()).toBeFalsy();
+    expect(await alertElement()).toBeFalsy();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(expect.objectContaining<Partial<IAssetTypeDto>>({
       name: "validName", isSystem: false

@@ -1,11 +1,19 @@
 import {EventType} from "../../enums/event-type";
+import {IBaseEventDto} from "../base-event.dto";
+import {
+  ITransferBetweenPortfolioPayloadDto
+} from "../../../../transactions/shared/dtos/transfer-between-portfolio-payload.dto";
 
-const unknownDto = {
+const portfolioDto: IBaseEventDto<ITransferBetweenPortfolioPayloadDto> = {
   _id: '_id',
-  type: EventType.Unknown,
+  type: EventType.TransferBetweenPortfolio,
   source: null,
-  payload: null,
+  payload: {
+    transactionId: 'null',
+    oldPortfolioId: 'null',
+    newPortfolioId: 'null',
+  },
   timestamp: new Date().getTime(),
 };
 
-export const mockDtos = [unknownDto];
+export const mockDtos = [portfolioDto];
