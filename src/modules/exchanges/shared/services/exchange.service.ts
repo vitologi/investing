@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class ExchangeService extends BaseApiService<IExchangeDto, LanguageCode> {
-  static key = Symbol('ExchangeService');
+  static key = Symbol.for('ExchangeService');
   async list(local: LanguageCode = LanguageCode.En): Promise<IExchangeDto[]> {
     return import(`../mocks/exchanges.${local}.mocks.json`)
       .then((module)=>module.default)

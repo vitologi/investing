@@ -6,7 +6,7 @@ import {ICollection} from "@vitologi/local-db";
 
 @injectable()
 export class PortfoliosService extends BaseApiService<IPortfolioDto>{
-  static key = Symbol('PortfoliosService');
+  static key = Symbol.for('PortfoliosService');
   private _collection: ICollection<IPortfolioDto>;
 
   constructor() {

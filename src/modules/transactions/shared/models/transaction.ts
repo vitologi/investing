@@ -48,6 +48,7 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> imple
       bookTotal: computed,
       total: computed,
       applyOperations: action,
+      setPortfolio: action,
     });
   }
 
@@ -149,5 +150,9 @@ export class Transaction extends Model<ITransactionDto, TransactionsStore> imple
     return operations
       .filter(isOperation)
       .reduce((total, operation) => operation.pipe(total), 0);
+  }
+
+  setPortfolio(id: string):void{
+    this.portfolio = id;
   }
 }

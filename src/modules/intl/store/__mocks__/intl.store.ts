@@ -4,7 +4,7 @@ import {action, makeObservable, observable} from "mobx";
 
 @injectable()
 export class IntlStore {
-  static key = Symbol('IntlStore');
+  static key = Symbol.for('IntlStore');
   locale: LanguageCode = LanguageCode.En;
   _formatMessage = jest.fn();
   _formatDate = jest.fn();

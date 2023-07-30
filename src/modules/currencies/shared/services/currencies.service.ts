@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class CurrenciesService extends BaseApiService<ICurrencyDto, string | undefined> {
-  static key = Symbol('CurrenciesService');
+  static key = Symbol.for('CurrenciesService');
   // TODO: need to refactor this library for partially load dictionaries
   currencyList = import("currency-list").then((currencyList)=>currencyList.default);
 

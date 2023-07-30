@@ -11,7 +11,7 @@ export const ENABLED_EXCHANGES = 'ENABLED_EXCHANGES';
 
 @injectable()
 export class ExchangeStore extends DomainStore<IExchangeDto, Exchange> {
-  static key = Symbol('ExchangeStore');
+  static key = Symbol.for('ExchangeStore');
   isInit = false;
   enabled: string[];
 

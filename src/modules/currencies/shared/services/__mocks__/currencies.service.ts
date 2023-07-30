@@ -5,7 +5,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class CurrenciesService {
-  static key = Symbol('CurrenciesService');
+  static key = Symbol.for('CurrenciesService');
   list = jest.fn(async (): Promise<ICurrencyDto[]> => {
     await sleep(10);
     return mockedList;

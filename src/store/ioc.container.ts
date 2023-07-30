@@ -21,6 +21,9 @@ import {SettingsStore} from "../modules/settings/store/settings.store";
 import {TickersService} from "../modules/tickers/shared/services/tickers.service";
 import {TickersStore} from "../modules/tickers/store/tickers.store";
 import {ManualStore} from "../modules/manual/store/manual.store";
+import {EventsStore} from "../modules/events/store/events.store";
+import {EventsService} from "../modules/events/shared/services/events.service";
+import {CommandsStore} from "../modules/events/store/commands.store";
 
 // import {OfflineService} from '../modules/offline/shared/services/offline.service';
 // import {NotificationService} from '../modules/notification/shared/services/notification.service';
@@ -50,4 +53,7 @@ export const iocContainer = buildIoc([
   TickersService,
   TickersStore,
   ManualStore,
+  EventsStore,
+  EventsService,
+  CommandsStore,
 ]);

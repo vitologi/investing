@@ -6,7 +6,7 @@ import {injectable} from "inversify";
 
 @injectable()
 export class AssetTypesService extends BaseApiService<IAssetTypeDto>{
-  static key = Symbol('AssetTypesService');
+  static key = Symbol.for('AssetTypesService');
   private _collection: ICollection<IAssetTypeDto>;
   constructor() {
     super();

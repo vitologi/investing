@@ -15,10 +15,11 @@ import {PortfoliosStore} from "../../portfolios/store/portfolios.store";
 import {Portfolio} from "../../portfolios/shared/models/portfolio";
 import {CompositeTicker} from "../shared/models/composite-ticker";
 import {OperationType} from "../../transactions/shared/enums/operation-type";
+import {EventsStore} from "../../events/store/events.store";
 
 @injectable()
 export class TickersStore extends DomainStore<ITickerDto, Ticker> {
-  static key = Symbol('TickersStore');
+  static key = Symbol.for('TickersStore');
 
   constructor(
     @inject(TickersService.key) tickersService: TickersService,
@@ -26,6 +27,7 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
     @inject(CurrenciesStore.key) public readonly currenciesStore: CurrenciesStore,
     @inject(AssetTypesStore.key) public readonly assetTypesStore: AssetTypesStore,
     @inject(PortfoliosStore.key) public readonly portfoliosStore: PortfoliosStore,
+    @inject(EventsStore.key) public readonly eventsStore: EventsStore,
   ) {
     super(tickersService);
     makeObservable(this, {
@@ -43,17 +45,17 @@ export class TickersStore extends DomainStore<ITickerDto, Ticker> {
      */
     let timer: ReturnType<typeof setTimeout>;
     reaction(
-      () => (currenciesStore.isInit && !!this.transactionsStore.list.length),
+      () => (currenciesStore.isInit && !!this.transactionsStore.list.length && eventsStore.changeIdentifier),
       (init) => {
         if(!init){
           return;
         }
         clearTimeout(timer);
         timer = setTimeout(async () => {
-
+          this.unload();
           for (const ticker of this.buildTickersFromTransactions()) {
             if (this.hasTicker(ticker)) {
-              return;
+              continue;
             }
 
             await this.create(ticker.asDto);

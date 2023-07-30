@@ -4,7 +4,7 @@ import {SettingsService} from "../shared/services/settings.service";
 
 @injectable()
 export class SettingsStore {
-  static key = Symbol('SettingsStore');
+  static key = Symbol.for('SettingsStore');
 
   constructor(@inject(SettingsService.key) settingsService: SettingsService) {
     makeObservable(this, {});

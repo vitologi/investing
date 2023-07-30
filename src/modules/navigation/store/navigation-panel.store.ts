@@ -3,7 +3,7 @@ import {action, makeObservable, observable} from 'mobx';
 
 @injectable()
 export class NavigationPanelStore {
-  static key = Symbol('NavigationPanelStore');
+  static key = Symbol.for('NavigationPanelStore');
   isOpen = false;
   title = 'app.titles.main';
   path = '/';

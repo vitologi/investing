@@ -23,7 +23,7 @@ import {Ticker} from "../../tickers/shared/models/ticker";
 
 @injectable()
 export class TransactionsTransferStore {
-  static key = Symbol('TransactionsTransferStore');
+  static key = Symbol.for('TransactionsTransferStore');
   process = 0;
 
   constructor(

@@ -1,4 +1,4 @@
-import {isPositive} from "./is-positive";
+import {isPositive} from "../is-positive";
 
 describe('isPositive', () => {
 
