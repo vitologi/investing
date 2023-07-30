@@ -19,14 +19,12 @@ import {DevTool} from "@hookform/devtools";
 import {IFormChangePortfolio} from "../../shared/interfaces/form-change-portfolio";
 import {format} from "date-fns";
 import {Formats} from "../../../../shared/enums/formats";
-import {useEventsStore} from "../../../events/store/events.selector";
 import {DetailsLayout} from "../../../../shared/containers/details-layout/details-layout";
 import {DetailsWrapper} from "../../../../shared/components/details-wrapper/details-wrapper";
 
 export const ChangeTransactionsPortfolio = observer(() => {
   const transactionsStore = useTransactionsStore();
   const portfolioStore = usePortfoliosStore();
-  const eventsStore = useEventsStore();
   const intlStore = useIntlStore();
   const [isProcessed, setIsProcessed] = useState<boolean>(false);
 
@@ -53,7 +51,7 @@ export const ChangeTransactionsPortfolio = observer(() => {
     }
 
     setIsProcessed(false);
-  }, [eventsStore, transactionsStore, setIsProcessed, isProcessed]);
+  }, [transactionsStore, setIsProcessed, isProcessed]);
 
   const from = watch('from');
   const to = watch('to');
